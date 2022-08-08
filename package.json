@@ -1,0 +1,20 @@
+{
+  "name": "github-social-banners",
+  "version": "1.0.0",
+  "description": "Generate GitHub social banners",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Reza Rahman @rezrah",
+  "license": "ISC",
+  "devDependencies": {
+    "cwebp": "^2.0.5",
+    "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  },
+  "keywords": []
+}
