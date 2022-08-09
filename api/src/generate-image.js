@@ -5,7 +5,7 @@ const path = require("path");
 const cwebp = require("cwebp"); // For converting our images to webp.
 
 const { createCanvas, GlobalFonts, Image } = Canvas;
-const canvas = createCanvas(1342, 853);
+const canvas = createCanvas(1200, 627);
 
 // Load in the fonts we need
 GlobalFonts.registerFromPath(
@@ -85,40 +85,51 @@ const wrapText = function (ctx, text, x, y, maxWidth, lineHeight) {
 // category: the category which that article sits in - or the subtext of the article
 // emoji: the emoji you want to appear in the image.
 // overwrite: overwrite existing image
-const generateMainImage = async function (
+const generateMainImage = async function ({
   canonicalName,
-  gradientColors,
-  title,
-  category,
-  emoji,
-  overwrite = false
-) {
+  theme,
+  heading,
+  subheading,
+  description,
+  overwrite = false,
+}) {
   //   category = category.toUpperCase();
   // gradientColors is an array [ c1, c2 ]
-  if (typeof gradientColors === "undefined") {
-    gradientColors = ["#8005fc", "#073bae"]; // Backup values
+  let gradientColors;
+
+  if (theme === "dark") {
+    gradientColors = ["#1B1F24", "#1B1F24"];
+  } else if (theme === "light") {
+    gradientColors = ["#ffffff", "#ffffff"];
+  } else {
+    gradientColors = ["#1B1F24", "#1B1F24"];
   }
+
+  const fgDefault = theme === "light" ? "#24292F" : "#ffffff";
+  const fgMuted = theme === "light" ? "#57606A" : "#8B949E";
 
   // Create canvas
   const ctx = canvas.getContext("2d");
 
   // Add gradient - we use createLinearGradient to do this
-  let grd = ctx.createLinearGradient(0, 853, 1352, 0);
+  let grd = ctx.createLinearGradient(0, 627, 1200, 0);
   grd.addColorStop(0, gradientColors[0]);
   grd.addColorStop(1, gradientColors[1]);
   ctx.fillStyle = grd;
   // Fill our gradient
-  ctx.fillRect(0, 0, 1342, 853);
+  ctx.fillRect(0, 0, 1200, 627);
+
+  if (theme === "analog") {
+    const bgTheme = await Canvas.loadImage(
+      path.resolve(__dirname, "./assets/analog.png")
+    );
+    ctx.drawImage(bgTheme, 0, 0, canvas.width, canvas.height);
+  }
 
   // Write our Emoji onto the canvas
   //   ctx.fillStyle = "white";
   //   ctx.font = "95px AppleEmoji";
   //   //ctx.fillText(emoji, 85, 700);
-
-  const image = await Canvas.loadImage(
-    path.resolve(__dirname, "./assets/mark-github-24.png")
-  );
-  ctx.drawImage(image, 85, 85, 128, 128);
 
   //   const file = await fs.promises.readFile("./mark-github-24.png");
 
@@ -131,20 +142,56 @@ const generateMainImage = async function (
   //   ctx.drawImage(image, 0, 0, w * 5, h * 5);
 
   // Add our category text
-  ctx.font = "85px AllianceNo1ExtraBold";
-  ctx.fillStyle = "white";
-  let wrappedText = wrapText(ctx, category, 85, 753, 1200, 100);
+  ctx.font = "96px AllianceNo1ExtraBold";
+  ctx.fillStyle = fgDefault;
+  ctx.lineHeight = "104px";
+  ctx.textAlign = "center";
+  let wrappedText = wrapText(ctx, subheading, 32, 623, 1200 - 64, 104);
   wrappedText[0].forEach(function (item) {
     // We will fill our text which is item[0] of our array, at coordinates [x, y]
     // x will be item[1] of our array
     // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-    ctx.fillText(item[0], item[1], item[2] - wrappedText[1] - 200); // 200 is height of an emoji
+    ctx.fillText(item[0], canvas.width / 2, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
   });
 
-  // Add our title text to the canvas
-  ctx.font = "50px AllianceNo1SemiBold";
-  ctx.fillStyle = "rgba(255,255,255,0.8)";
-  ctx.fillText(title, 85, 553 - wrappedText[1] - 100); // 853 - 200 for emoji, -100 for line height of 1
+  // Add our subheading text to the canvas
+  ctx.font = "40px AllianceNo1SemiBold";
+  ctx.fillStyle = fgDefault;
+  // ctx.fillText(heading, 85, 553 - wrappedText[1] - 100); // 853 - 200 for emoji, -100 for line height of 1
+  ctx.fillText(heading, canvas.width / 2, 520 - wrappedText[1] - 200);
+
+  const image = await Canvas.loadImage(
+    path.resolve(
+      __dirname,
+      theme === "light"
+        ? "./assets/mark-github-24-dark.png"
+        : "./assets/mark-github-24.png"
+    )
+  );
+
+  ctx.drawImage(
+    image,
+    canvas.width / 2 - 72 / 2,
+    420 - wrappedText[1] - 250,
+    72,
+    72
+  );
+
+  ctx.font = "28px AllianceNo1Regular";
+  ctx.fillStyle = fgMuted;
+  ctx.lineHeight = "40px";
+
+  let wrappedDescription = wrapText(ctx, description, 32, 450, 934, 40);
+  wrappedDescription[0].forEach(function (item) {
+    // We will fill our text which is item[0] of our array, at coordinates [x, y]
+    // x will be item[1] of our array
+    // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
+    ctx.fillText(
+      item[0],
+      canvas.width / 2 < 934 ? canvas.width / 2 : 934,
+      item[2] + 40
+    ); // 200 is height of an emoji
+  });
 
   const outDir = "./views/images/banner/";
 

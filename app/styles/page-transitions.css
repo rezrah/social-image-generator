@@ -1,0 +1,35 @@
+/* Prevent scrollbar during animation */
+.effect-1,
+.effect-2,
+.effect-3 {
+  overflow: hidden;
+}
+
+.effect-3 {
+  z-index: 1;
+}
+
+.effect-3::after {
+  content: "";
+  display: block;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, #8250df, #d42a32);
+  z-index: -1;
+}
+
+.page {
+  padding: 3rem 0 0;
+  background: var(--brand-color-canvas-default);
+  z-index: 1;
+  min-height: 100vh;
+  box-shadow: 0 100px 80px rgb(0 0 0 / 2%),
+    0 41.7776px 33.4221px rgb(0 0 0 / 2%), 0 22.3363px 17.869px rgb(0 0 0 / 3%),
+    0 12.5216px 10.0172px rgb(0 0 0 / 3%), 0 6.6501px 5.3201px rgb(0 0 0 / 4%),
+    0 2.7673px 2.2138px rgb(0 0 0 / 7%);
+}

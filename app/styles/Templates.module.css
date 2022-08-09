@@ -1,0 +1,40 @@
+.card {
+  cursor: pointer;
+  position: relative;
+}
+.card::before {
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  background: linear-gradient(90deg, #c3abf0, #e4767b);
+  border-radius: 6px;
+  position: absolute;
+  z-index: -1;
+  content: "";
+}
+
+.card::after {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #21262d;
+  border-radius: 5px;
+  position: absolute;
+  z-index: -1;
+  content: "";
+  background: #0d1117;
+}
+.cardHeading {
+  margin: 1rem 0 0.75rem;
+}
+
+.categoryHeading {
+  margin: 3rem 0 1rem;
+}
+
+.thumbnail {
+  width: 100%;
+  height: auto;
+}
