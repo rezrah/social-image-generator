@@ -18,7 +18,14 @@ import {
 import { templateData } from "../fixtures/template-data";
 
 import styles from "../styles/Templates.module.css";
-import { Button, Heading, Text } from "@primer/react-brand";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionHeading,
+  Button,
+  Heading,
+  Text,
+} from "@primer/react-brand";
 import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
 
 const Create: NextPage = () => {
@@ -78,45 +85,50 @@ const Create: NextPage = () => {
         <PageLayout.Content>
           {Object.keys(templateData)
             .reverse()
-            .map((category) => (
+            .map((category, index) => (
               <Box sx={{ marginBottom: 3 }} key={category}>
-                <Heading as="h5" className={styles.categoryHeading}>
-                  {category}
-                </Heading>
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fill, minmax(200px, 1fr))",
-                    gridGap: 5,
-                  }}
-                >
-                  {templateData[category].map((template) => (
-                    <Link href={`/create/${template.id}`} key={template.name}>
-                      <Box
-                        className={styles.card}
-                        as="a"
-                        sx={{
-                          padding: "1.5rem",
-                          borderRadius: "1rem",
-                        }}
-                      >
-                        <img
-                          className={styles.thumbnail}
-                          src={template.image}
-                          width={200}
-                          height={100}
-                        />
-                        <Heading as="h6" className={styles.cardHeading}>
-                          {template.name}
-                        </Heading>
-                        <Text size="300" variant="muted">
-                          {template.description}
-                        </Text>
-                      </Box>
-                    </Link>
-                  ))}
-                </Box>
+                <Accordion open={index === 0}>
+                  <AccordionHeading> {category}</AccordionHeading>
+                  <AccordionContent>
+                    <Box
+                      sx={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fill, minmax(200px, 1fr))",
+                        gridGap: 5,
+                      }}
+                    >
+                      {templateData[category].map((template) => (
+                        <Link
+                          href={`/create/${template.id}`}
+                          key={template.name}
+                        >
+                          <Box
+                            className={styles.card}
+                            as="a"
+                            sx={{
+                              padding: "1.5rem",
+                              borderRadius: "1rem",
+                            }}
+                          >
+                            <img
+                              className={styles.thumbnail}
+                              src={template.image}
+                              width={200}
+                              height={100}
+                            />
+                            <Heading as="h6" className={styles.cardHeading}>
+                              {template.name}
+                            </Heading>
+                            <Text size="300" variant="muted">
+                              {template.description}
+                            </Text>
+                          </Box>
+                        </Link>
+                      ))}
+                    </Box>
+                  </AccordionContent>
+                </Accordion>
               </Box>
             ))}
         </PageLayout.Content>

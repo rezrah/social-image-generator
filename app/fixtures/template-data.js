@@ -1,5 +1,5 @@
 export const templateData = {
-  "Email signatures": [
+  Email: [
     {
       id: "email-signature",
       name: "Email signature",
@@ -7,8 +7,6 @@ export const templateData = {
       image:
         "https://user-images.githubusercontent.com/13340707/183682234-70e11453-62db-4cbd-b70f-bbe34f3b9d45.png",
     },
-  ],
-  "Email header": [
     {
       id: "email-header",
       name: "Email header",

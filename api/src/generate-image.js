@@ -152,7 +152,7 @@ const generateMainImage = async function ({
   // Fill our gradient
   ctx.fillRect(0, 0, 1200, canvasHeight);
 
-  if (["analog", "policy"].includes(theme)) {
+  if (["analog", "policy", "universe"].includes(theme)) {
     const bgTheme = await Canvas.loadImage(
       path.resolve(__dirname, `./assets/${theme}.png`)
     );
@@ -204,8 +204,8 @@ const generateMainImage = async function ({
 
   if (theme === "analog") {
     const angle = (45 * Math.PI) / 180;
-    const x2 = 500 * Math.cos(angle);
-    const y2 = 1200 * Math.sin(angle);
+    const x2 = width * Math.cos(angle);
+    const y2 = height * Math.sin(angle);
     let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
 
     textGradient.addColorStop(0, "#D2A8FF");
@@ -365,7 +365,7 @@ const generateMainImage = async function ({
 
     return {
       msg: "Images have been successfully created!",
-      path: `./views/images/banner/${canonicalName}-${width}x${height}.png`,
+      path: `http://localhost:3001/banner/${canonicalName}-${width}x${height}.png`,
       uri,
     };
   }

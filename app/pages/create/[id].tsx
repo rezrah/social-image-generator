@@ -45,6 +45,7 @@ const CreateTemplate: NextPage = () => {
   const id = router.query.id;
 
   const [uri, setUri] = React.useState("");
+  const [localPath, setLocalPath] = React.useState("");
 
   const handleSubmit = async (event: any) => {
     // Stop the form from submitting and refreshing the page.
@@ -87,7 +88,9 @@ const CreateTemplate: NextPage = () => {
 
     //alert(`Is this your full name: ${result.data}`);
     setUri(result.uri);
+    setLocalPath(result.path);
   };
+  console.log(uri);
 
   const [data] = Object.keys(templateData)
     .map((key) => templateData[key].find((template: any) => template.id === id))
@@ -115,6 +118,7 @@ const CreateTemplate: NextPage = () => {
                 </Select.Option>
                 <Select.Option value="analog">Analog</Select.Option>
                 <Select.Option value="policy">Policy</Select.Option>
+                <Select.Option value="universe">Universe</Select.Option>
               </Select>
             </FormControl>
             {/* <Box sx={{ mb: 3 }}>
@@ -311,7 +315,7 @@ const CreateTemplate: NextPage = () => {
               }}
             >
               <ProductLinkButton
-                disabled={Boolean(uri)}
+                disabled={!Boolean(uri)}
                 variant="default"
                 sx={{ mr: 2 }}
                 leadingIcon={CopyIcon}
@@ -319,10 +323,10 @@ const CreateTemplate: NextPage = () => {
                 Copy image URL
               </ProductLinkButton>
               <ProductLinkButton
-                disabled={Boolean(uri)}
+                disabled={!Boolean(localPath)}
                 variant="default"
                 leadingIcon={DownloadIcon}
-                href="http://localhost:3001/banner/test.png"
+                href={localPath}
                 download
                 target="_blank"
               >
