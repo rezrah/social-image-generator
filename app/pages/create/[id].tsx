@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import {
   PageLayout,
@@ -14,11 +15,21 @@ import {
   Radio,
   RadioGroup,
   Textarea,
+  Select,
+  IconButton,
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
 import { Button, Heading } from "@primer/react-brand";
-import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
+import {
+  CopyIcon,
+  DashIcon,
+  DownloadIcon,
+  ImageIcon,
+  PlusIcon,
+  ScreenNormalIcon,
+  XIcon,
+} from "@primer/octicons-react";
 import { templateData } from "../../fixtures/template-data";
 
 const CreateTemplate: NextPage = () => {
@@ -36,6 +47,8 @@ const CreateTemplate: NextPage = () => {
       subheading: event.target.subheading.value,
       description: event.target.description.value,
       theme: event.target["color-mode"].value,
+      align: event.target["text-alignment"].value,
+      button: event.target["button"].value,
     };
 
     // Send the data to the server in JSON format.
@@ -77,13 +90,24 @@ const CreateTemplate: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <PageLayout>
+      <PageLayout containerWidth="full">
         <PageLayout.Header divider="line">
           <Heading as="h3">{data && data.name}</Heading>
         </PageLayout.Header>
         <PageLayout.Pane position="start" divider="line">
           <form onSubmit={handleSubmit}>
-            <Box sx={{ mb: 3 }}>
+            <FormControl sx={{ mb: 3 }}>
+              <FormControl.Label>Theme</FormControl.Label>
+              <Select name="color-mode" block>
+                <Select.Option value="light">Light</Select.Option>
+                <Select.Option value="dark" selected>
+                  Dark
+                </Select.Option>
+                <Select.Option value="analog">Analog</Select.Option>
+                <Select.Option value="policy">Policy</Select.Option>
+              </Select>
+            </FormControl>
+            {/* <Box sx={{ mb: 3 }}>
               <RadioGroup name="choiceGroup">
                 <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
                   Theme
@@ -93,13 +117,38 @@ const CreateTemplate: NextPage = () => {
                   <FormControl.Label>Light</FormControl.Label>
                 </FormControl>
                 <FormControl>
-                  <Radio value="dark" name="color-mode" />
+                  <Radio value="dark" name="color-mode" defaultChecked />
                   <FormControl.Label>Dark</FormControl.Label>
                 </FormControl>
                 <FormControl>
                   <Radio value="analog" name="color-mode" />
                   <FormControl.Label>Analog</FormControl.Label>
                 </FormControl>
+                <FormControl>
+                  <Radio value="policy" name="color-mode" />
+                  <FormControl.Label>Policy</FormControl.Label>
+                </FormControl>
+              </RadioGroup>
+            </Box> */}
+            <Box sx={{ mb: 3 }}>
+              <RadioGroup name="choiceGroup">
+                <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
+                  Alignment
+                </RadioGroup.Label>
+                <Box sx={{ display: "inline-flex" }}>
+                  <FormControl sx={{ mr: 3 }}>
+                    <Radio value="left" name="text-alignment" />
+                    <FormControl.Label>Start</FormControl.Label>
+                  </FormControl>
+                  <FormControl>
+                    <Radio
+                      value="center"
+                      name="text-alignment"
+                      defaultChecked
+                    />
+                    <FormControl.Label>Center</FormControl.Label>
+                  </FormControl>
+                </Box>
               </RadioGroup>
             </Box>
 
@@ -112,9 +161,13 @@ const CreateTemplate: NextPage = () => {
               <FormControl.Label>Sub-heading</FormControl.Label>
               <TextInput type="text" id="subheading" name="subheading" block />
             </FormControl>
-            <FormControl sx={{ mb: 3 }} required>
+            <FormControl sx={{ mb: 3 }}>
               <FormControl.Label>Description</FormControl.Label>
               <Textarea id="description" name="description" block />
+            </FormControl>
+            <FormControl sx={{ mb: 3 }}>
+              <FormControl.Label>Call to action</FormControl.Label>
+              <TextInput type="text" id="button" name="button" block />
             </FormControl>
             <Box
               sx={{
@@ -128,7 +181,7 @@ const CreateTemplate: NextPage = () => {
                 Clear
               </ProductButton>
               <ProductButton type="submit" variant="primary">
-                Done
+                {uri ? "Update" : "Create"}
               </ProductButton>
             </Box>
           </form>
@@ -136,19 +189,24 @@ const CreateTemplate: NextPage = () => {
         <PageLayout.Content>
           <Box
             sx={{
-              p: 3,
+              position: "relative",
               borderWidth: 1,
               borderStyle: "solid",
               borderRadius: "5px",
               borderColor: "border.default",
               backgroundColor: "canvas.subtle",
               minHeight: 600,
-              backgroundImage: "radial-gradient(#21252c 13%,#0d1117 13%)",
-              backgroundPosition: "0 0",
-              backgroundSize: "10px 10px",
+              // backgroundImage: "radial-gradient(#21252c 13%,var(--base-color-scale-gray-2) 13%)",
+              // backgroundPosition: "0 0",
+              // backgroundSize: "10px 10px",
+              backgroundImage:
+                "linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%)",
+              backgroundSize: "20px 20px",
+              backgroundPosition: "0 0, 0 0, -50px -50px, 50px 50px",
+              width: "100%",
             }}
           >
-            {!uri && (
+            {/* {!uri && (
               <Box
                 sx={{
                   display: "flex",
@@ -160,13 +218,48 @@ const CreateTemplate: NextPage = () => {
               >
                 <ImageIcon size={128} fill="#21252c" />
               </Box>
-            )}
+            )} */}
+
             {uri && (
-              <img
-                src={uri}
-                alt="social image"
-                style={{ width: "100%", height: "auto" }}
-              />
+              <TransformWrapper initialScale={0.9} minScale={0.2} centerOnInit>
+                {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                  <React.Fragment>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        right: 3,
+                        top: 3,
+                        display: "grid",
+                        width: "auto",
+                        gap: 1,
+                      }}
+                    >
+                      <IconButton
+                        size="large"
+                        icon={PlusIcon}
+                        onClick={() => zoomIn()}
+                      />
+                      <IconButton
+                        size="large"
+                        icon={DashIcon}
+                        onClick={() => zoomOut()}
+                      />
+                      <IconButton
+                        size="large"
+                        icon={ScreenNormalIcon}
+                        onClick={() => resetTransform()}
+                      />
+                    </Box>
+                    <TransformComponent>
+                      <img
+                        src={uri}
+                        alt="social image"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    </TransformComponent>
+                  </React.Fragment>
+                )}
+              </TransformWrapper>
             )}
           </Box>
           <Box
@@ -188,7 +281,7 @@ const CreateTemplate: NextPage = () => {
               }}
             >
               <ProductLinkButton
-                disabled={!uri}
+                disabled={Boolean(uri)}
                 variant="default"
                 sx={{ mr: 2 }}
                 leadingIcon={CopyIcon}
@@ -196,7 +289,7 @@ const CreateTemplate: NextPage = () => {
                 Copy image URL
               </ProductLinkButton>
               <ProductLinkButton
-                disabled={!uri}
+                disabled={Boolean(uri)}
                 variant="default"
                 leadingIcon={DownloadIcon}
                 href="http://localhost:3001/banner/test.png"

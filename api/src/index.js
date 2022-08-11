@@ -33,17 +33,19 @@ app.use(morgan("combined"));
 // });
 
 app.post("/", async (req, res) => {
-  const { heading, subheading, description, theme } = req.body;
+  const { heading, subheading, description, theme, align, button } = req.body;
+
   const success = await generateMainImage({
-    canonicalName: "test.png",
+    canonicalName: "test",
     theme,
     heading,
     subheading,
     description,
     overwrite: true,
+    align,
+    button,
   });
-  console.log("description is:", description);
-  console.log(success);
+
   res.send({ ...success });
 });
 

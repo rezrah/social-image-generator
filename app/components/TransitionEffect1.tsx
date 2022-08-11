@@ -6,7 +6,7 @@ const variants = {
     y: 100,
     opacity: 0,
     transition: {
-      duration: 1,
+      duration: 0.5,
       ease: "easeInOut",
     },
   },
@@ -14,7 +14,7 @@ const variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.5,
       ease: "easeInOut",
     },
   },
@@ -22,7 +22,7 @@ const variants = {
     opacity: 0,
     y: -100,
     transition: {
-      duration: 1,
+      duration: 0.5,
       ease: "easeInOut",
     },
   },

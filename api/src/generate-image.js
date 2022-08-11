@@ -5,7 +5,6 @@ const path = require("path");
 const cwebp = require("cwebp"); // For converting our images to webp.
 
 const { createCanvas, GlobalFonts, Image } = Canvas;
-const canvas = createCanvas(1200, 627);
 
 // Load in the fonts we need
 GlobalFonts.registerFromPath(
@@ -92,7 +91,12 @@ const generateMainImage = async function ({
   subheading,
   description,
   overwrite = false,
+  align = "left",
+  button,
 }) {
+  const hasButton = button && description;
+  const canvasHeight = hasButton ? 760 : 627;
+  const canvas = createCanvas(1200, canvasHeight);
   //   category = category.toUpperCase();
   // gradientColors is an array [ c1, c2 ]
   let gradientColors;
@@ -105,6 +109,8 @@ const generateMainImage = async function ({
     gradientColors = ["#1B1F24", "#1B1F24"];
   }
 
+  const positionCanvasCenter = canvas.width / 2;
+  const startPosition = align === "center" ? positionCanvasCenter : 64;
   const fgDefault = theme === "light" ? "#24292F" : "#ffffff";
   const fgMuted = theme === "light" ? "#57606A" : "#8B949E";
 
@@ -112,16 +118,16 @@ const generateMainImage = async function ({
   const ctx = canvas.getContext("2d");
 
   // Add gradient - we use createLinearGradient to do this
-  let grd = ctx.createLinearGradient(0, 627, 1200, 0);
+  let grd = ctx.createLinearGradient(0, canvasHeight, 1200, 0);
   grd.addColorStop(0, gradientColors[0]);
   grd.addColorStop(1, gradientColors[1]);
   ctx.fillStyle = grd;
   // Fill our gradient
-  ctx.fillRect(0, 0, 1200, 627);
+  ctx.fillRect(0, 0, 1200, canvasHeight);
 
-  if (theme === "analog") {
+  if (["analog", "policy"].includes(theme)) {
     const bgTheme = await Canvas.loadImage(
-      path.resolve(__dirname, "./assets/analog.png")
+      path.resolve(__dirname, `./assets/${theme}.png`)
     );
     ctx.drawImage(bgTheme, 0, 0, canvas.width, canvas.height);
   }
@@ -142,23 +148,36 @@ const generateMainImage = async function ({
   //   ctx.drawImage(image, 0, 0, w * 5, h * 5);
 
   // Add our category text
-  ctx.font = "96px AllianceNo1ExtraBold";
+  ctx.font = "88px AllianceNo1ExtraBold";
   ctx.fillStyle = fgDefault;
-  ctx.lineHeight = "104px";
-  ctx.textAlign = "center";
+  ctx.lineHeight = "96px";
+  ctx.textAlign = align;
   let wrappedText = wrapText(ctx, subheading, 32, 623, 1200 - 64, 104);
   wrappedText[0].forEach(function (item) {
     // We will fill our text which is item[0] of our array, at coordinates [x, y]
     // x will be item[1] of our array
     // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-    ctx.fillText(item[0], canvas.width / 2, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
+    ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
   });
 
   // Add our subheading text to the canvas
   ctx.font = "40px AllianceNo1SemiBold";
   ctx.fillStyle = fgDefault;
-  // ctx.fillText(heading, 85, 553 - wrappedText[1] - 100); // 853 - 200 for emoji, -100 for line height of 1
-  ctx.fillText(heading, canvas.width / 2, 520 - wrappedText[1] - 200);
+
+  if (theme === "analog") {
+    const angle = (45 * Math.PI) / 180;
+    const x2 = 500 * Math.cos(angle);
+    const y2 = 1200 * Math.sin(angle);
+    let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
+
+    textGradient.addColorStop(0, "#D2A8FF");
+    textGradient.addColorStop(0.5, "#F778BA");
+    textGradient.addColorStop(1, "#FF7B72");
+
+    ctx.fillStyle = textGradient;
+  }
+
+  ctx.fillText(heading, startPosition, 520 - wrappedText[1] - 200);
 
   const image = await Canvas.loadImage(
     path.resolve(
@@ -171,7 +190,7 @@ const generateMainImage = async function ({
 
   ctx.drawImage(
     image,
-    canvas.width / 2 - 72 / 2,
+    align === "center" ? startPosition - 72 / 2 : 64,
     420 - wrappedText[1] - 250,
     72,
     72
@@ -180,18 +199,61 @@ const generateMainImage = async function ({
   ctx.font = "28px AllianceNo1Regular";
   ctx.fillStyle = fgMuted;
   ctx.lineHeight = "40px";
+  const descPosY = 480;
 
-  let wrappedDescription = wrapText(ctx, description, 32, 450, 934, 40);
+  let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);
   wrappedDescription[0].forEach(function (item) {
     // We will fill our text which is item[0] of our array, at coordinates [x, y]
     // x will be item[1] of our array
     // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
     ctx.fillText(
       item[0],
-      canvas.width / 2 < 934 ? canvas.width / 2 : 934,
+      startPosition < 934 ? startPosition : 934,
       item[2] + 40
     ); // 200 is height of an emoji
   });
+
+  // Add button
+
+  if (Boolean(button) && Boolean(description)) {
+    const hasLightButton = ["light", "policy"].includes(theme);
+
+    ctx.font = "20px AllianceNo1SemiBold";
+    const txt = button;
+    const rectHeight = 56;
+    const rectWidth = ctx.measureText(txt).width + 64;
+    const rectX = align === "center" ? canvas.width / 2 - rectWidth / 2 : 64;
+    const rectY = wrappedDescription[1] + 580;
+
+    let buttonGradient = ctx.createLinearGradient(300, 0, 300, 200);
+
+    if (hasLightButton) {
+      ctx.lineWidth = 1;
+      ctx.fillStyle = "#1B1F23";
+      ctx.strokeStyle = "#000000";
+    } else {
+      ctx.fillStyle = "#F6F8FA";
+    }
+
+    roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
+
+    if (hasLightButton) {
+      buttonGradient.addColorStop(0, "rgba(255, 255, 255, 0.1)");
+      buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    } else {
+      buttonGradient.addColorStop(0, "#FFFFFF");
+      buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+    }
+
+    ctx.fillStyle = buttonGradient;
+
+    roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = hasLightButton ? "#fff" : "#000";
+
+    ctx.fillText(txt, rectX + rectWidth / 2, rectY - 2 + rectHeight / 2);
+  }
 
   const outDir = "./views/images/banner/";
 
@@ -205,7 +267,6 @@ const generateMainImage = async function ({
   const canvasData = await canvas.encode("png");
   const uri =
     "data:" + mime + ";" + encoding + "," + canvasData.toString(encoding);
-  //const uri = canvas.toDataURL("image/webp", 1);
 
   if (
     fs.existsSync(`./views/images/banner/${canonicalName}.png`) &&
@@ -256,3 +317,42 @@ const generateMainImage = async function ({
 };
 
 module.exports = { generateMainImage };
+
+/**
+ * Draws a rounded rectangle using the current state of the canvas.
+ * If you omit the last three params, it will draw a rectangle
+ * outline with a 5 pixel border radius
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Number} x The top left x coordinate
+ * @param {Number} y The top left y coordinate
+ * @param {Number} width The width of the rectangle
+ * @param {Number} height The height of the rectangle
+ * @param {Number} radius The corner radius. Defaults to 5;
+ * @param {Boolean} fill Whether to fill the rectangle. Defaults to false.
+ * @param {Boolean} stroke Whether to stroke the rectangle. Defaults to true.
+ */
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke == "undefined") {
+    stroke = true;
+  }
+  if (typeof radius === "undefined") {
+    radius = 6;
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  if (stroke) {
+    ctx.stroke();
+  }
+  if (fill) {
+    ctx.fill();
+  }
+}

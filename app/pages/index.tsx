@@ -32,7 +32,9 @@ const Home: NextPage = () => {
             align="center"
           />
            */}
-        <div className="Primer_Brand__Hero-module__Hero___EM3jf Primer_Brand__Hero-module__Hero--align-center___HUXm3">
+        <div
+          className={`Primer_Brand__Hero-module__Hero___EM3jf Primer_Brand__Hero-module__Hero--align-center___HUXm3 ${styles.hero}`}
+        >
           <h1 className="Primer_Brand__Heading-module__Heading___IVpmp Primer_Brand__Heading-module__Heading--1___Ufc7G Primer_Brand__Hero-module__Hero-heading___QuVBH">
             GitHub promo kits
           </h1>
@@ -72,7 +74,7 @@ const Home: NextPage = () => {
             </NextLink>
           </div>
         </div>
-        <River>
+        {/* <River>
           <River.Visual>
             <img
               src="https://via.placeholder.com/600x400/474e57/474e57.png"
@@ -122,7 +124,7 @@ const Home: NextPage = () => {
             </Text>
             <Link href="#">Call to action</Link>
           </River.Content>
-        </River>
+        </River> */}
       </Box>
     </div>
   );

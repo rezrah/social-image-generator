@@ -1,7 +1,7 @@
 html,
 body {
   padding: 0;
-
+  height: 100%;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
@@ -27,5 +27,11 @@ a {
 }
 
 body[data-color-mode] {
-  background-color: var(--brand-color-canvas-default);
+  /* background-color: var(--brand-color-canvas-default); */
+  background-color: #fff;
+}
+
+.react-transform-wrapper {
+  width: calc(100% - 80px) !important;
+  min-height: 627px;
 }

@@ -12,6 +12,10 @@
   align-items: center;
 }
 
+.hero {
+  height: 1000px;
+}
+
 .footer {
   display: flex;
   flex: 1;

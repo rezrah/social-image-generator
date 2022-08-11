@@ -29,7 +29,7 @@ const Create: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <PageLayout>
+      <PageLayout containerWidth="full">
         <PageLayout.Header divider="line">
           <Heading as="h3">Select a template</Heading>
           <Text size="400" variant="muted">
@@ -110,7 +110,9 @@ const Create: NextPage = () => {
                         <Heading as="h6" className={styles.cardHeading}>
                           {template.name}
                         </Heading>
-                        <Text size="300">{template.description}</Text>
+                        <Text size="300" variant="muted">
+                          {template.description}
+                        </Text>
                       </Box>
                     </Link>
                   ))}
