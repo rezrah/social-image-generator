@@ -32,6 +32,14 @@ import {
 } from "@primer/octicons-react";
 import { templateData } from "../../fixtures/template-data";
 
+const sizes = [
+  { w: 1200, h: 630, typePairing: "medium" },
+  { w: 630, h: 630, typePairing: "small" },
+  { w: 1080, h: 1080, typePairing: "large" },
+];
+
+const formattedSizes = sizes.map(({ w, h }) => `${w}x${h}`);
+
 const CreateTemplate: NextPage = () => {
   const router = useRouter();
   const id = router.query.id;
@@ -49,6 +57,7 @@ const CreateTemplate: NextPage = () => {
       theme: event.target["color-mode"].value,
       align: event.target["text-alignment"].value,
       button: event.target["button"].value,
+      size: JSON.parse(event.target["size"].value),
     };
 
     // Send the data to the server in JSON format.
@@ -75,6 +84,7 @@ const CreateTemplate: NextPage = () => {
     // Get the response data from server as JSON.
     // If server returns the name submitted, that means the form works.
     const result = await response.json();
+
     //alert(`Is this your full name: ${result.data}`);
     setUri(result.uri);
   };
@@ -148,6 +158,26 @@ const CreateTemplate: NextPage = () => {
                     />
                     <FormControl.Label>Center</FormControl.Label>
                   </FormControl>
+                </Box>
+              </RadioGroup>
+            </Box>
+
+            <Box sx={{ mb: 3 }}>
+              <RadioGroup name="choiceGroup">
+                <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
+                  Size
+                </RadioGroup.Label>
+                <Box sx={{ display: "inline-flex" }}>
+                  {formattedSizes.map((size, index) => (
+                    <FormControl sx={{ mr: 3 }} key={size}>
+                      <Radio
+                        value={JSON.stringify(sizes[index])}
+                        name="size"
+                        defaultChecked={index === 0}
+                      />
+                      <FormControl.Label>{size}</FormControl.Label>
+                    </FormControl>
+                  ))}
                 </Box>
               </RadioGroup>
             </Box>

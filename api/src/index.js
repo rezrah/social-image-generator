@@ -33,20 +33,26 @@ app.use(morgan("combined"));
 // });
 
 app.post("/", async (req, res) => {
-  const { heading, subheading, description, theme, align, button } = req.body;
+  const { heading, subheading, description, theme, align, button, size } =
+    req.body;
 
-  const success = await generateMainImage({
-    canonicalName: "test",
-    theme,
-    heading,
-    subheading,
-    description,
-    overwrite: true,
-    align,
-    button,
-  });
+  try {
+    const response = await generateMainImage({
+      canonicalName: "test",
+      theme,
+      heading,
+      subheading,
+      description,
+      overwrite: true,
+      align,
+      button,
+      size,
+    });
 
-  res.send({ ...success });
+    res.send(response);
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // starting the server

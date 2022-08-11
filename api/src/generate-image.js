@@ -77,6 +77,30 @@ const wrapText = function (ctx, text, x, y, maxWidth, lineHeight) {
   return [wordArray, totalLineHeight];
 };
 
+const typePairings = {
+  small: {
+    heading: "60px AllianceNo1ExtraBold",
+    headingLineheight: "68px",
+    subheading: "40px AllianceNo1SemiBold",
+    subheadingLineheight: "48px",
+    description: "28px AllianceNo1Regular",
+  },
+  medium: {
+    heading: "88px AllianceNo1ExtraBold",
+    headingLineheight: "96px",
+    subheading: "40px AllianceNo1SemiBold",
+    subheadingLineheight: "48px",
+    description: "28px AllianceNo1Regular",
+  },
+  large: {
+    heading: "110px AllianceNo1ExtraBold",
+    headingLineheight: "132px",
+    subheading: "48px AllianceNo1SemiBold",
+    subheadingLineheight: "56px",
+    description: "38px AllianceNo1Regular",
+  },
+};
+
 // This functiona accepts 5 arguments:
 // canonicalName: this is the name we'll use to save our image
 // gradientColors: an array of two colors, i.e. [ '#ffffff', '#000000' ], used for our gradient
@@ -93,10 +117,13 @@ const generateMainImage = async function ({
   overwrite = false,
   align = "left",
   button,
+  size,
 }) {
-  const hasButton = button && description;
-  const canvasHeight = hasButton ? 760 : 627;
-  const canvas = createCanvas(1200, canvasHeight);
+  const { w: width, h: height } = size;
+  const hasButton =
+    Boolean(button) && Boolean(description) && size.typePairing === "medium";
+  const canvasHeight = hasButton ? height + 120 : height;
+  const canvas = createCanvas(width, canvasHeight);
   //   category = category.toUpperCase();
   // gradientColors is an array [ c1, c2 ]
   let gradientColors;
@@ -148,11 +175,21 @@ const generateMainImage = async function ({
   //   ctx.drawImage(image, 0, 0, w * 5, h * 5);
 
   // Add our category text
-  ctx.font = "88px AllianceNo1ExtraBold";
+  ctx.font = typePairings[size.typePairing].heading;
   ctx.fillStyle = fgDefault;
-  ctx.lineHeight = "96px";
+  ctx.lineHeight = typePairings[size.typePairing].headingLineheight;
   ctx.textAlign = align;
-  let wrappedText = wrapText(ctx, subheading, 32, 623, 1200 - 64, 104);
+
+  const headingStartingPos = size.typePairing === "large" ? 923 : 623;
+
+  let wrappedText = wrapText(
+    ctx,
+    subheading,
+    32,
+    headingStartingPos,
+    canvas.width - 64,
+    Number(typePairings[size.typePairing].headingLineheight.replace(/px$/, ""))
+  );
   wrappedText[0].forEach(function (item) {
     // We will fill our text which is item[0] of our array, at coordinates [x, y]
     // x will be item[1] of our array
@@ -161,7 +198,8 @@ const generateMainImage = async function ({
   });
 
   // Add our subheading text to the canvas
-  ctx.font = "40px AllianceNo1SemiBold";
+  ctx.font = typePairings[size.typePairing].subheading;
+  ctx.lineHeight = typePairings[size.typePairing].subheadingLineheight;
   ctx.fillStyle = fgDefault;
 
   if (theme === "analog") {
@@ -177,7 +215,13 @@ const generateMainImage = async function ({
     ctx.fillStyle = textGradient;
   }
 
-  ctx.fillText(heading, startPosition, 520 - wrappedText[1] - 200);
+  const subheadingStartingPos = size.typePairing === "large" ? 800 : 520;
+
+  ctx.fillText(
+    heading,
+    startPosition,
+    subheadingStartingPos - wrappedText[1] - 200
+  );
 
   const image = await Canvas.loadImage(
     path.resolve(
@@ -188,71 +232,80 @@ const generateMainImage = async function ({
     )
   );
 
+  const markStartingPosY = size.typePairing === "large" ? 520 : 420;
+  const dimension = size.typePairing === "large" ? 150 : 72;
+
   ctx.drawImage(
     image,
-    align === "center" ? startPosition - 72 / 2 : 64,
-    420 - wrappedText[1] - 250,
-    72,
-    72
+    align === "center" ? startPosition - dimension / 2 : 64,
+    markStartingPosY - wrappedText[1] - 250,
+    dimension,
+    dimension
   );
 
-  ctx.font = "28px AllianceNo1Regular";
-  ctx.fillStyle = fgMuted;
-  ctx.lineHeight = "40px";
-  const descPosY = 480;
+  if (size.typePairing !== "small") {
+    ctx.font = typePairings[size.typePairing].description;
+    ctx.fillStyle = fgMuted;
+    ctx.lineHeight = "40px";
+    const descPosY = size.typePairing === "large" ? 780 : 480;
 
-  let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);
-  wrappedDescription[0].forEach(function (item) {
-    // We will fill our text which is item[0] of our array, at coordinates [x, y]
-    // x will be item[1] of our array
-    // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-    ctx.fillText(
-      item[0],
-      startPosition < 934 ? startPosition : 934,
-      item[2] + 40
-    ); // 200 is height of an emoji
-  });
+    let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);
+    wrappedDescription[0].forEach(function (item) {
+      // We will fill our text which is item[0] of our array, at coordinates [x, y]
+      // x will be item[1] of our array
+      // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
+      ctx.fillText(
+        item[0],
+        startPosition < 934 ? startPosition : 934,
+        item[2] + 40
+      ); // 200 is height of an emoji
+    });
 
-  // Add button
+    // Add button
 
-  if (Boolean(button) && Boolean(description)) {
-    const hasLightButton = ["light", "policy"].includes(theme);
+    if (
+      Boolean(button) &&
+      Boolean(description) &&
+      size.typePairing === "medium"
+    ) {
+      const hasLightButton = ["light", "policy"].includes(theme);
 
-    ctx.font = "20px AllianceNo1SemiBold";
-    const txt = button;
-    const rectHeight = 56;
-    const rectWidth = ctx.measureText(txt).width + 64;
-    const rectX = align === "center" ? canvas.width / 2 - rectWidth / 2 : 64;
-    const rectY = wrappedDescription[1] + 580;
+      ctx.font = "20px AllianceNo1SemiBold";
+      const txt = button;
+      const rectHeight = 56;
+      const rectWidth = ctx.measureText(txt).width + 64;
+      const rectX = align === "center" ? canvas.width / 2 - rectWidth / 2 : 64;
+      const rectY = wrappedDescription[1] + 580;
 
-    let buttonGradient = ctx.createLinearGradient(300, 0, 300, 200);
+      let buttonGradient = ctx.createLinearGradient(300, 0, 300, 200);
 
-    if (hasLightButton) {
-      ctx.lineWidth = 1;
-      ctx.fillStyle = "#1B1F23";
-      ctx.strokeStyle = "#000000";
-    } else {
-      ctx.fillStyle = "#F6F8FA";
+      if (hasLightButton) {
+        ctx.lineWidth = 1;
+        ctx.fillStyle = "#1B1F23";
+        ctx.strokeStyle = "#000000";
+      } else {
+        ctx.fillStyle = "#F6F8FA";
+      }
+
+      roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
+
+      if (hasLightButton) {
+        buttonGradient.addColorStop(0, "rgba(255, 255, 255, 0.1)");
+        buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+      } else {
+        buttonGradient.addColorStop(0, "#FFFFFF");
+        buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
+      }
+
+      ctx.fillStyle = buttonGradient;
+
+      roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = hasLightButton ? "#fff" : "#000";
+
+      ctx.fillText(txt, rectX + rectWidth / 2, rectY - 2 + rectHeight / 2);
     }
-
-    roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
-
-    if (hasLightButton) {
-      buttonGradient.addColorStop(0, "rgba(255, 255, 255, 0.1)");
-      buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-    } else {
-      buttonGradient.addColorStop(0, "#FFFFFF");
-      buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-    }
-
-    ctx.fillStyle = buttonGradient;
-
-    roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = hasLightButton ? "#fff" : "#000";
-
-    ctx.fillText(txt, rectX + rectWidth / 2, rectY - 2 + rectHeight / 2);
   }
 
   const outDir = "./views/images/banner/";
@@ -269,7 +322,9 @@ const generateMainImage = async function ({
     "data:" + mime + ";" + encoding + "," + canvasData.toString(encoding);
 
   if (
-    fs.existsSync(`./views/images/banner/${canonicalName}.png`) &&
+    fs.existsSync(
+      `./views/images/banner/${canonicalName}-${width}x${height}.png`
+    ) &&
     !overwrite
   ) {
     console.info("Images Exist! We did not create any");
@@ -279,7 +334,7 @@ const generateMainImage = async function ({
     try {
       // Save file
       fs.writeFileSync(
-        `./views/images/banner/${canonicalName}.png`,
+        `./views/images/banner/${canonicalName}-${width}x${height}.png`,
         canvasData
       );
 
@@ -293,7 +348,7 @@ const generateMainImage = async function ({
     //     path.join(
     //       __dirname,
     //       "../",
-    //       `./views/images/banner/${canonicalName}.png`
+    //       `./views/images/banner/${canonicalName}-${width}x${height}.png`
     //     )
     //   );
     //   encoder.quality(30);
@@ -310,7 +365,7 @@ const generateMainImage = async function ({
 
     return {
       msg: "Images have been successfully created!",
-      path: `./views/images/banner/${canonicalName}.png`,
+      path: `./views/images/banner/${canonicalName}-${width}x${height}.png`,
       uri,
     };
   }
