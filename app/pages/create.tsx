@@ -46,9 +46,6 @@ const Create: NextPage = () => {
         </PageLayout.Header>
         <PageLayout.Pane position="start" divider="line">
           <Box display="grid" sx={{ gap: 3 }}>
-            <Heading as="h5" className={styles.categoryHeading}>
-              Filters:
-            </Heading>
             <CheckboxGroup>
               <CheckboxGroup.Label>Checkboxes</CheckboxGroup.Label>
               <FormControl>

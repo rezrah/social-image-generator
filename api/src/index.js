@@ -33,12 +33,20 @@ app.use(morgan("combined"));
 // });
 
 app.post("/", async (req, res) => {
-  const { heading, subheading, description, theme, align, button, size } =
-    req.body;
+  const {
+    heading,
+    subheading,
+    description,
+    theme,
+    align,
+    button,
+    size,
+    filename = "test",
+  } = req.body;
 
   try {
     const response = await generateMainImage({
-      canonicalName: "test",
+      canonicalName: filename,
       theme,
       heading,
       subheading,
