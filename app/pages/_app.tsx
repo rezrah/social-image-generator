@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { ThemeProvider } from "@primer/react-brand";
+import { ThemeProvider, SubdomainNavBar } from "@primer/react-brand";
 import TransitionEffect1 from "../components/TransitionEffect1";
 
 import {
@@ -22,6 +22,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThemeProvider data-color-mode="light">
       <PRCThemeProvider colorMode="day">
         <BaseStyles>
+          {/* <SubdomainNavBar title="Social banners" logoHref="/">
+            <SubdomainNavBar.Link href="/">Home</SubdomainNavBar.Link>
+            <SubdomainNavBar.Link href="/create">
+              Templates
+            </SubdomainNavBar.Link>
+            <SubdomainNavBar.Search />
+          </SubdomainNavBar> */}
           <Header>
             <Header.Item>
               <Link href="/">

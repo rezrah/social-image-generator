@@ -27,7 +27,6 @@ import {
   CopyIcon,
   DashIcon,
   DownloadIcon,
-  ImageIcon,
   PlusIcon,
   ScreenNormalIcon,
   SyncIcon,
@@ -467,7 +466,7 @@ const CreateTemplate: NextPage = () => {
 
                 {uri && (
                   <TransformWrapper
-                    initialScale={0.9}
+                    initialScale={0.8}
                     minScale={0.2}
                     centerOnInit
                   >
@@ -547,7 +546,7 @@ const CreateTemplate: NextPage = () => {
                     }}
                   >
                     <Box sx={{ display: "block", fill: "fg.subtle" }}>
-                      <UploadIcon size={48} fill="inherit" />
+                      <UploadIcon size={24} fill="inherit" />
                     </Box>
                     <Text size="300" variant="muted">
                       Upload your .csv file

@@ -338,10 +338,10 @@
   "resolved" "https://registry.npmjs.org/@primer/primitives/-/primitives-7.8.4.tgz"
   "version" "7.8.4"
 
-"@primer/react-brand@^0.3.1":
-  "integrity" "sha512-lK5hjd8c4rVOpozDLnPgKSwq3OEMYyd4dOGe3sKYt0q7yVT7xCEXRK4XwKCsjWNgTWdU/nPEVtLEtKac073Eog=="
-  "resolved" "https://registry.npmjs.org/@primer/react-brand/-/react-brand-0.3.1.tgz"
-  "version" "0.3.1"
+"@primer/react-brand@^0.5.0":
+  "integrity" "sha512-52tEdP0K0pqoUz32TYjsEOIzg+Wx+ezKlR3tx0wM/qfaMaZDHHJRZEq98mSveVkwFGFHbVebeXdJFvoGNt09Kw=="
+  "resolved" "https://registry.npmjs.org/@primer/react-brand/-/react-brand-0.5.0.tgz"
+  "version" "0.5.0"
   dependencies:
     "clsx" "^1.1.1"
 

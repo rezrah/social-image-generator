@@ -11,7 +11,7 @@
   "dependencies": {
     "@primer/octicons-react": "^17.4.0",
     "@primer/react": "^35.5.0",
-    "@primer/react-brand": "^0.3.1",
+    "@primer/react-brand": "^0.5.0",
     "csvtojson": "^2.0.10",
     "file-saver": "^2.0.5",
     "next": "12.2.4",
