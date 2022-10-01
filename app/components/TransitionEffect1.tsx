@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
+import { PropsWithChildren } from "react";
 
 const variants = {
   fadeIn: {
@@ -32,7 +33,7 @@ const variants = {
  * Read the blog post here:
  * https://letsbuildui.dev/articles/animated-page-transitions-in-nextjs
  */
-const TransitionEffect2 = ({ children }) => {
+const TransitionEffect2 = ({ children }: PropsWithChildren) => {
   const { asPath } = useRouter();
 
   return (

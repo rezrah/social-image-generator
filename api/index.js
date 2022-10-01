@@ -5,7 +5,8 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
 
-const { generateMainImage } = require("./generate-image");
+const { generateMainImage } = require("./src/generate-image");
+const port = process.env.PORT || 3001;
 
 // defining the Express app
 const app = express();
@@ -32,7 +33,7 @@ app.use(morgan("combined"));
 //   res.send(ads);
 // });
 
-app.post("/", async (req, res) => {
+app.post("/api", async (req, res) => {
   const {
     heading,
     subheading,
@@ -63,7 +64,15 @@ app.post("/", async (req, res) => {
   }
 });
 
+// root route - serve static file
+app.get("/", (req, res) => {
+  return res.sendFile(path.join(__dirname, "./public/client.html"));
+});
+
 // starting the server
-app.listen(3001, () => {
-  console.log("listening on port 3001");
+app.listen(port, (err) => {
+  if (err) {
+    console.log("Error::", err);
+  }
+  console.log(`listening on port ${port}`);
 });

@@ -56,29 +56,31 @@ const CreateTemplate: NextPage = () => {
   const [activeTab, setActiveTab] = React.useState(1);
   const [csvConvertedData, setCsvConvertedData] = React.useState();
 
-  const fileUploadRef = React.useRef(null);
-  const fileReUploadRef = React.useRef(null);
+  const fileUploadRef = React.useRef<HTMLInputElement | null>(null);
+  const fileReUploadRef = React.useRef<HTMLInputElement | null>(null);
 
   /*
    * Reset file uploader
    */
   useEffect(() => {
     if (fileUploadRef && fileUploadRef.current) {
-      fileUploadRef.current.value = null;
+      fileUploadRef.current.value = "";
     }
     if (fileReUploadRef && fileReUploadRef.current) {
-      fileReUploadRef.current.value = null;
+      fileReUploadRef.current.value = "";
     }
   });
 
-  const handleOnChange = (e) => {
+  const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const fileReader = new FileReader();
+    // @ts-ignore
     const file = e.target.files[0];
 
     fileReader.onload = function (event) {
-      const csvOutput = event.target.result;
+      // @ts-ignore
+      const csvOutput = e.target.result;
       if (csvOutput) {
         setFileRawData(csvOutput);
       }
@@ -89,7 +91,7 @@ const CreateTemplate: NextPage = () => {
 
   const generateImage = async (data: string) => {
     // API endpoint where we send form data.
-    const endpoint = "http://localhost:3001";
+    const endpoint = process.env.API_ENDPOINT || "http://localhost:3001";
 
     // Form the request for sending data to the server.
     const options = {
@@ -138,10 +140,16 @@ const CreateTemplate: NextPage = () => {
   };
 
   const [data] = Object.keys(templateData)
-    .map((key) => templateData[key].find((template: any) => template.id === id))
+    .map((key) =>
+      // @ts-ignore
+      templateData[key].find((template: any) => template.id === id)
+    )
     .filter(Boolean);
 
-  const handleTabChange = (e, index) => {
+  const handleTabChange = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    index: number
+  ) => {
     e.preventDefault();
     setActiveTab(index);
   };
@@ -189,6 +197,7 @@ const CreateTemplate: NextPage = () => {
           );
 
           if (images.length) {
+            // @ts-ignore
             setCsvConvertedData(images);
           }
         } catch (error) {
@@ -288,6 +297,7 @@ const CreateTemplate: NextPage = () => {
                       onChange={handleOnChange}
                       sx={{ display: "none" }}
                     />
+                    {/* @ts-ignore */}
                     <ProductLinkButton
                       as="label"
                       leadingIcon={UploadIcon}

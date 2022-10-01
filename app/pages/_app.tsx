@@ -10,6 +10,7 @@ import {
   Header,
   StyledOcticon,
 } from "@primer/react";
+
 import "@primer/react-brand/lib/css/main.css";
 import "@primer/react-brand/fonts/fonts.css";
 
@@ -20,15 +21,8 @@ import Link from "next/link";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider data-color-mode="light">
-      <PRCThemeProvider colorMode="day">
+      <PRCThemeProvider colorMode="day" preventSSRMismatch>
         <BaseStyles>
-          {/* <SubdomainNavBar title="Social banners" logoHref="/">
-            <SubdomainNavBar.Link href="/">Home</SubdomainNavBar.Link>
-            <SubdomainNavBar.Link href="/create">
-              Templates
-            </SubdomainNavBar.Link>
-            <SubdomainNavBar.Search />
-          </SubdomainNavBar> */}
           <Header>
             <Header.Item>
               <Link href="/">

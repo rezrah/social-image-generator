@@ -61,22 +61,6 @@ const Create: NextPage = () => {
                 <FormControl.Label>Checkbox three</FormControl.Label>
               </FormControl>
             </CheckboxGroup>
-
-            <RadioGroup>
-              <RadioGroup.Label>Radios</RadioGroup.Label>
-              <FormControl>
-                <Radio name="radioChoices" value="radioOne" />
-                <FormControl.Label>Radio one</FormControl.Label>
-              </FormControl>
-              <FormControl>
-                <Radio name="radioChoices" value="radioTwo" />
-                <FormControl.Label>Radio two</FormControl.Label>
-              </FormControl>
-              <FormControl>
-                <Radio name="radioChoices" value="radioThree" />
-                <FormControl.Label>Radio three</FormControl.Label>
-              </FormControl>
-            </RadioGroup>
           </Box>
         </PageLayout.Pane>
         <PageLayout.Content>
@@ -85,8 +69,9 @@ const Create: NextPage = () => {
             .map((category, index) => (
               <Box sx={{ marginBottom: 3 }} key={category}>
                 <Accordion open={index === 0}>
-                  <AccordionHeading> {category}</AccordionHeading>
+                  <AccordionHeading>{category}</AccordionHeading>
                   <AccordionContent>
+                    {/*@ts-ignore */}
                     <Box
                       sx={{
                         display: "grid",
@@ -95,6 +80,7 @@ const Create: NextPage = () => {
                         gridGap: 5,
                       }}
                     >
+                      {/*@ts-ignore */}
                       {templateData[category].map((template) => (
                         <Link
                           href={`/create/${template.id}`}
@@ -108,11 +94,13 @@ const Create: NextPage = () => {
                               borderRadius: "1rem",
                             }}
                           >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                               className={styles.thumbnail}
                               src={template.image}
                               width={200}
                               height={100}
+                              alt="template"
                             />
                             <Heading as="h6" className={styles.cardHeading}>
                               {template.name}
