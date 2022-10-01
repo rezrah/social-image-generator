@@ -45,13 +45,13 @@ jobs:
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
 
-      - run: npm ci
-      - run: npm run build
+      - run: cd app && npm ci
+      - run: cd app && npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: ./out
+          path: ./app/out
 
   # Deployment job
   deploy:
