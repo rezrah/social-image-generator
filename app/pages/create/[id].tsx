@@ -91,7 +91,8 @@ const CreateTemplate: NextPage = () => {
 
   const generateImage = async (data: string) => {
     // API endpoint where we send form data.
-    const endpoint = process.env.API_ENDPOINT || "http://localhost:3001";
+    const endpoint =
+      process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:3001";
 
     // Form the request for sending data to the server.
     const options = {
