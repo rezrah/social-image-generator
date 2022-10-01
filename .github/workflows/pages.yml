@@ -27,8 +27,6 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-    env:
-      API_ENDPOINT: ${{secrets.API_ENDPOINT}}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,6 +47,8 @@ jobs:
 
       - run: cd app && npm ci --legacy-peer-deps
       - run: cd app && npm run build
+        env:
+          API_ENDPOINT: ${{secrets.API_ENDPOINT}}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
