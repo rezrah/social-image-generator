@@ -45,7 +45,7 @@ jobs:
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
 
-      - run: cd app && npm ci
+      - run: cd app && npm ci --legacy-peer-deps
       - run: cd app && npm run build
 
       - name: Upload artifact
