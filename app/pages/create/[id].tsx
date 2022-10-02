@@ -64,22 +64,20 @@ const CreateTemplate: NextPage = () => {
    */
   useEffect(() => {
     if (fileUploadRef && fileUploadRef.current) {
-      fileUploadRef.current.value = "";
+      fileUploadRef.current.value = null;
     }
     if (fileReUploadRef && fileReUploadRef.current) {
-      fileReUploadRef.current.value = "";
+      fileReUploadRef.current.value = null;
     }
   });
 
-  const handleOnChange = (e: React.FormEvent<HTMLInputElement>) => {
+  const handleOnChange = (e) => {
     e.preventDefault();
 
     const fileReader = new FileReader();
-    // @ts-ignore
     const file = e.target.files[0];
 
-    fileReader.onload = function (event) {
-      // @ts-ignore
+    fileReader.onloadend = (e) => {
       const csvOutput = e.target.result;
       if (csvOutput) {
         setFileRawData(csvOutput);
@@ -92,7 +90,7 @@ const CreateTemplate: NextPage = () => {
   const generateImage = async (data: string) => {
     // API endpoint where we send form data.
     const endpoint =
-      process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:3001";
+      process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:3001/api";
 
     // Form the request for sending data to the server.
     const options = {
