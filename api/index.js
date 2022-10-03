@@ -14,7 +14,7 @@ const app = express();
 // // defining an array to work as the database (temporary solution)
 // const ads = [{ title: "Hello, world (again)!" }];
 
-app.use(express.static(path.resolve(__dirname, "../views/images")));
+app.use(express.static(path.resolve(__dirname, "./views/images")));
 
 // adding Helmet to enhance your API's security
 app.use(helmet());

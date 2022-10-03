@@ -365,7 +365,7 @@ const generateMainImage = async function ({
 
     return {
       msg: "Images have been successfully created!",
-      path: `http://localhost:3001/banner/${canonicalName}-${width}x${height}.png`,
+      path: `/banner/${canonicalName}-${width}x${height}.png`,
       uri,
     };
   }

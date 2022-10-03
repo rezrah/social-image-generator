@@ -41,6 +41,10 @@ const sizes = [
   { w: 1080, h: 1080, typePairing: "large" },
 ];
 
+// API endpoint where we send form data.
+const endpoint =
+  process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:3001";
+
 const formattedSizes = sizes.map(({ w, h }) => `${w}x${h}`);
 
 const CreateTemplate: NextPage = () => {
@@ -88,10 +92,6 @@ const CreateTemplate: NextPage = () => {
   };
 
   const generateImage = async (data: string) => {
-    // API endpoint where we send form data.
-    const endpoint =
-      process.env.NEXT_PUBLIC_API_ENDPOINT || "http://localhost:3001/api";
-
     // Form the request for sending data to the server.
     const options = {
       // The method is POST because we are sending data.
@@ -105,7 +105,7 @@ const CreateTemplate: NextPage = () => {
     };
 
     // Send the form data to our forms API on Vercel and get a response.
-    const response = await fetch(endpoint, options);
+    const response = await fetch(`${endpoint}/api`, options);
 
     return response;
   };
@@ -135,7 +135,7 @@ const CreateTemplate: NextPage = () => {
 
     //alert(`Is this your full name: ${result.data}`);
     setUri(result.uri);
-    setLocalPath(result.path);
+    setLocalPath(`${endpoint}${result.path}`);
   };
 
   const [data] = Object.keys(templateData)
