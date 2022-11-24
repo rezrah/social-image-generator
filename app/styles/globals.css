@@ -27,8 +27,8 @@ a {
 }
 
 body[data-color-mode] {
-  /* background-color: var(--brand-color-canvas-default); */
-  background-color: #fff;
+  background-color: var(--brand-color-canvas-default);
+  /* background-color: #fff; */
 }
 
 .react-transform-wrapper {

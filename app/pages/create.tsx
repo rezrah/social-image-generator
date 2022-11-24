@@ -5,15 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   PageLayout,
-  FormControl,
-  TextInput,
   Box,
   LinkButton as ProductLinkButton,
   Button as ProductButton,
   RadioGroup,
   CheckboxGroup,
-  Checkbox,
-  Radio,
 } from "@primer/react";
 import { templateData } from "../fixtures/template-data";
 
@@ -25,6 +21,11 @@ import {
   Button,
   Heading,
   Text,
+  FormControl,
+  TextInput,
+  Checkbox,
+  Radio,
+  Stack,
 } from "@primer/react-brand";
 import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
 
@@ -38,30 +39,28 @@ const Create: NextPage = () => {
 
       <PageLayout containerWidth="full">
         <PageLayout.Header divider="line">
-          <Heading as="h3">Select a template</Heading>
-          <Text size="400" variant="muted">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. In sapien
-            sit ullamcorper id.
-          </Text>
+          <Stack direction="vertical" padding="none">
+            <Heading as="h3">Select a template</Heading>
+            <Text size="400" variant="muted">
+              Choose one of the templates below to get started.
+            </Text>
+          </Stack>
         </PageLayout.Header>
         <PageLayout.Pane position="start" divider="line">
-          <Box display="grid" sx={{ gap: 3 }}>
-            <CheckboxGroup>
-              <CheckboxGroup.Label>Checkboxes</CheckboxGroup.Label>
-              <FormControl>
-                <Checkbox value="checkOne" />
-                <FormControl.Label>Checkbox one</FormControl.Label>
-              </FormControl>
-              <FormControl>
-                <Checkbox value="checkTwo" />
-                <FormControl.Label>Checkbox two</FormControl.Label>
-              </FormControl>
-              <FormControl>
-                <Checkbox value="checkThree" />
-                <FormControl.Label>Checkbox three</FormControl.Label>
-              </FormControl>
-            </CheckboxGroup>
-          </Box>
+          <Stack>
+            <FormControl>
+              <FormControl.Label>Filter one</FormControl.Label>
+              <Checkbox />
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>Filter two</FormControl.Label>
+              <Checkbox />
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>Filter three</FormControl.Label>
+              <Checkbox />
+            </FormControl>
+          </Stack>
         </PageLayout.Pane>
         <PageLayout.Content>
           {Object.keys(templateData)
@@ -83,6 +82,7 @@ const Create: NextPage = () => {
                       {/*@ts-ignore */}
                       {templateData[category].map((template) => (
                         <Link
+                          legacyBehavior
                           href={`/create/${template.id}`}
                           key={template.name}
                         >

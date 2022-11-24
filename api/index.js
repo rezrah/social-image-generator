@@ -1,11 +1,16 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const path = require("path");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
+import path from "path";
+import { generateMainImage } from "./src/generate-image.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-const { generateMainImage } = require("./src/generate-image");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const port = process.env.PORT || 3001;
 
 // defining the Express app

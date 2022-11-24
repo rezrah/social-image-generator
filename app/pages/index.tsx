@@ -36,7 +36,7 @@ const Home: NextPage = () => {
             your fans.
           </p>
           <div className="Primer_Brand__Hero-module__Hero-actions___oH1NT">
-            <NextLink href="/create">
+            <NextLink legacyBehavior href="/create">
               <a
                 className="Primer_Brand__Button-module__Button___lDruK Primer_Brand__Button-module__Button--primary___xIC7G Primer_Brand__Button-module__Button--size-large___REN1l"
                 href="#"

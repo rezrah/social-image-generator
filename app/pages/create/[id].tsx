@@ -449,13 +449,14 @@ const CreateTemplate: NextPage = () => {
                   borderColor: "border.default",
                   backgroundColor: "canvas.subtle",
                   minHeight: 600,
-                  // backgroundImage: "radial-gradient(#21252c 13%,var(--base-color-scale-gray-2) 13%)",
-                  // backgroundPosition: "0 0",
-                  // backgroundSize: "10px 10px",
                   backgroundImage:
-                    "linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%)",
+                    "radial-gradient(#000000 13%,var(--base-color-scale-gray-7) 13%)",
+                  backgroundPosition: "0 0",
                   backgroundSize: "20px 20px",
-                  backgroundPosition: "0 0, 0 0, -50px -50px, 50px 50px",
+                  // backgroundImage:
+                  //   "linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%)",
+                  // backgroundSize: "20px 20px",
+                  // backgroundPosition: "0 0, 0 0, -50px -50px, 50px 50px",
                   width: "100%",
                 }}
               >

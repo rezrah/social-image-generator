@@ -4,7 +4,9 @@
   "description": "Generate GitHub social banners",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node .",
+    "start": "npm run start:api & npm run start:app",
+    "start:api": "cd api && npm run dev",
+    "start:app": "cd app && npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Reza Rahman @rezrah",

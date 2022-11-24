@@ -1,105 +1,40 @@
-const Canvas = require("@napi-rs/canvas");
+import Canvas from "@napi-rs/canvas";
+import fs from "fs"; // For creating files for our images.
+import path from "path";
+import cwebp from "cwebp"; // For converting our images to webp.
+import { typePairings, fgDefault, fgMuted } from "../../shared/constants.js";
+import { wrapText } from "../../shared/utils.js";
 
-const fs = require("fs"); // For creating files for our images.
-const path = require("path");
-const cwebp = require("cwebp"); // For converting our images to webp.
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const { createCanvas, GlobalFonts, Image } = Canvas;
 
 // Load in the fonts we need
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "./fonts/Alliance-No-1-Regular.woff2"),
+  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-Regular.woff2"),
   "AllianceNo1Regular"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "./fonts/Alliance-No-1-Medium.woff2"),
+  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-Medium.woff2"),
   "AllianceNo1Medium"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "./fonts/Alliance-No-1-SemiBold.woff2"),
+  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-SemiBold.woff2"),
   "AllianceNo1SemiBold"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "./fonts/Alliance-No-1-Bold.woff2"),
+  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-Bold.woff2"),
   "AllianceNo1Bold"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "./fonts/Alliance-No-1-ExtraBold.woff2"),
+  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-ExtraBold.woff2"),
   "AllianceNo1ExtraBold"
 );
 // GlobalFonts.registerFromPath('./fonts/Apple-Emoji.ttf', 'AppleEmoji');
-
-// This function accepts 6 arguments:
-// - ctx: the context for the canvas
-// - text: the text we wish to wrap
-// - x: the starting x position of the text
-// - y: the starting y position of the text
-// - maxWidth: the maximum width, i.e., the width of the container
-// - lineHeight: the height of one line (as defined by us)
-
-const wrapText = function (ctx, text, x, y, maxWidth, lineHeight) {
-  // First, split the words by spaces
-  let words = text.split(" ");
-  // Then we'll make a few variables to store info about our line
-  let line = "";
-  let testLine = "";
-  // wordArray is what we'l' return, which will hold info on
-  // the line text, along with its x and y starting position
-  let wordArray = [];
-  // totalLineHeight will hold info on the line height
-  let totalLineHeight = 0;
-
-  // Next we iterate over each word
-  for (var n = 0; n < words.length; n++) {
-    // And test out its length
-    testLine += `${words[n]} `;
-    var metrics = ctx.measureText(testLine);
-    var testWidth = metrics.width;
-    // If it's too long, then we start a new line
-    if (testWidth > maxWidth && n > 0) {
-      wordArray.push([line, x, y]);
-      y += lineHeight;
-      totalLineHeight += lineHeight;
-      line = `${words[n]} `;
-      testLine = `${words[n]} `;
-    } else {
-      // Otherwise we only have one line!
-      line += `${words[n]} `;
-    }
-    // Whenever all the words are done, we push whatever is left
-    if (n === words.length - 1) {
-      wordArray.push([line, x, y]);
-    }
-  }
-
-  // And return the words in array, along with the total line height
-  // which will be (totalLines - 1) * lineHeight
-  return [wordArray, totalLineHeight];
-};
-
-const typePairings = {
-  small: {
-    heading: "60px AllianceNo1ExtraBold",
-    headingLineheight: "68px",
-    subheading: "40px AllianceNo1SemiBold",
-    subheadingLineheight: "48px",
-    description: "28px AllianceNo1Regular",
-  },
-  medium: {
-    heading: "88px AllianceNo1ExtraBold",
-    headingLineheight: "96px",
-    subheading: "40px AllianceNo1SemiBold",
-    subheadingLineheight: "48px",
-    description: "28px AllianceNo1Regular",
-  },
-  large: {
-    heading: "110px AllianceNo1ExtraBold",
-    headingLineheight: "132px",
-    subheading: "48px AllianceNo1SemiBold",
-    subheadingLineheight: "56px",
-    description: "38px AllianceNo1Regular",
-  },
-};
 
 // This functiona accepts 5 arguments:
 // canonicalName: this is the name we'll use to save our image
@@ -108,7 +43,7 @@ const typePairings = {
 // category: the category which that article sits in - or the subtext of the article
 // emoji: the emoji you want to appear in the image.
 // overwrite: overwrite existing image
-const generateMainImage = async function ({
+export const generateMainImage = async function ({
   canonicalName,
   theme,
   heading,
@@ -124,6 +59,9 @@ const generateMainImage = async function ({
     Boolean(button) && Boolean(description) && size.typePairing === "medium";
   const canvasHeight = hasButton ? height + 120 : height;
   const canvas = createCanvas(width, canvasHeight);
+  const positionCanvasCenter = canvas.width / 2;
+  const startPosition = align === "center" ? positionCanvasCenter : 64;
+
   //   category = category.toUpperCase();
   // gradientColors is an array [ c1, c2 ]
   let gradientColors;
@@ -135,11 +73,6 @@ const generateMainImage = async function ({
   } else {
     gradientColors = ["#1B1F24", "#1B1F24"];
   }
-
-  const positionCanvasCenter = canvas.width / 2;
-  const startPosition = align === "center" ? positionCanvasCenter : 64;
-  const fgDefault = theme === "light" ? "#24292F" : "#ffffff";
-  const fgMuted = theme === "light" ? "#57606A" : "#8B949E";
 
   // Create canvas
   const ctx = canvas.getContext("2d");
@@ -176,7 +109,7 @@ const generateMainImage = async function ({
 
   // Add our category text
   ctx.font = typePairings[size.typePairing].heading;
-  ctx.fillStyle = fgDefault;
+  ctx.fillStyle = fgDefault(theme);
   ctx.lineHeight = typePairings[size.typePairing].headingLineheight;
   ctx.textAlign = align;
 
@@ -200,7 +133,7 @@ const generateMainImage = async function ({
   // Add our subheading text to the canvas
   ctx.font = typePairings[size.typePairing].subheading;
   ctx.lineHeight = typePairings[size.typePairing].subheadingLineheight;
-  ctx.fillStyle = fgDefault;
+  ctx.fillStyle = fgDefault(theme);
 
   if (theme === "analog") {
     const angle = (45 * Math.PI) / 180;
@@ -245,7 +178,7 @@ const generateMainImage = async function ({
 
   if (size.typePairing !== "small") {
     ctx.font = typePairings[size.typePairing].description;
-    ctx.fillStyle = fgMuted;
+    ctx.fillStyle = fgMuted(theme);
     ctx.lineHeight = "40px";
     const descPosY = size.typePairing === "large" ? 780 : 480;
 
@@ -370,8 +303,6 @@ const generateMainImage = async function ({
     };
   }
 };
-
-module.exports = { generateMainImage };
 
 /**
  * Draws a rounded rectangle using the current state of the canvas.

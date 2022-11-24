@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "AllianceNo1ExtraBold";
+  src: url("./Alliance-No-1-ExtraBold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "AllianceNo1Regular";
+  src: url("./Alliance-No-1-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "AllianceNo1Bold";
+  src: url("./Alliance-No-1-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "AllianceNo1SemiBold";
+  src: url("./Alliance-No-1-SemiBold.woff2") format("woff2");
+}
