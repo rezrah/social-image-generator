@@ -92,6 +92,27 @@ export const generateMainImage = async function ({
     ctx.drawImage(bgTheme, 0, 0, canvas.width, canvas.height);
   }
 
+  if (theme === "custom") {
+    ctx.save();
+    const bgTheme = await Canvas.loadImage(
+      path.resolve(__dirname, `./assets/${theme}.svg`)
+    );
+    ctx.globalAlpha = 0.1; // configurable opactity
+    ctx.scale(0.5, 0.5);
+    ctx.drawImage(bgTheme, 0, 0, canvas.width * 2, canvas.height * 2);
+    ctx.restore();
+
+    // start gardient 1
+    ctx.globalCompositeOperation = "soft-light"; // configurable blend mode
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, "cyan");
+    gradient.addColorStop(1, "green");
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalCompositeOperation = "source-over"; // reset blend mode
+    // end gardient 1
+  }
+
   // Write our Emoji onto the canvas
   //   ctx.fillStyle = "white";
   //   ctx.font = "95px AppleEmoji";

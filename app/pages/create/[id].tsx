@@ -22,7 +22,7 @@ import {
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
-import { Text, Heading } from "@primer/react-brand";
+import { Text, Heading, Stack } from "@primer/react-brand";
 import {
   CopyIcon,
   DashIcon,
@@ -56,6 +56,7 @@ const CreateTemplate: NextPage = () => {
   const [fileRawData, setFileRawData] = React.useState<
     string | ArrayBuffer | undefined
   >();
+  const [activeTheme, setActiveTheme] = React.useState("dark");
 
   const [activeTab, setActiveTab] = React.useState(1);
   const [csvConvertedData, setCsvConvertedData] = React.useState();
@@ -324,14 +325,29 @@ const CreateTemplate: NextPage = () => {
             <form onSubmit={handleSubmit}>
               <FormControl sx={{ mb: 3 }}>
                 <FormControl.Label>Theme</FormControl.Label>
-                <Select name="color-mode" block defaultValue="dark">
+                <Select
+                  name="color-mode"
+                  block
+                  defaultValue="dark"
+                  onChange={(event) => setActiveTheme(event.target.value)}
+                >
                   <Select.Option value="light">Light</Select.Option>
                   <Select.Option value="dark">Dark</Select.Option>
                   <Select.Option value="analog">Analog</Select.Option>
                   <Select.Option value="policy">Policy</Select.Option>
                   <Select.Option value="universe">Universe</Select.Option>
+                  <Select.Option value="custom">Custom</Select.Option>
                 </Select>
               </FormControl>
+              {activeTheme === "custom" && (
+                <FormControl sx={{ mb: 3 }}>
+                  <FormControl.Label>Colors</FormControl.Label>
+                  <Stack direction="horizontal" padding="none">
+                    <input type="color" name="custom-color-1" value="#032007" />
+                    <input type="color" name="custom-color-2" value="#03555C" />
+                  </Stack>
+                </FormControl>
+              )}
               {/* <Box sx={{ mb: 3 }}>
               <RadioGroup name="choiceGroup">
                 <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
