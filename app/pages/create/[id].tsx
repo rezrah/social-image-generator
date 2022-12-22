@@ -327,37 +327,12 @@ const CreateTemplate: NextPage = () => {
         {activeTab === 1 && (
           <PageLayout.Pane position="start" divider="line">
             <form onSubmit={handleSubmit}>
-              {/* <Box sx={{ mb: 3 }}>
-              <RadioGroup name="choiceGroup">
-                <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
-                  Theme
-                </RadioGroup.Label>
-                <FormControl>
-                  <Radio value="light" name="color-mode" />
-                  <FormControl.Label>Light</FormControl.Label>
-                </FormControl>
-                <FormControl>
-                  <Radio value="dark" name="color-mode" defaultChecked />
-                  <FormControl.Label>Dark</FormControl.Label>
-                </FormControl>
-                <FormControl>
-                  <Radio value="analog" name="color-mode" />
-                  <FormControl.Label>Analog</FormControl.Label>
-                </FormControl>
-                <FormControl>
-                  <Radio value="policy" name="color-mode" />
-                  <FormControl.Label>Policy</FormControl.Label>
-                </FormControl>
-              </RadioGroup>
-            </Box> */}
-
               <Stack padding="none">
                 <Stack direction="vertical" gap="condensed" padding="none">
                   <>
-                    <FormControl sx={{ mb: 3 }}>
+                    <FormControl id="color-mode">
                       <FormControl.Label>Theme</FormControl.Label>
                       <Select
-                        name="color-mode"
                         fullWidth
                         defaultValue="dark"
                         onChange={(event) => setActiveTheme(event.target.value)}
@@ -371,7 +346,7 @@ const CreateTemplate: NextPage = () => {
                       </Select>
                     </FormControl>
                     {activeTheme === "custom" && (
-                      <FormControl sx={{ mb: 3 }}>
+                      <FormControl>
                         <FormControl.Label>Colors</FormControl.Label>
                         <Stack direction="horizontal" padding="none">
                           <input
@@ -406,17 +381,23 @@ const CreateTemplate: NextPage = () => {
                         </FormControl>
                       </Stack>
                     </RadioGroup>
-                    <FormControl.Label>Sizes</FormControl.Label>
-                    {formattedSizes.map((size, index) => (
-                      <FormControl key={size}>
-                        <FormControl.Label>{size}</FormControl.Label>
-                        <Radio
-                          value={JSON.stringify(sizes[index])}
-                          name="size"
-                          defaultChecked={index === 0}
-                        />
-                      </FormControl>
-                    ))}
+                    <FormControl id="size">
+                      <FormControl.Label>Size</FormControl.Label>
+                      <Select
+                        fullWidth
+                        defaultValue={JSON.stringify(sizes[0])}
+                        onChange={(event) => setActiveTheme(event.target.value)}
+                      >
+                        {formattedSizes.map((size, index) => (
+                          <Select.Option
+                            value={JSON.stringify(sizes[index])}
+                            key={size}
+                          >
+                            {size}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </>
                 </Stack>
 
