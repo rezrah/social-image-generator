@@ -8,21 +8,25 @@ import csvtojson from "csvtojson";
 
 import {
   PageLayout,
-  FormControl,
-  TextInput,
   Box,
   LinkButton as ProductLinkButton,
   Button as ProductButton,
-  Radio,
   RadioGroup,
-  Textarea,
-  Select,
   IconButton,
   TabNav,
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
-import { Text, Heading, Stack } from "@primer/react-brand";
+import {
+  Text,
+  Heading,
+  Stack,
+  Radio,
+  Textarea,
+  FormControl,
+  TextInput,
+  Select,
+} from "@primer/react-brand";
 import {
   CopyIcon,
   DashIcon,
@@ -323,31 +327,6 @@ const CreateTemplate: NextPage = () => {
         {activeTab === 1 && (
           <PageLayout.Pane position="start" divider="line">
             <form onSubmit={handleSubmit}>
-              <FormControl sx={{ mb: 3 }}>
-                <FormControl.Label>Theme</FormControl.Label>
-                <Select
-                  name="color-mode"
-                  block
-                  defaultValue="dark"
-                  onChange={(event) => setActiveTheme(event.target.value)}
-                >
-                  <Select.Option value="light">Light</Select.Option>
-                  <Select.Option value="dark">Dark</Select.Option>
-                  <Select.Option value="analog">Analog</Select.Option>
-                  <Select.Option value="policy">Policy</Select.Option>
-                  <Select.Option value="universe">Universe</Select.Option>
-                  <Select.Option value="custom">Custom</Select.Option>
-                </Select>
-              </FormControl>
-              {activeTheme === "custom" && (
-                <FormControl sx={{ mb: 3 }}>
-                  <FormControl.Label>Colors</FormControl.Label>
-                  <Stack direction="horizontal" padding="none">
-                    <input type="color" name="custom-color-1" value="#032007" />
-                    <input type="color" name="custom-color-2" value="#03555C" />
-                  </Stack>
-                </FormControl>
-              )}
               {/* <Box sx={{ mb: 3 }}>
               <RadioGroup name="choiceGroup">
                 <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
@@ -371,100 +350,128 @@ const CreateTemplate: NextPage = () => {
                 </FormControl>
               </RadioGroup>
             </Box> */}
-              <Box sx={{ mb: 3 }}>
-                <RadioGroup name="choiceGroup">
-                  <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
-                    Alignment
-                  </RadioGroup.Label>
-                  <Box sx={{ display: "inline-flex" }}>
-                    <FormControl sx={{ mr: 3 }}>
-                      <Radio value="left" name="text-alignment" />
-                      <FormControl.Label>Start</FormControl.Label>
-                    </FormControl>
-                    <FormControl>
-                      <Radio
-                        value="center"
-                        name="text-alignment"
-                        defaultChecked
-                      />
-                      <FormControl.Label>Center</FormControl.Label>
-                    </FormControl>
-                  </Box>
-                </RadioGroup>
-              </Box>
 
-              <Box sx={{ mb: 3 }}>
-                <RadioGroup name="choiceGroup">
-                  <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
-                    Size
-                  </RadioGroup.Label>
-                  <Box sx={{ display: "inline-flex" }}>
+              <Stack padding="none">
+                <Stack direction="vertical" gap="condensed" padding="none">
+                  <>
+                    <FormControl sx={{ mb: 3 }}>
+                      <FormControl.Label>Theme</FormControl.Label>
+                      <Select
+                        name="color-mode"
+                        fullWidth
+                        defaultValue="dark"
+                        onChange={(event) => setActiveTheme(event.target.value)}
+                      >
+                        <Select.Option value="light">Light</Select.Option>
+                        <Select.Option value="dark">Dark</Select.Option>
+                        <Select.Option value="analog">Analog</Select.Option>
+                        <Select.Option value="policy">Policy</Select.Option>
+                        <Select.Option value="universe">Universe</Select.Option>
+                        <Select.Option value="custom">Custom</Select.Option>
+                      </Select>
+                    </FormControl>
+                    {activeTheme === "custom" && (
+                      <FormControl sx={{ mb: 3 }}>
+                        <FormControl.Label>Colors</FormControl.Label>
+                        <Stack direction="horizontal" padding="none">
+                          <input
+                            type="color"
+                            name="custom-color-1"
+                            value="#032007"
+                          />
+                          <input
+                            type="color"
+                            name="custom-color-2"
+                            value="#03555C"
+                          />
+                        </Stack>
+                      </FormControl>
+                    )}
+                    <RadioGroup name="choiceGroup">
+                      <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
+                        Alignment
+                      </RadioGroup.Label>
+                      <Stack direction="horizontal" padding="none">
+                        <FormControl>
+                          <FormControl.Label>Start</FormControl.Label>
+                          <Radio value="left" name="text-alignment" />
+                        </FormControl>
+                        <FormControl>
+                          <FormControl.Label>Center</FormControl.Label>
+                          <Radio
+                            value="center"
+                            name="text-alignment"
+                            defaultChecked
+                          />
+                        </FormControl>
+                      </Stack>
+                    </RadioGroup>
+                    <FormControl.Label>Sizes</FormControl.Label>
                     {formattedSizes.map((size, index) => (
-                      <FormControl sx={{ mr: 3 }} key={size}>
+                      <FormControl key={size}>
+                        <FormControl.Label>{size}</FormControl.Label>
                         <Radio
                           value={JSON.stringify(sizes[index])}
                           name="size"
                           defaultChecked={index === 0}
                         />
-                        <FormControl.Label>{size}</FormControl.Label>
                       </FormControl>
                     ))}
-                  </Box>
-                </RadioGroup>
-              </Box>
+                  </>
+                </Stack>
 
-              <FormControl sx={{ mb: 3 }} required id="heading">
-                <FormControl.Label>Heading</FormControl.Label>
-                <TextInput
-                  type="text"
-                  name="heading"
-                  block
-                  placeholder="E.g. Enterprise Security"
-                />
-              </FormControl>
+                <FormControl fullWidth required id="heading">
+                  <FormControl.Label>Heading</FormControl.Label>
+                  <TextInput
+                    type="text"
+                    name="heading"
+                    fullWidth
+                    placeholder="E.g. Enterprise Security"
+                  />
+                </FormControl>
 
-              <FormControl sx={{ mb: 3 }} required>
-                <FormControl.Label>Sub-heading</FormControl.Label>
-                <TextInput
-                  type="text"
-                  id="subheading"
-                  name="subheading"
-                  placeholder="E.g. Everything developers love"
-                  block
-                />
-              </FormControl>
-              <FormControl sx={{ mb: 3 }} id="description">
-                <FormControl.Label>Description</FormControl.Label>
-                <Textarea
-                  name="description"
-                  block
-                  placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
-                />
-              </FormControl>
-              <FormControl sx={{ mb: 3 }} id="button">
-                <FormControl.Label>Call to action</FormControl.Label>
-                <TextInput
-                  type="text"
-                  name="button"
-                  block
-                  placeholder="E.g. Contact sales"
-                />
-              </FormControl>
-              <Box
-                sx={{
-                  mt: 3,
-                  display: "flex",
-                  alignSelf: "flex-end",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <ProductButton type="submit" variant="default" sx={{ mr: 2 }}>
-                  Clear
-                </ProductButton>
-                <ProductButton type="submit" variant="primary">
-                  {uri ? "Update" : "Create"}
-                </ProductButton>
-              </Box>
+                <FormControl fullWidth required>
+                  <FormControl.Label>Sub-heading</FormControl.Label>
+                  <TextInput
+                    type="text"
+                    id="subheading"
+                    name="subheading"
+                    placeholder="E.g. Everything developers love"
+                    fullWidth
+                  />
+                </FormControl>
+                <FormControl id="description" fullWidth>
+                  <FormControl.Label>Description</FormControl.Label>
+                  <Textarea
+                    name="description"
+                    fullWidth
+                    placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
+                  />
+                </FormControl>
+                <FormControl id="button" fullWidth>
+                  <FormControl.Label>Call to action</FormControl.Label>
+                  <TextInput
+                    type="text"
+                    name="button"
+                    placeholder="E.g. Contact sales"
+                  />
+                </FormControl>
+                <Box
+                  sx={{
+                    mt: 3,
+                    display: "flex",
+                    alignSelf: "flex-end",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <ProductButton type="submit" variant="default" sx={{ mr: 2 }}>
+                    Clear
+                  </ProductButton>
+                  <ProductButton type="submit" variant="primary">
+                    {uri ? "Update" : "Create"}
+                  </ProductButton>
+                </Box>
+              </Stack>
             </form>
           </PageLayout.Pane>
         )}
