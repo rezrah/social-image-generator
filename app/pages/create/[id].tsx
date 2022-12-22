@@ -415,7 +415,12 @@ const CreateTemplate: NextPage = () => {
 
               <FormControl sx={{ mb: 3 }} required id="heading">
                 <FormControl.Label>Heading</FormControl.Label>
-                <TextInput type="text" name="heading" block />
+                <TextInput
+                  type="text"
+                  name="heading"
+                  block
+                  placeholder="E.g. Enterprise Security"
+                />
               </FormControl>
 
               <FormControl sx={{ mb: 3 }} required>
@@ -424,16 +429,26 @@ const CreateTemplate: NextPage = () => {
                   type="text"
                   id="subheading"
                   name="subheading"
+                  placeholder="E.g. Everything developers love"
                   block
                 />
               </FormControl>
               <FormControl sx={{ mb: 3 }} id="description">
                 <FormControl.Label>Description</FormControl.Label>
-                <Textarea name="description" block />
+                <Textarea
+                  name="description"
+                  block
+                  placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
+                />
               </FormControl>
               <FormControl sx={{ mb: 3 }} id="button">
                 <FormControl.Label>Call to action</FormControl.Label>
-                <TextInput type="text" name="button" block />
+                <TextInput
+                  type="text"
+                  name="button"
+                  block
+                  placeholder="E.g. Contact sales"
+                />
               </FormControl>
               <Box
                 sx={{
