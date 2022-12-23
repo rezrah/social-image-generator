@@ -12,6 +12,8 @@ import {
   LinkButton as ProductLinkButton,
   Button as ProductButton,
   RadioGroup,
+  Radio,
+  FormControl as ProductFormControl,
   IconButton,
   TabNav,
 } from "@primer/react";
@@ -21,7 +23,6 @@ import {
   Text,
   Heading,
   Stack,
-  Radio,
   Textarea,
   FormControl,
   TextInput,
@@ -40,9 +41,9 @@ import {
 import { templateData } from "../../fixtures/template-data";
 
 const sizes = [
-  { w: 1200, h: 630, typePairing: "medium" },
-  { w: 630, h: 630, typePairing: "small" },
-  { w: 1080, h: 1080, typePairing: "large" },
+  { w: 1200, h: 630, typePairing: "l" },
+  { w: 630, h: 630, typePairing: "m" },
+  { w: 1080, h: 1080, typePairing: "xl" },
 ];
 
 // API endpoint where we send form data.
@@ -366,20 +367,24 @@ const CreateTemplate: NextPage = () => {
                       <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
                         Alignment
                       </RadioGroup.Label>
-                      <Stack direction="horizontal" padding="none">
-                        <FormControl>
-                          <FormControl.Label>Start</FormControl.Label>
+                      <Box sx={{ display: "inline-flex" }}>
+                        <ProductFormControl sx={{ mr: 3 }}>
                           <Radio value="left" name="text-alignment" />
-                        </FormControl>
-                        <FormControl>
-                          <FormControl.Label>Center</FormControl.Label>
+                          <ProductFormControl.Label>
+                            Start
+                          </ProductFormControl.Label>
+                        </ProductFormControl>
+                        <ProductFormControl>
                           <Radio
                             value="center"
                             name="text-alignment"
                             defaultChecked
                           />
-                        </FormControl>
-                      </Stack>
+                          <ProductFormControl.Label>
+                            Center
+                          </ProductFormControl.Label>
+                        </ProductFormControl>
+                      </Box>
                     </RadioGroup>
                     <FormControl id="size">
                       <FormControl.Label>Size</FormControl.Label>
@@ -401,22 +406,20 @@ const CreateTemplate: NextPage = () => {
                   </>
                 </Stack>
 
+                <FormControl fullWidth required id="subheading">
+                  <FormControl.Label>Subheading</FormControl.Label>
+                  <TextInput
+                    type="text"
+                    name="subheading"
+                    placeholder="E.g. Enterprise Security"
+                    fullWidth
+                  />
+                </FormControl>
+
                 <FormControl fullWidth required id="heading">
                   <FormControl.Label>Heading</FormControl.Label>
                   <TextInput
                     type="text"
-                    name="heading"
-                    fullWidth
-                    placeholder="E.g. Enterprise Security"
-                  />
-                </FormControl>
-
-                <FormControl fullWidth required>
-                  <FormControl.Label>Sub-heading</FormControl.Label>
-                  <TextInput
-                    type="text"
-                    id="subheading"
-                    name="subheading"
                     placeholder="E.g. Everything developers love"
                     fullWidth
                   />
@@ -424,18 +427,13 @@ const CreateTemplate: NextPage = () => {
                 <FormControl id="description" fullWidth>
                   <FormControl.Label>Description</FormControl.Label>
                   <Textarea
-                    name="description"
                     fullWidth
                     placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
                   />
                 </FormControl>
                 <FormControl id="button" fullWidth>
                   <FormControl.Label>Call to action</FormControl.Label>
-                  <TextInput
-                    type="text"
-                    name="button"
-                    placeholder="E.g. Contact sales"
-                  />
+                  <TextInput type="text" placeholder="E.g. Contact sales" />
                 </FormControl>
                 <Box
                   sx={{

@@ -2,8 +2,15 @@ import Canvas from "@napi-rs/canvas";
 import fs from "fs"; // For creating files for our images.
 import path from "path";
 import cwebp from "cwebp"; // For converting our images to webp.
-import { typePairings, fgDefault, fgMuted } from "../../shared/constants.js";
+import {
+  typePairings,
+  typography,
+  fgDefault,
+  fgMuted,
+} from "../../shared/constants.js";
 import { wrapText } from "../../shared/utils.js";
+import { drawBackgroundVisual } from "./fn/draw-background-visual.js";
+import { drawCallToActionButton } from "./fn/draw-cta-button.js";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -56,93 +63,55 @@ export const generateMainImage = async function ({
 }) {
   const { w: width, h: height } = size;
   const hasButton =
-    Boolean(button) && Boolean(description) && size.typePairing === "medium";
+    Boolean(button) && Boolean(description) && size.typePairing === "l";
   const canvasHeight = hasButton ? height + 120 : height;
   const canvas = createCanvas(width, canvasHeight);
   const positionCanvasCenter = canvas.width / 2;
-  const startPosition = align === "center" ? positionCanvasCenter : 64;
+  const startPosition = align === "center" ? positionCanvasCenter : 48;
 
   //   category = category.toUpperCase();
   // gradientColors is an array [ c1, c2 ]
-  let gradientColors;
 
-  if (theme === "dark") {
-    gradientColors = ["#1B1F24", "#1B1F24"];
-  } else if (theme === "light") {
-    gradientColors = ["#ffffff", "#ffffff"];
-  } else {
-    gradientColors = ["#1B1F24", "#1B1F24"];
-  }
+  // if (theme === "dark") {
+  //   gradientColors = ["#1B1F24", "#1B1F24"];
+  // } else if (theme === "light") {
+  //   gradientColors = ["#ffffff", "#ffffff"];
+  // } else {
+  //   gradientColors = ["#1B1F24", "#1B1F24"];
+  // }
 
   // Create canvas
   const ctx = canvas.getContext("2d");
 
-  // Add gradient - we use createLinearGradient to do this
-  let grd = ctx.createLinearGradient(0, canvasHeight, 1200, 0);
-  grd.addColorStop(0, gradientColors[0]);
-  grd.addColorStop(1, gradientColors[1]);
-  ctx.fillStyle = grd;
-  // Fill our gradient
-  ctx.fillRect(0, 0, 1200, canvasHeight);
+  // set background
+  await drawBackgroundVisual({ theme, canvas, canvasHeight });
 
-  if (["analog", "policy", "universe"].includes(theme)) {
-    const bgTheme = await Canvas.loadImage(
-      path.resolve(__dirname, `./assets/${theme}.png`)
-    );
-    ctx.drawImage(bgTheme, 0, 0, canvas.width, canvas.height);
-  }
+  // Add required text fields
 
-  if (theme === "custom") {
-    ctx.save();
-    const bgTheme = await Canvas.loadImage(
-      path.resolve(__dirname, `./assets/${theme}.svg`)
-    );
-    ctx.globalAlpha = 0.1; // configurable opactity
-    ctx.scale(0.5, 0.5);
-    ctx.drawImage(bgTheme, 0, 0, canvas.width * 2, canvas.height * 2);
-    ctx.restore();
+  const getSize = (count) => {
+    if (count < 25) {
+      return "xl";
+    } else if (count > 25 && count < 49) {
+      return "l";
+    }
+    return "m";
+  };
 
-    // start gardient 1
-    ctx.globalCompositeOperation = "soft-light"; // configurable blend mode
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    gradient.addColorStop(0, "cyan");
-    gradient.addColorStop(1, "green");
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.globalCompositeOperation = "source-over"; // reset blend mode
-    // end gardient 1
-  }
-
-  // Write our Emoji onto the canvas
-  //   ctx.fillStyle = "white";
-  //   ctx.font = "95px AppleEmoji";
-  //   //ctx.fillText(emoji, 85, 700);
-
-  //   const file = await fs.promises.readFile("./mark-github-24.png");
-
-  //   const image = new Image();
-  //   image.src = file;
-
-  //   const w = image.width;
-  //   const h = image.height;
-
-  //   ctx.drawImage(image, 0, 0, w * 5, h * 5);
-
-  // Add our category text
-  ctx.font = typePairings[size.typePairing].heading;
+  ctx.font = typePairings[getSize(heading.length)].heading;
   ctx.fillStyle = fgDefault(theme);
-  ctx.lineHeight = typePairings[size.typePairing].headingLineheight;
   ctx.textAlign = align;
 
-  const headingStartingPos = size.typePairing === "large" ? 923 : 623;
+  const headingStartingPos = size.typePairing === "xl" ? 923 : 623;
 
   let wrappedText = wrapText(
     ctx,
-    subheading,
+    heading,
     32,
     headingStartingPos,
-    canvas.width - 64,
-    Number(typePairings[size.typePairing].headingLineheight.replace(/px$/, ""))
+    canvas.width - 120,
+    Number(
+      typePairings[getSize(heading.length)].headingLineheight.replace(/px$/, "")
+    )
   );
   wrappedText[0].forEach(function (item) {
     // We will fill our text which is item[0] of our array, at coordinates [x, y]
@@ -169,10 +138,10 @@ export const generateMainImage = async function ({
     ctx.fillStyle = textGradient;
   }
 
-  const subheadingStartingPos = size.typePairing === "large" ? 800 : 520;
+  const subheadingStartingPos = size.typePairing === "xl" ? 800 : 520;
 
   ctx.fillText(
-    heading,
+    subheading,
     startPosition,
     subheadingStartingPos - wrappedText[1] - 200
   );
@@ -186,22 +155,24 @@ export const generateMainImage = async function ({
     )
   );
 
-  const markStartingPosY = size.typePairing === "large" ? 520 : 420;
-  const dimension = size.typePairing === "large" ? 150 : 72;
+  const markStartingPosY = size.typePairing === "xl" ? 520 : 420;
+  const dimension = size.typePairing === "xl" ? 150 : 72;
 
   ctx.drawImage(
     image,
-    align === "center" ? startPosition - dimension / 2 : 64,
-    markStartingPosY - wrappedText[1] - 250,
+    align === "center" ? startPosition - dimension / 2 : 48,
+    //markStartingPosY - wrappedText[1] - 250, // hug to text
+    48,
     dimension,
     dimension
   );
 
-  if (size.typePairing !== "small") {
-    ctx.font = typePairings[size.typePairing].description;
+  // Add our description text to the canvas if it exists
+  if (size.typePairing !== "m") {
+    ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
     ctx.fillStyle = fgMuted(theme);
-    ctx.lineHeight = "40px";
-    const descPosY = size.typePairing === "large" ? 780 : 480;
+    ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
+    const descPosY = size.typePairing === "xl" ? 780 : 440; // needs finetuning
 
     let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);
     wrappedDescription[0].forEach(function (item) {
@@ -217,48 +188,14 @@ export const generateMainImage = async function ({
 
     // Add button
 
-    if (
-      Boolean(button) &&
-      Boolean(description) &&
-      size.typePairing === "medium"
-    ) {
-      const hasLightButton = ["light", "policy"].includes(theme);
-
-      ctx.font = "20px AllianceNo1SemiBold";
-      const txt = button;
-      const rectHeight = 56;
-      const rectWidth = ctx.measureText(txt).width + 64;
-      const rectX = align === "center" ? canvas.width / 2 - rectWidth / 2 : 64;
-      const rectY = wrappedDescription[1] + 580;
-
-      let buttonGradient = ctx.createLinearGradient(300, 0, 300, 200);
-
-      if (hasLightButton) {
-        ctx.lineWidth = 1;
-        ctx.fillStyle = "#1B1F23";
-        ctx.strokeStyle = "#000000";
-      } else {
-        ctx.fillStyle = "#F6F8FA";
-      }
-
-      roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
-
-      if (hasLightButton) {
-        buttonGradient.addColorStop(0, "rgba(255, 255, 255, 0.1)");
-        buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-      } else {
-        buttonGradient.addColorStop(0, "#FFFFFF");
-        buttonGradient.addColorStop(1, "rgba(255, 255, 255, 0)");
-      }
-
-      ctx.fillStyle = buttonGradient;
-
-      roundRect(ctx, rectX, rectY, rectWidth, rectHeight, 6, true);
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = hasLightButton ? "#fff" : "#000";
-
-      ctx.fillText(txt, rectX + rectWidth / 2, rectY - 2 + rectHeight / 2);
+    if (Boolean(button) && Boolean(description) && size.typePairing === "l") {
+      await drawCallToActionButton({
+        theme,
+        canvas,
+        label: button,
+        align,
+        offsetY: wrappedDescription[1] + 540,
+      });
     }
   }
 
@@ -324,42 +261,3 @@ export const generateMainImage = async function ({
     };
   }
 };
-
-/**
- * Draws a rounded rectangle using the current state of the canvas.
- * If you omit the last three params, it will draw a rectangle
- * outline with a 5 pixel border radius
- * @param {CanvasRenderingContext2D} ctx
- * @param {Number} x The top left x coordinate
- * @param {Number} y The top left y coordinate
- * @param {Number} width The width of the rectangle
- * @param {Number} height The height of the rectangle
- * @param {Number} radius The corner radius. Defaults to 5;
- * @param {Boolean} fill Whether to fill the rectangle. Defaults to false.
- * @param {Boolean} stroke Whether to stroke the rectangle. Defaults to true.
- */
-function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
-  if (typeof stroke == "undefined") {
-    stroke = true;
-  }
-  if (typeof radius === "undefined") {
-    radius = 6;
-  }
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.lineTo(x + width - radius, y);
-  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-  ctx.lineTo(x + width, y + height - radius);
-  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-  ctx.lineTo(x + radius, y + height);
-  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-  ctx.lineTo(x, y + radius);
-  ctx.quadraticCurveTo(x, y, x + radius, y);
-  ctx.closePath();
-  if (stroke) {
-    ctx.stroke();
-  }
-  if (fill) {
-    ctx.fill();
-  }
-}
