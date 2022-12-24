@@ -1,10 +1,22 @@
-import React, { MutableRefObject, RefObject, useEffect } from "react";
+import React, {
+  ChangeEventHandler,
+  MutableRefObject,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import csvtojson from "csvtojson";
+import { CharCount } from "../../components/CharCount";
+
+import { LeftAlign } from "../../components/icons/LeftAlign";
+import { CenterAlign } from "../../components/icons/CenterAlign";
 
 import {
   PageLayout,
@@ -16,6 +28,8 @@ import {
   FormControl as ProductFormControl,
   IconButton,
   TabNav,
+  ButtonGroup,
+  SegmentedControl,
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
@@ -29,9 +43,11 @@ import {
   Select,
 } from "@primer/react-brand";
 import {
+  CheckIcon,
   CopyIcon,
   DashIcon,
   DownloadIcon,
+  PaintbrushIcon,
   PlusIcon,
   ScreenNormalIcon,
   SyncIcon,
@@ -56,6 +72,8 @@ const CreateTemplate: NextPage = () => {
   const router = useRouter();
   const id = router.query.id;
 
+  const [headingCharCount, setHeadingCharCount] = useState<number>(0);
+
   const [uri, setUri] = React.useState("");
   const [localPath, setLocalPath] = React.useState("");
   const [fileRawData, setFileRawData] = React.useState<
@@ -63,11 +81,14 @@ const CreateTemplate: NextPage = () => {
   >();
   const [activeTheme, setActiveTheme] = React.useState("dark");
 
-  const [activeTab, setActiveTab] = React.useState(1);
+  const [activeTab, setActiveTab] = React.useState(0);
   const [csvConvertedData, setCsvConvertedData] = React.useState();
 
   const fileUploadRef = React.useRef<HTMLInputElement | null>(null);
   const fileReUploadRef = React.useRef<HTMLInputElement | null>(null);
+
+  const radioRefCenterAlign = React.useRef<HTMLInputElement | null>(null);
+  const radioRefLeftAlign = React.useRef<HTMLInputElement | null>(null);
 
   /*
    * Reset file uploader
@@ -151,12 +172,8 @@ const CreateTemplate: NextPage = () => {
     )
     .filter(Boolean);
 
-  const handleTabChange = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    index: number
-  ) => {
-    e.preventDefault();
-    setActiveTab(index);
+  const handleTabChange = (activeTab: number) => {
+    setActiveTab(activeTab);
   };
 
   useEffect(() => {
@@ -216,333 +233,350 @@ const CreateTemplate: NextPage = () => {
     }
   }, [fileRawData]);
 
+  const handleCharCount = useCallback(
+    (e: ChangeEventHandler<HTMLInputElement>, type: string) => {
+      setHeadingCharCount(e.target.value.length);
+    },
+    []
+  );
+
   return (
-    <div className={[styles.container, "page"].join(" ")}>
+    <div className={[styles["container-editor"], "page"].join(" ")}>
       <Head>
         <title>Create social images</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <PageLayout containerWidth="full">
-        <PageLayout.Header>
-          <Heading as="h3">{data && data.name}</Heading>
-          <Box sx={{ position: "relative" }}>
-            <TabNav aria-label="Main" sx={{ mt: 6 }}>
-              <TabNav.Link
-                href="#"
-                selected={activeTab === 1}
-                onClick={(event) => handleTabChange(event, 1)}
-                sx={{
-                  fontWeight: activeTab === 1 ? 600 : "normal",
-                }}
+      <Box sx={{ position: "relative" }}>
+        {/* <TabNav aria-label="Main" sx={{ mt: 2 }}>
+          <TabNav.Link
+            href="#"
+            selected={activeTab === 1}
+            onClick={(event) => handleTabChange(event, 1)}
+            sx={{
+              fontWeight: activeTab === 1 ? 600 : "normal",
+            }}
+          >
+            Customize {data && data.name}
+          </TabNav.Link>
+          <TabNav.Link
+            href="#"
+            onClick={(event) => handleTabChange(event, 2)}
+            selected={activeTab === 2}
+            sx={{
+              fontWeight: activeTab === 2 ? 600 : "normal",
+            }}
+          >
+            Upload CSV
+          </TabNav.Link>
+        </TabNav> */}
+        <Box>
+          {activeTab === 0 && uri && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: -1,
+                right: 0,
+                display: "grid",
+                gap: 2,
+                gridTemplateColumns: "1fr 1fr",
+              }}
+            >
+              <ProductLinkButton
+                disabled={!Boolean(uri)}
+                variant="default"
+                sx={{ mr: 2 }}
+                leadingIcon={CopyIcon}
               >
-                Customize {data && data.name}
-              </TabNav.Link>
-              <TabNav.Link
-                href="#"
-                onClick={(event) => handleTabChange(event, 2)}
-                selected={activeTab === 2}
-                sx={{
-                  fontWeight: activeTab === 2 ? 600 : "normal",
-                }}
+                Copy image URL
+              </ProductLinkButton>
+              <ProductLinkButton
+                variant="primary"
+                disabled={!Boolean(localPath)}
+                leadingIcon={DownloadIcon}
+                href={localPath}
+                download
+                target="_blank"
+              >
+                Download image
+              </ProductLinkButton>
+            </Box>
+          )}
+        </Box>
+      </Box>
+      {/**Start sidebar */}
+      <Box sx={{ overflow: "hidden", borderRadius: "6px" }}>
+        <Box
+          sx={{
+            position: "fixed",
+            left: 16,
+            top: 100,
+            zIndex: 2,
+            backgroundColor: "var(--brand-SubdomainNavBar-canvas-default)",
+            height: "calc(100vh - 120px)",
+            borderRadius: "6px",
+            backdropFilter: "blur(16px)",
+            width: 350,
+            overflow: "hidden",
+            // boxShadow: "0 12px 28px rgba(140,149,159,0.3)",
+          }}
+        >
+          <Box
+            sx={{
+              padding: 4,
+              paddingTop: 3,
+              paddingBottom: 3,
+              position: "sticky",
+              top: 0,
+              backgroundColor: "var(--brand-color-canvas-subtle)",
+              width: "calc(100%)",
+              zIndex: 2,
+              borderBottom: "1px solid var(--brand-color-border-default)",
+            }}
+          >
+            <SegmentedControl
+              fullWidth
+              aria-label="Single image edit vs multiple selection"
+              onChange={handleTabChange}
+            >
+              <SegmentedControl.Button
+                leadingIcon={PaintbrushIcon}
+                defaultSelected
+                selected={activeTab === 0}
+              >
+                {`Edit ${data && data.name}`}
+              </SegmentedControl.Button>
+              <SegmentedControl.Button
+                leadingIcon={UploadIcon}
+                selected={activeTab === 1}
               >
                 Upload CSV
-              </TabNav.Link>
-            </TabNav>
-            <Box>
-              {activeTab === 1 && uri && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: -1,
-                    right: 0,
-                    display: "grid",
-                    gap: 2,
-                    gridTemplateColumns: "1fr 1fr",
-                  }}
-                >
-                  <ProductLinkButton
-                    disabled={!Boolean(uri)}
-                    variant="default"
-                    sx={{ mr: 2 }}
-                    leadingIcon={CopyIcon}
-                  >
-                    Copy image URL
-                  </ProductLinkButton>
-                  <ProductLinkButton
-                    variant="primary"
-                    disabled={!Boolean(localPath)}
-                    leadingIcon={DownloadIcon}
-                    href={localPath}
-                    download
-                    target="_blank"
-                  >
-                    Download image
-                  </ProductLinkButton>
-                </Box>
-              )}
-              {activeTab === 2 && csvConvertedData && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: -1,
-                    right: 0,
-                    display: "grid",
-                    gap: 2,
-                    gridTemplateColumns: "1fr 1fr 0.5fr",
-                  }}
-                >
-                  <form>
-                    <Box
-                      ref={fileUploadRef}
-                      as="input"
-                      type={"file"}
-                      id={"reuploadNewCsv"}
-                      accept={".csv"}
-                      onChange={handleOnChange}
-                      sx={{ display: "none" }}
-                    />
-                    {/* @ts-ignore */}
-                    <ProductLinkButton
-                      as="label"
-                      leadingIcon={UploadIcon}
-                      htmlFor="reuploadNewCsv"
-                      sx={{
-                        cursor: "pointer",
-                      }}
-                    >
-                      Upload .csv file
-                    </ProductLinkButton>
-                  </form>
-                  <ProductButton leadingIcon={SyncIcon}>
-                    Sync to Google Drive
-                  </ProductButton>
-                  <ProductButton variant="primary" leadingIcon={DownloadIcon}>
-                    Download all
-                  </ProductButton>
-                </Box>
-              )}
-            </Box>
+              </SegmentedControl.Button>
+            </SegmentedControl>
           </Box>
-        </PageLayout.Header>
-        {activeTab === 1 && (
-          <PageLayout.Pane position="start" divider="line">
-            <form onSubmit={handleSubmit}>
-              <Stack padding="none">
-                <Stack direction="vertical" gap="condensed" padding="none">
-                  <>
-                    <FormControl id="color-mode">
-                      <FormControl.Label>Theme</FormControl.Label>
-                      <Select
-                        fullWidth
-                        defaultValue="dark"
-                        onChange={(event) => setActiveTheme(event.target.value)}
-                      >
-                        <Select.Option value="light">Light</Select.Option>
-                        <Select.Option value="dark">Dark</Select.Option>
-                        <Select.Option value="analog">Analog</Select.Option>
-                        <Select.Option value="policy">Policy</Select.Option>
-                        <Select.Option value="universe">Universe</Select.Option>
-                        <Select.Option value="custom">Custom</Select.Option>
-                      </Select>
-                    </FormControl>
-                    {activeTheme === "custom" && (
-                      <FormControl>
-                        <FormControl.Label>Colors</FormControl.Label>
-                        <Stack direction="horizontal" padding="none">
-                          <input
-                            type="color"
-                            name="custom-color-1"
-                            value="#032007"
-                          />
-                          <input
-                            type="color"
-                            name="custom-color-2"
-                            value="#03555C"
-                          />
-                        </Stack>
-                      </FormControl>
-                    )}
-                    <RadioGroup name="choiceGroup">
-                      <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
-                        Alignment
-                      </RadioGroup.Label>
-                      <Box sx={{ display: "inline-flex" }}>
-                        <ProductFormControl sx={{ mr: 3 }}>
-                          <Radio value="left" name="text-alignment" />
-                          <ProductFormControl.Label>
-                            Start
-                          </ProductFormControl.Label>
-                        </ProductFormControl>
-                        <ProductFormControl>
-                          <Radio
-                            value="center"
-                            name="text-alignment"
-                            defaultChecked
-                          />
-                          <ProductFormControl.Label>
-                            Center
-                          </ProductFormControl.Label>
-                        </ProductFormControl>
-                      </Box>
-                    </RadioGroup>
-                    <FormControl id="size">
-                      <FormControl.Label>Size</FormControl.Label>
-                      <Select
-                        fullWidth
-                        defaultValue={JSON.stringify(sizes[0])}
-                        onChange={(event) => setActiveTheme(event.target.value)}
-                      >
-                        {formattedSizes.map((size, index) => (
-                          <Select.Option
-                            value={JSON.stringify(sizes[index])}
-                            key={size}
-                          >
-                            {size}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </>
-                </Stack>
-
-                <FormControl fullWidth required id="subheading">
-                  <FormControl.Label>Subheading</FormControl.Label>
-                  <TextInput
-                    type="text"
-                    name="subheading"
-                    placeholder="E.g. Enterprise Security"
-                    fullWidth
-                  />
-                </FormControl>
-
-                <FormControl fullWidth required id="heading">
-                  <FormControl.Label>Heading</FormControl.Label>
-                  <TextInput
-                    type="text"
-                    placeholder="E.g. Everything developers love"
-                    fullWidth
-                  />
-                </FormControl>
-                <FormControl id="description" fullWidth>
-                  <FormControl.Label>Description</FormControl.Label>
-                  <Textarea
-                    fullWidth
-                    placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
-                  />
-                </FormControl>
-                <FormControl id="button" fullWidth>
-                  <FormControl.Label>Call to action</FormControl.Label>
-                  <TextInput type="text" placeholder="E.g. Contact sales" />
-                </FormControl>
-                <Box
-                  sx={{
-                    mt: 3,
-                    display: "flex",
-                    alignSelf: "flex-end",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <ProductButton type="submit" variant="default" sx={{ mr: 2 }}>
-                    Clear
-                  </ProductButton>
-                  <ProductButton type="submit" variant="primary">
-                    {uri ? "Update" : "Create"}
-                  </ProductButton>
-                </Box>
-              </Stack>
-            </form>
-          </PageLayout.Pane>
-        )}
-        <PageLayout.Content>
-          {activeTab === 1 && (
-            <>
-              <Box
-                sx={{
-                  position: "relative",
-                  borderWidth: 1,
-                  borderStyle: "solid",
-                  borderRadius: "5px",
-                  borderColor: "border.default",
-                  backgroundColor: "canvas.subtle",
-                  minHeight: 600,
-                  backgroundImage:
-                    "radial-gradient(#000000 13%,var(--base-color-scale-gray-7) 13%)",
-                  backgroundPosition: "0 0",
-                  backgroundSize: "20px 20px",
-                  // backgroundImage:
-                  //   "linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%)",
-                  // backgroundSize: "20px 20px",
-                  // backgroundPosition: "0 0, 0 0, -50px -50px, 50px 50px",
-                  width: "100%",
-                }}
-              >
-                {/* {!uri && (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100%",
-                  minHeight: 600,
-                }}
-              >
-                <ImageIcon size={128} fill="#21252c" />
-              </Box>
-            )} */}
-
-                {uri && (
-                  <TransformWrapper
-                    initialScale={0.8}
-                    minScale={0.2}
-                    centerOnInit
-                  >
-                    {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-                      <React.Fragment>
-                        <Box
-                          sx={{
-                            position: "absolute",
-                            right: 3,
-                            top: 3,
-                            display: "grid",
-                            width: "auto",
-                            gap: 1,
-                          }}
+          <Box
+            sx={{ height: "100%", overflowY: "scroll", paddingBottom: "130px" }}
+          >
+            {activeTab === 0 && (
+              <form onSubmit={handleSubmit}>
+                <Stack padding="none">
+                  <Box sx={{ padding: 4, paddingTop: 3 }}>
+                    <Stack direction="vertical" gap="normal" padding="none">
+                      <FormControl id="color-mode">
+                        <FormControl.Label>Theme</FormControl.Label>
+                        <Select
+                          className={styles["custom-input-background"]}
+                          fullWidth
+                          defaultValue="dark"
+                          onChange={(event) =>
+                            setActiveTheme(event.target.value)
+                          }
                         >
-                          <IconButton
-                            size="large"
-                            icon={PlusIcon}
-                            onClick={() => zoomIn()}
-                          />
-                          <IconButton
-                            size="large"
-                            icon={DashIcon}
-                            onClick={() => zoomOut()}
-                          />
-                          <IconButton
-                            size="large"
-                            icon={ScreenNormalIcon}
-                            onClick={() => resetTransform()}
-                          />
-                        </Box>
-                        <TransformComponent>
-                          <img
-                            src={uri}
-                            alt="social image"
-                            style={{ width: "100%", height: "auto" }}
-                          />
-                        </TransformComponent>
-                      </React.Fragment>
-                    )}
-                  </TransformWrapper>
-                )}
-              </Box>
-            </>
-          )}
+                          <Select.Option value="light">Light</Select.Option>
+                          <Select.Option value="dark">Dark</Select.Option>
+                          <Select.Option value="analog">Analog</Select.Option>
+                          <Select.Option value="policy">Policy</Select.Option>
+                          <Select.Option value="universe">
+                            Universe
+                          </Select.Option>
+                          <Select.Option value="custom">Custom</Select.Option>
+                        </Select>
+                      </FormControl>
+                      {activeTheme === "custom" && (
+                        <FormControl>
+                          <FormControl.Label>Colors</FormControl.Label>
+                          <Stack direction="horizontal" padding="none">
+                            <input
+                              type="color"
+                              name="custom-color-1"
+                              value="#032007"
+                            />
+                            <input
+                              type="color"
+                              name="custom-color-2"
+                              value="#03555C"
+                            />
+                          </Stack>
+                        </FormControl>
+                      )}
+                      <Stack direction="horizontal" padding="none">
+                        <RadioGroup name="choiceGroup">
+                          <RadioGroup.Label
+                            sx={{ fontWeight: 600, fontSize: 1 }}
+                          >
+                            Alignment
+                          </RadioGroup.Label>
+                          <ButtonGroup>
+                            <IconButton
+                              sx={{ display: "flex", alignItems: "center" }}
+                              icon={LeftAlign}
+                              aria-label="Align left"
+                              onClick={(event: any) => {
+                                event.preventDefault();
+                                radioRefLeftAlign?.current?.click();
+                              }}
+                            />
+                            <IconButton
+                              variant={
+                                radioRefCenterAlign?.current?.checked
+                                  ? "primary"
+                                  : "default"
+                              }
+                              sx={{ display: "flex", alignItems: "center" }}
+                              icon={CenterAlign}
+                              aria-label="Align center"
+                              onClick={(event: any) => {
+                                event.preventDefault();
+                                radioRefCenterAlign?.current?.click();
+                              }}
+                            />
+                          </ButtonGroup>
+                          <Box sx={{ display: "inline-flex" }}>
+                            <ProductFormControl sx={{ mr: 3 }}>
+                              <Radio
+                                ref={radioRefLeftAlign}
+                                value="left"
+                                name="text-alignment"
+                              />
+                              <ProductFormControl.Label>
+                                Start
+                              </ProductFormControl.Label>
+                            </ProductFormControl>
+                            <ProductFormControl>
+                              <Radio
+                                ref={radioRefCenterAlign}
+                                value="center"
+                                name="text-alignment"
+                                defaultChecked
+                              />
+                              <ProductFormControl.Label>
+                                Center
+                              </ProductFormControl.Label>
+                            </ProductFormControl>
+                          </Box>
+                        </RadioGroup>
+                        <FormControl id="size">
+                          <FormControl.Label>Size</FormControl.Label>
+                          <Select
+                            className={styles["custom-input-background"]}
+                            fullWidth
+                            defaultValue={JSON.stringify(sizes[0])}
+                            onChange={(event) =>
+                              setActiveTheme(event.target.value)
+                            }
+                          >
+                            {formattedSizes.map((size, index) => (
+                              <Select.Option
+                                value={JSON.stringify(sizes[index])}
+                                key={size}
+                              >
+                                {size}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Stack>
 
-          {activeTab === 2 && (
-            <Box>
-              {!csvConvertedData && (
+                      <FormControl fullWidth required id="subheading">
+                        <Box sx={{ position: "relative" }}>
+                          <FormControl.Label>
+                            Eyebrow{" "}
+                            <CharCount max={50} cur={headingCharCount} />
+                          </FormControl.Label>
+                        </Box>
+                        <TextInput
+                          className={styles["custom-input-background"]}
+                          type="text"
+                          name="subheading"
+                          placeholder="E.g. Enterprise Security"
+                          maxLength={50}
+                          fullWidth
+                        />
+                      </FormControl>
+
+                      <FormControl fullWidth required id="heading">
+                        <Box sx={{ position: "relative" }}>
+                          <FormControl.Label>
+                            Heading{" "}
+                            <CharCount max={75} cur={headingCharCount} />
+                          </FormControl.Label>
+                        </Box>
+                        <TextInput
+                          className={styles["custom-input-background"]}
+                          type="text"
+                          placeholder="E.g. Everything developers love"
+                          fullWidth
+                          maxLength={75}
+                          onChange={(event) =>
+                            handleCharCount(
+                              event as unknown as ChangeEventHandler<HTMLInputElement>,
+                              "heading"
+                            )
+                          }
+                        />
+                      </FormControl>
+                      <FormControl id="description" fullWidth>
+                        <Box sx={{ position: "relative" }}>
+                          <FormControl.Label>
+                            Description{" "}
+                            <CharCount max={150} cur={headingCharCount} />
+                          </FormControl.Label>
+                        </Box>
+                        <Textarea
+                          className={styles["custom-input-background"]}
+                          maxLength={150}
+                          fullWidth
+                          placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
+                        />
+                      </FormControl>
+                      <FormControl id="button" fullWidth>
+                        <Box sx={{ position: "relative" }}>
+                          <FormControl.Label>
+                            Call to action{" "}
+                            <CharCount max={25} cur={headingCharCount} />
+                          </FormControl.Label>
+                        </Box>
+                        <TextInput
+                          className={styles["custom-input-background"]}
+                          type="text"
+                          placeholder="E.g. Contact sales"
+                          maxLength={25}
+                        />
+                      </FormControl>
+                    </Stack>
+                  </Box>
+                  <Box
+                    sx={{
+                      mt: 3,
+                      display: "flex",
+                      alignSelf: "flex-end",
+                      justifyContent: "flex-end",
+                      position: "absolute",
+                      bottom: "0px",
+                      left: "0px",
+                      right: "0px",
+                      backgroundColor: "var(--brand-color-canvas-subtle)",
+                      width: "calc(100%)",
+                      padding: 3,
+                      borderTop: "1px solid var(--brand-color-border-default)",
+                    }}
+                  >
+                    <ProductButton
+                      type="submit"
+                      variant="default"
+                      sx={{ mr: 2 }}
+                    >
+                      Clear
+                    </ProductButton>
+                    <ProductButton type="submit" variant="primary">
+                      {uri ? "Update" : "Create"}
+                    </ProductButton>
+                  </Box>
+                </Stack>
+              </form>
+            )}
+
+            {activeTab === 1 && (
+              <Box>
                 <form>
                   <Box
                     ref={fileReUploadRef}
@@ -558,12 +592,12 @@ const CreateTemplate: NextPage = () => {
                     htmlFor="csvFileInput"
                     sx={{
                       cursor: "pointer",
-                      margin: "8vh auto",
+                      margin: "8vh 2rem",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       height: 300,
-                      width: 500,
+
                       borderColor: "border.default",
                       borderWidth: 1,
                       borderStyle: "dotted",
@@ -576,20 +610,115 @@ const CreateTemplate: NextPage = () => {
                       <UploadIcon size={24} fill="inherit" />
                     </Box>
                     <Text size="300" variant="muted">
-                      Upload your .csv file
+                      Upload {csvConvertedData ? "another" : "your"} .csv file
                     </Text>
                   </Box>
-                  {/* <ProductButton
-                    variant="default"
-                    type="submit"
-                    onClick={(e) => {
-                      handleOnSubmit(e);
+                </form>
+                {csvConvertedData && (
+                  <Box
+                    sx={{
+                      mt: 3,
+                      display: "flex",
+                      alignSelf: "flex-end",
+                      justifyContent: "flex-end",
+                      position: "absolute",
+                      bottom: "0px",
+                      left: "0px",
+                      right: "0px",
+                      backgroundColor: "var(--brand-color-canvas-default)",
+                      width: "calc(100%)",
+                      padding: 3,
+                      borderTop: "1px solid var(--brand-color-border-default)",
                     }}
                   >
-                    Import CSV
-                  </ProductButton> */}
-                </form>
+                    <ProductButton sx={{ mr: 2 }}>Sync to Drive</ProductButton>
+                    <ProductButton
+                      variant="primary"
+                      leadingIcon={DownloadIcon}
+                      sx={{}}
+                    >
+                      Download all
+                    </ProductButton>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
+        </Box>
+      </Box>
+      <Box sx={{ zIndex: 1, position: "relative", marginTop: -1 }}>
+        <Box
+          sx={{
+            position: "relative",
+            borderWidth: 1,
+            borderStyle: "solid",
+
+            borderColor: "border.default",
+            backgroundColor: "canvas.subtle",
+            minHeight: "calc(100vh)",
+            paddingLeft: 380,
+            backgroundImage:
+              "radial-gradient(#000000 13%,var(--base-color-scale-gray-7) 13%)",
+            backgroundPosition: "0 0",
+            backgroundSize: "20px 20px",
+            // backgroundImage:
+            //   "linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%)",
+            // backgroundSize: "20px 20px",
+            // backgroundPosition: "0 0, 0 0, -50px -50px, 50px 50px",
+            width: "100%",
+          }}
+        >
+          {activeTab === 0 && (
+            <>
+              {uri && (
+                <TransformWrapper
+                  initialScale={0.8}
+                  minScale={0.2}
+                  centerOnInit
+                >
+                  {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
+                    <React.Fragment>
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          right: 3,
+                          top: 3,
+                          display: "grid",
+                          width: "auto",
+                          gap: 1,
+                        }}
+                      >
+                        <IconButton
+                          size="large"
+                          icon={PlusIcon}
+                          onClick={() => zoomIn()}
+                        />
+                        <IconButton
+                          size="large"
+                          icon={DashIcon}
+                          onClick={() => zoomOut()}
+                        />
+                        <IconButton
+                          size="large"
+                          icon={ScreenNormalIcon}
+                          onClick={() => resetTransform()}
+                        />
+                      </Box>
+                      <TransformComponent>
+                        <img
+                          src={uri}
+                          alt="social image"
+                          style={{ width: "100%", height: "auto" }}
+                        />
+                      </TransformComponent>
+                    </React.Fragment>
+                  )}
+                </TransformWrapper>
               )}
+            </>
+          )}
+          {activeTab === 1 && (
+            <Box sx={{ padding: 4 }}>
               {csvConvertedData && (
                 <Box
                   sx={{
@@ -640,10 +769,9 @@ const CreateTemplate: NextPage = () => {
               )}
             </Box>
           )}
-        </PageLayout.Content>
-
-        {/* <PageLayout.Footer>Footer</PageLayout.Footer> */}
-      </PageLayout>
+        </Box>
+      </Box>
+      {/* <PageLayout.Footer>Footer</PageLayout.Footer> */}
     </div>
   );
 };
