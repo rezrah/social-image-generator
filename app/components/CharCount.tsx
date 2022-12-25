@@ -1,11 +1,21 @@
 import { Label } from "@primer/react";
 
 export function CharCount({ cur, max }: { cur: number; max: number }) {
+  const getColor = () => {
+    if (cur > max) {
+      return "danger";
+    }
+    if (cur > max * 0.8) {
+      return "severe";
+    }
+    if (cur > max * 0.5) {
+      return "attention";
+    }
+    return "success";
+  };
+
   return (
-    <Label
-      variant={cur > 0 ? "accent" : "secondary"}
-      sx={{ position: "absolute", right: 0, top: 1 }}
-    >
+    <Label variant={getColor()} sx={{ position: "absolute", right: 0, top: 1 }}>
       {cur ? cur : 0}/{max}
     </Label>
   );

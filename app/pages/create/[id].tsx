@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   ChangeEventHandler,
   MutableRefObject,
   RefObject,
@@ -68,11 +69,42 @@ const endpoint =
 
 const formattedSizes = sizes.map(({ w, h }) => `${w}x${h}`);
 
+const charCountInitialStates = {
+  eyebrow: 0,
+  heading: 0,
+  description: 0,
+  button: 0,
+};
+
+// reducer function for char count
+const charCountReducer = (state, action) => {
+  switch (action.type) {
+    case "eyebrow":
+      return { ...state, eyebrow: action.payload };
+    case "heading":
+      return { ...state, heading: action.payload };
+    case "description":
+      return { ...state, description: action.payload };
+    case "button":
+      return { ...state, button: action.payload };
+    default:
+      return state;
+  }
+};
+
 const CreateTemplate: NextPage = () => {
   const router = useRouter();
   const id = router.query.id;
 
+  const [charCount, dispatch] = React.useReducer(
+    charCountReducer,
+    charCountInitialStates
+  );
+
+  const [eyebrowCharCount, setEyebrowCharCount] = useState<number>(0);
   const [headingCharCount, setHeadingCharCount] = useState<number>(0);
+  const [descriptionCharCount, setDescriptionCharCount] = useState<number>(0);
+  const [buttonCharCount, setButtonCharCount] = useState<number>(0);
 
   const [uri, setUri] = React.useState("");
   const [localPath, setLocalPath] = React.useState("");
@@ -87,8 +119,9 @@ const CreateTemplate: NextPage = () => {
   const fileUploadRef = React.useRef<HTMLInputElement | null>(null);
   const fileReUploadRef = React.useRef<HTMLInputElement | null>(null);
 
-  const radioRefCenterAlign = React.useRef<HTMLInputElement | null>(null);
-  const radioRefLeftAlign = React.useRef<HTMLInputElement | null>(null);
+  const [selectedRadioValue, setSelectedRadioValue] = React.useState<
+    "start" | "center"
+  >("start");
 
   /*
    * Reset file uploader
@@ -235,7 +268,17 @@ const CreateTemplate: NextPage = () => {
 
   const handleCharCount = useCallback(
     (e: ChangeEventHandler<HTMLInputElement>, type: string) => {
-      setHeadingCharCount(e.target.value.length);
+      dispatch({
+        type,
+        payload: e.target.value.length,
+      });
+    },
+    []
+  );
+
+  const handleRadioGroupChange = useCallback(
+    (newValue: string | null, e: ChangeEvent<HTMLInputElement> | undefined) => {
+      setSelectedRadioValue(newValue as "start" | "center");
     },
     []
   );
@@ -269,39 +312,6 @@ const CreateTemplate: NextPage = () => {
             Upload CSV
           </TabNav.Link>
         </TabNav> */}
-        <Box>
-          {activeTab === 0 && uri && (
-            <Box
-              sx={{
-                position: "absolute",
-                top: -1,
-                right: 0,
-                display: "grid",
-                gap: 2,
-                gridTemplateColumns: "1fr 1fr",
-              }}
-            >
-              <ProductLinkButton
-                disabled={!Boolean(uri)}
-                variant="default"
-                sx={{ mr: 2 }}
-                leadingIcon={CopyIcon}
-              >
-                Copy image URL
-              </ProductLinkButton>
-              <ProductLinkButton
-                variant="primary"
-                disabled={!Boolean(localPath)}
-                leadingIcon={DownloadIcon}
-                href={localPath}
-                download
-                target="_blank"
-              >
-                Download image
-              </ProductLinkButton>
-            </Box>
-          )}
-        </Box>
       </Box>
       {/**Start sidebar */}
       <Box sx={{ overflow: "hidden", borderRadius: "6px" }}>
@@ -354,13 +364,13 @@ const CreateTemplate: NextPage = () => {
             </SegmentedControl>
           </Box>
           <Box
-            sx={{ height: "100%", overflowY: "scroll", paddingBottom: "130px" }}
+            sx={{ height: "100%", overflowY: "auto", paddingBottom: "130px" }}
           >
             {activeTab === 0 && (
               <form onSubmit={handleSubmit}>
                 <Stack padding="none">
                   <Box sx={{ padding: 4, paddingTop: 3 }}>
-                    <Stack direction="vertical" gap="normal" padding="none">
+                    <Stack direction="vertical" gap="condensed" padding="none">
                       <FormControl id="color-mode">
                         <FormControl.Label>Theme</FormControl.Label>
                         <Select
@@ -398,62 +408,11 @@ const CreateTemplate: NextPage = () => {
                           </Stack>
                         </FormControl>
                       )}
-                      <Stack direction="horizontal" padding="none">
-                        <RadioGroup name="choiceGroup">
-                          <RadioGroup.Label
-                            sx={{ fontWeight: 600, fontSize: 1 }}
-                          >
-                            Alignment
-                          </RadioGroup.Label>
-                          <ButtonGroup>
-                            <IconButton
-                              sx={{ display: "flex", alignItems: "center" }}
-                              icon={LeftAlign}
-                              aria-label="Align left"
-                              onClick={(event: any) => {
-                                event.preventDefault();
-                                radioRefLeftAlign?.current?.click();
-                              }}
-                            />
-                            <IconButton
-                              variant={
-                                radioRefCenterAlign?.current?.checked
-                                  ? "primary"
-                                  : "default"
-                              }
-                              sx={{ display: "flex", alignItems: "center" }}
-                              icon={CenterAlign}
-                              aria-label="Align center"
-                              onClick={(event: any) => {
-                                event.preventDefault();
-                                radioRefCenterAlign?.current?.click();
-                              }}
-                            />
-                          </ButtonGroup>
-                          <Box sx={{ display: "inline-flex" }}>
-                            <ProductFormControl sx={{ mr: 3 }}>
-                              <Radio
-                                ref={radioRefLeftAlign}
-                                value="left"
-                                name="text-alignment"
-                              />
-                              <ProductFormControl.Label>
-                                Start
-                              </ProductFormControl.Label>
-                            </ProductFormControl>
-                            <ProductFormControl>
-                              <Radio
-                                ref={radioRefCenterAlign}
-                                value="center"
-                                name="text-alignment"
-                                defaultChecked
-                              />
-                              <ProductFormControl.Label>
-                                Center
-                              </ProductFormControl.Label>
-                            </ProductFormControl>
-                          </Box>
-                        </RadioGroup>
+                      <Stack
+                        direction="horizontal"
+                        padding="none"
+                        justifyContent="space-between"
+                      >
                         <FormControl id="size">
                           <FormControl.Label>Size</FormControl.Label>
                           <Select
@@ -474,13 +433,76 @@ const CreateTemplate: NextPage = () => {
                             ))}
                           </Select>
                         </FormControl>
+                        <RadioGroup
+                          name="text-alignment"
+                          onChange={handleRadioGroupChange}
+                        >
+                          <RadioGroup.Label
+                            sx={{ fontWeight: 600, fontSize: 1 }}
+                          >
+                            Alignment
+                          </RadioGroup.Label>
+                          <ButtonGroup>
+                            <IconButton
+                              sx={{ display: "flex", alignItems: "center" }}
+                              variant={
+                                selectedRadioValue === "start"
+                                  ? "outline"
+                                  : "default"
+                              }
+                              icon={LeftAlign}
+                              aria-label="Align start"
+                              onClick={(e: any) => {
+                                e.preventDefault();
+                                handleRadioGroupChange("start", e);
+                              }}
+                            />
+                            <IconButton
+                              sx={{ display: "flex", alignItems: "center" }}
+                              variant={
+                                selectedRadioValue === "center"
+                                  ? "outline"
+                                  : "default"
+                              }
+                              icon={CenterAlign}
+                              aria-label="Align center"
+                              onClick={(e: any) => {
+                                e.preventDefault();
+                                handleRadioGroupChange("center", e);
+                              }}
+                            />
+                          </ButtonGroup>
+
+                          <Box sx={{ display: "none" }}>
+                            <ProductFormControl sx={{ mr: 3 }}>
+                              <Radio
+                                value="start"
+                                name="text-alignment"
+                                checked={selectedRadioValue === "start"}
+                              />
+                              <ProductFormControl.Label>
+                                Start
+                              </ProductFormControl.Label>
+                            </ProductFormControl>
+                            <ProductFormControl>
+                              <Radio
+                                value="center"
+                                name="text-alignment"
+                                checked={selectedRadioValue === "center"}
+                              />
+                              <ProductFormControl.Label>
+                                Center
+                              </ProductFormControl.Label>
+                            </ProductFormControl>
+                          </Box>
+                        </RadioGroup>
                       </Stack>
 
                       <FormControl fullWidth required id="subheading">
                         <Box sx={{ position: "relative" }}>
                           <FormControl.Label>
-                            Eyebrow{" "}
-                            <CharCount max={50} cur={headingCharCount} />
+                            Eyebrow
+                            <CharCount max={50} cur={charCount.eyebrow} />
                           </FormControl.Label>
                         </Box>
                         <TextInput
@@ -490,14 +512,20 @@ const CreateTemplate: NextPage = () => {
                           placeholder="E.g. Enterprise Security"
                           maxLength={50}
                           fullWidth
+                          onChange={(event) =>
+                            handleCharCount(
+                              event as unknown as ChangeEventHandler<HTMLInputElement>,
+                              "eyebrow"
+                            )
+                          }
                         />
                       </FormControl>
 
                       <FormControl fullWidth required id="heading">
                         <Box sx={{ position: "relative" }}>
                           <FormControl.Label>
-                            Heading{" "}
-                            <CharCount max={75} cur={headingCharCount} />
+                            Heading
+                            <CharCount max={75} cur={charCount.heading} />
                           </FormControl.Label>
                         </Box>
                         <TextInput
@@ -517,22 +545,29 @@ const CreateTemplate: NextPage = () => {
                       <FormControl id="description" fullWidth>
                         <Box sx={{ position: "relative" }}>
                           <FormControl.Label>
-                            Description{" "}
-                            <CharCount max={150} cur={headingCharCount} />
+                            Description
+                            <CharCount max={150} cur={charCount.description} />
                           </FormControl.Label>
                         </Box>
                         <Textarea
                           className={styles["custom-input-background"]}
                           maxLength={150}
+                          rows={4}
                           fullWidth
                           placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
+                          onChange={(event) =>
+                            handleCharCount(
+                              event as unknown as ChangeEventHandler<HTMLInputElement>,
+                              "description"
+                            )
+                          }
                         />
                       </FormControl>
                       <FormControl id="button" fullWidth>
                         <Box sx={{ position: "relative" }}>
                           <FormControl.Label>
-                            Call to action{" "}
-                            <CharCount max={25} cur={headingCharCount} />
+                            Button label
+                            <CharCount max={25} cur={charCount.button} />
                           </FormControl.Label>
                         </Box>
                         <TextInput
@@ -540,6 +575,12 @@ const CreateTemplate: NextPage = () => {
                           type="text"
                           placeholder="E.g. Contact sales"
                           maxLength={25}
+                          onChange={(event) =>
+                            handleCharCount(
+                              event as unknown as ChangeEventHandler<HTMLInputElement>,
+                              "button"
+                            )
+                          }
                         />
                       </FormControl>
                     </Stack>
@@ -592,7 +633,7 @@ const CreateTemplate: NextPage = () => {
                     htmlFor="csvFileInput"
                     sx={{
                       cursor: "pointer",
-                      margin: "8vh 2rem",
+                      margin: "2rem",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -655,7 +696,7 @@ const CreateTemplate: NextPage = () => {
 
             borderColor: "border.default",
             backgroundColor: "canvas.subtle",
-            minHeight: "calc(100vh)",
+            minHeight: "calc(100vh - 76px)",
             paddingLeft: 380,
             backgroundImage:
               "radial-gradient(#000000 13%,var(--base-color-scale-gray-7) 13%)",
@@ -702,6 +743,27 @@ const CreateTemplate: NextPage = () => {
                           size="large"
                           icon={ScreenNormalIcon}
                           onClick={() => resetTransform()}
+                        />
+
+                        <IconButton
+                          sx={{ mt: 4 }}
+                          disabled={!Boolean(uri)}
+                          size="large"
+                          icon={CopyIcon}
+                          aria-label="Copy image URL"
+                          title="Copy image URL"
+                        />
+                        <IconButton
+                          as="a"
+                          disabled={!Boolean(uri)}
+                          variant="primary"
+                          size="large"
+                          icon={DownloadIcon}
+                          href={localPath}
+                          download
+                          target="_blank"
+                          aria-label="Download image"
+                          title="Download image"
                         />
                       </Box>
                       <TransformComponent>

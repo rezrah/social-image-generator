@@ -108,7 +108,7 @@ export const generateMainImage = async function ({
     heading,
     32,
     headingStartingPos,
-    canvas.width - 120,
+    canvas.width - 160,
     Number(
       typePairings[getSize(heading.length)].headingLineheight.replace(/px$/, "")
     )
