@@ -102,11 +102,6 @@ const CreateTemplate: NextPage = () => {
     charCountInitialStates
   );
 
-  const [eyebrowCharCount, setEyebrowCharCount] = useState<number>(0);
-  const [headingCharCount, setHeadingCharCount] = useState<number>(0);
-  const [descriptionCharCount, setDescriptionCharCount] = useState<number>(0);
-  const [buttonCharCount, setButtonCharCount] = useState<number>(0);
-
   const [uri, setUri] = React.useState("");
   const [localPath, setLocalPath] = React.useState("");
   const [fileRawData, setFileRawData] = React.useState<
@@ -117,6 +112,7 @@ const CreateTemplate: NextPage = () => {
   const [activeTab, setActiveTab] = React.useState(0);
   const [csvConvertedData, setCsvConvertedData] = React.useState();
 
+  const formRef = React.useRef<HTMLFormElement | null>(null);
   const fileUploadRef = React.useRef<HTMLInputElement | null>(null);
   const fileReUploadRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -150,6 +146,15 @@ const CreateTemplate: NextPage = () => {
     };
 
     fileReader.readAsText(file);
+  };
+
+  const handleClear = (event) => {
+    event.preventDefault();
+    setFileRawData(undefined);
+    setUri("");
+    if (formRef && formRef.current) {
+      formRef.current.reset();
+    }
   };
 
   const generateImage = async (data: string) => {
@@ -364,30 +369,65 @@ const CreateTemplate: NextPage = () => {
             sx={{ height: "100%", overflowY: "auto", paddingBottom: "130px" }}
           >
             {activeTab === 0 && (
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} ref={formRef}>
                 <Stack padding="none">
                   <Box sx={{ padding: 4, paddingTop: 3 }}>
                     <Stack direction="vertical" gap="condensed" padding="none">
-                      <FormControl id="color-mode">
-                        <FormControl.Label>Theme</FormControl.Label>
-                        <Select
+                      <FormControl fullWidth required id="subheading">
+                        <Box sx={{ position: "relative" }}>
+                          <FormControl.Label>
+                            Eyebrow
+                            <CharCount max={50} cur={charCount.eyebrow} />
+                          </FormControl.Label>
+                        </Box>
+                        <TextInput
                           className={styles["custom-input-background"]}
+                          type="text"
+                          name="subheading"
+                          placeholder="E.g. Enterprise Security"
+                          maxLength={50}
                           fullWidth
-                          defaultValue="dark"
                           onChange={(event) =>
-                            setActiveTheme(event.target.value)
+                            handleCharCount(
+                              event as unknown as ChangeEventHandler<HTMLInputElement>,
+                              "eyebrow"
+                            )
                           }
-                        >
-                          <Select.Option value="light">Light</Select.Option>
-                          <Select.Option value="dark">Dark</Select.Option>
-                          <Select.Option value="analog">Analog</Select.Option>
-                          <Select.Option value="policy">Policy</Select.Option>
-                          <Select.Option value="universe">
-                            Universe
-                          </Select.Option>
-                          <Select.Option value="custom">Custom</Select.Option>
-                        </Select>
+                        />
                       </FormControl>
+
+                      <FormControl fullWidth required id="heading">
+                        <Box sx={{ position: "relative" }}>
+                          <FormControl.Label>
+                            Heading
+                            <CharCount max={75} cur={charCount.heading} />
+                          </FormControl.Label>
+                        </Box>
+                        <TextInput
+                          className={styles["custom-input-background"]}
+                          type="text"
+                          placeholder="E.g. Everything developers love"
+                          fullWidth
+                          maxLength={75}
+                          onChange={(event) =>
+                            handleCharCount(
+                              event as unknown as ChangeEventHandler<HTMLInputElement>,
+                              "heading"
+                            )
+                          }
+                        />
+                      </FormControl>
+
+                      <Box
+                        as="hr"
+                        sx={{
+                          width: "100%",
+                          border: 0,
+                          borderTop:
+                            "1px solid var(--brand-color-border-default)",
+                        }}
+                      />
+
                       {activeTheme === "custom" && (
                         <FormControl>
                           <FormControl.Label>Colors</FormControl.Label>
@@ -494,51 +534,27 @@ const CreateTemplate: NextPage = () => {
                           </Box>
                         </RadioGroup>
                       </Stack>
-
-                      <FormControl fullWidth required id="subheading">
-                        <Box sx={{ position: "relative" }}>
-                          <FormControl.Label>
-                            Eyebrow
-                            <CharCount max={50} cur={charCount.eyebrow} />
-                          </FormControl.Label>
-                        </Box>
-                        <TextInput
+                      <FormControl id="color-mode">
+                        <FormControl.Label>Theme</FormControl.Label>
+                        <Select
                           className={styles["custom-input-background"]}
-                          type="text"
-                          name="subheading"
-                          placeholder="E.g. Enterprise Security"
-                          maxLength={50}
                           fullWidth
+                          defaultValue="dark"
                           onChange={(event) =>
-                            handleCharCount(
-                              event as unknown as ChangeEventHandler<HTMLInputElement>,
-                              "eyebrow"
-                            )
+                            setActiveTheme(event.target.value)
                           }
-                        />
+                        >
+                          <Select.Option value="light">Light</Select.Option>
+                          <Select.Option value="dark">Dark</Select.Option>
+                          <Select.Option value="analog">Analog</Select.Option>
+                          <Select.Option value="policy">Policy</Select.Option>
+                          <Select.Option value="universe">
+                            Universe
+                          </Select.Option>
+                          <Select.Option value="custom">Custom</Select.Option>
+                        </Select>
                       </FormControl>
 
-                      <FormControl fullWidth required id="heading">
-                        <Box sx={{ position: "relative" }}>
-                          <FormControl.Label>
-                            Heading
-                            <CharCount max={75} cur={charCount.heading} />
-                          </FormControl.Label>
-                        </Box>
-                        <TextInput
-                          className={styles["custom-input-background"]}
-                          type="text"
-                          placeholder="E.g. Everything developers love"
-                          fullWidth
-                          maxLength={75}
-                          onChange={(event) =>
-                            handleCharCount(
-                              event as unknown as ChangeEventHandler<HTMLInputElement>,
-                              "heading"
-                            )
-                          }
-                        />
-                      </FormControl>
                       <FormControl id="description" fullWidth>
                         <Box sx={{ position: "relative" }}>
                           <FormControl.Label>
@@ -602,6 +618,7 @@ const CreateTemplate: NextPage = () => {
                       type="submit"
                       variant="default"
                       sx={{ mr: 2 }}
+                      onClick={handleClear}
                     >
                       Clear
                     </ProductButton>
@@ -627,7 +644,7 @@ const CreateTemplate: NextPage = () => {
                     <div>
                       <ProductButton
                         as="a"
-                        href=""
+                        href="/fixtures/sample.csv"
                         download
                         target="_blank"
                         size="medium"
