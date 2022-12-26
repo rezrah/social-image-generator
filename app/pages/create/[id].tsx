@@ -28,9 +28,9 @@ import {
   Radio,
   FormControl as ProductFormControl,
   IconButton,
-  TabNav,
   ButtonGroup,
   SegmentedControl,
+  Flash,
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
@@ -42,6 +42,7 @@ import {
   FormControl,
   TextInput,
   Select,
+  Button,
 } from "@primer/react-brand";
 import {
   CheckIcon,
@@ -349,16 +350,12 @@ const CreateTemplate: NextPage = () => {
               onChange={handleTabChange}
             >
               <SegmentedControl.Button
-                leadingIcon={PaintbrushIcon}
                 defaultSelected
                 selected={activeTab === 0}
               >
                 {`Edit ${data && data.name}`}
               </SegmentedControl.Button>
-              <SegmentedControl.Button
-                leadingIcon={UploadIcon}
-                selected={activeTab === 1}
-              >
+              <SegmentedControl.Button selected={activeTab === 1}>
                 Upload CSV
               </SegmentedControl.Button>
             </SegmentedControl>
@@ -618,6 +615,29 @@ const CreateTemplate: NextPage = () => {
 
             {activeTab === 1 && (
               <Box>
+                <Flash sx={{ m: 4 }}>
+                  <Stack direction="vertical" padding="none" gap="condensed">
+                    <Heading as="h4" size="6">
+                      Download sample .csv
+                    </Heading>
+                    <Text size="200">
+                      Modify the content of this example .csv file and upload it
+                      to generate new images.
+                    </Text>
+                    <div>
+                      <ProductButton
+                        as="a"
+                        href=""
+                        download
+                        target="_blank"
+                        size="medium"
+                        variant="primary"
+                      >
+                        Download
+                      </ProductButton>
+                    </div>
+                  </Stack>
+                </Flash>
                 <form>
                   <Box
                     ref={fileReUploadRef}
@@ -633,7 +653,7 @@ const CreateTemplate: NextPage = () => {
                     htmlFor="csvFileInput"
                     sx={{
                       cursor: "pointer",
-                      margin: "2rem",
+                      margin: 4,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
