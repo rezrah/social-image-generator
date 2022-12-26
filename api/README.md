@@ -32,7 +32,7 @@ docker exec -it socialassetapi /bin/sh
 
 ## Deploy to ACR
 
-az acr build --image socialassetapi:v1.10 --registry primerbrand --file Dockerfile .
+az acr build --image socialassetapi:v1.11 --registry primerbrand --file Dockerfile .
 
 ## Set permissions on App Service ACR
 

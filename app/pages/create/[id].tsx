@@ -1,12 +1,8 @@
 import React, {
   ChangeEvent,
   ChangeEventHandler,
-  MutableRefObject,
-  RefObject,
   useCallback,
   useEffect,
-  useRef,
-  useState,
 } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -31,6 +27,7 @@ import {
   ButtonGroup,
   SegmentedControl,
   Flash,
+  Spinner,
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
@@ -116,6 +113,9 @@ const CreateTemplate: NextPage = () => {
   const fileUploadRef = React.useRef<HTMLInputElement | null>(null);
   const fileReUploadRef = React.useRef<HTMLInputElement | null>(null);
 
+  const [csvUploadingInProgress, setCsvUploadingInProgress] =
+    React.useState<boolean>(false);
+
   const [selectedRadioValue, setSelectedRadioValue] = React.useState<
     "start" | "center"
   >("start");
@@ -172,7 +172,6 @@ const CreateTemplate: NextPage = () => {
 
     // Send the form data to our forms API on Vercel and get a response.
     const response = await fetch(`${endpoint}/api`, options);
-
     return response;
   };
 
@@ -189,6 +188,8 @@ const CreateTemplate: NextPage = () => {
       button: event.target["button"].value,
       size: JSON.parse(event.target["size"].value),
     };
+
+    console.log(data);
 
     // Send the data to the server in JSON format.
     const JSONdata = JSON.stringify(data);
@@ -218,6 +219,7 @@ const CreateTemplate: NextPage = () => {
   useEffect(() => {
     const getData = async () => {
       if (typeof fileRawData === "string") {
+        !csvUploadingInProgress && setCsvUploadingInProgress(true);
         try {
           const csvdata = await csvtojson().fromString(fileRawData);
 
@@ -260,9 +262,11 @@ const CreateTemplate: NextPage = () => {
           if (images.length) {
             // @ts-ignore
             setCsvConvertedData(images);
+            setCsvUploadingInProgress(false);
           }
         } catch (error) {
           console.log(error);
+          setCsvUploadingInProgress(false);
         }
       }
     };
@@ -373,51 +377,59 @@ const CreateTemplate: NextPage = () => {
                 <Stack padding="none">
                   <Box sx={{ padding: 4, paddingTop: 3 }}>
                     <Stack direction="vertical" gap="condensed" padding="none">
-                      <FormControl fullWidth required id="subheading">
-                        <Box sx={{ position: "relative" }}>
+                      <Box
+                        sx={{
+                          position: "relative",
+                        }}
+                      >
+                        <FormControl fullWidth required id="subheading">
                           <FormControl.Label>
                             Eyebrow
                             <CharCount max={50} cur={charCount.eyebrow} />
                           </FormControl.Label>
-                        </Box>
-                        <TextInput
-                          className={styles["custom-input-background"]}
-                          type="text"
-                          name="subheading"
-                          placeholder="E.g. Enterprise Security"
-                          maxLength={50}
-                          fullWidth
-                          onChange={(event) =>
-                            handleCharCount(
-                              event as unknown as ChangeEventHandler<HTMLInputElement>,
-                              "eyebrow"
-                            )
-                          }
-                        />
-                      </FormControl>
+                          <TextInput
+                            className={styles["custom-input-background"]}
+                            type="text"
+                            name="subheading"
+                            required
+                            placeholder="E.g. Enterprise Security"
+                            maxLength={50}
+                            fullWidth
+                            onChange={(event) =>
+                              handleCharCount(
+                                event as unknown as ChangeEventHandler<HTMLInputElement>,
+                                "eyebrow"
+                              )
+                            }
+                          />
+                        </FormControl>
+                      </Box>
 
-                      <FormControl fullWidth required id="heading">
-                        <Box sx={{ position: "relative" }}>
+                      <Box
+                        sx={{
+                          position: "relative",
+                        }}
+                      >
+                        <FormControl fullWidth required id="heading">
                           <FormControl.Label>
                             Heading
                             <CharCount max={75} cur={charCount.heading} />
                           </FormControl.Label>
-                        </Box>
-                        <TextInput
-                          className={styles["custom-input-background"]}
-                          type="text"
-                          placeholder="E.g. Everything developers love"
-                          fullWidth
-                          maxLength={75}
-                          onChange={(event) =>
-                            handleCharCount(
-                              event as unknown as ChangeEventHandler<HTMLInputElement>,
-                              "heading"
-                            )
-                          }
-                        />
-                      </FormControl>
-
+                          <TextInput
+                            className={styles["custom-input-background"]}
+                            type="text"
+                            placeholder="E.g. Everything developers love"
+                            fullWidth
+                            maxLength={75}
+                            onChange={(event) =>
+                              handleCharCount(
+                                event as unknown as ChangeEventHandler<HTMLInputElement>,
+                                "heading"
+                              )
+                            }
+                          />
+                        </FormControl>
+                      </Box>
                       <Box
                         as="hr"
                         sx={{
@@ -684,12 +696,19 @@ const CreateTemplate: NextPage = () => {
                       flexDirection: "column",
                     }}
                   >
-                    <Box sx={{ display: "block", fill: "fg.subtle" }}>
-                      <UploadIcon size={24} fill="inherit" />
-                    </Box>
-                    <Text size="300" variant="muted">
-                      Upload {csvConvertedData ? "another" : "your"} .csv file
-                    </Text>
+                    {csvUploadingInProgress ? (
+                      <Spinner />
+                    ) : (
+                      <>
+                        <Box sx={{ display: "block", fill: "fg.subtle" }}>
+                          <UploadIcon size={24} fill="inherit" />
+                        </Box>
+                        <Text size="300" variant="muted">
+                          Upload {csvConvertedData ? "another" : "your"} .csv
+                          file
+                        </Text>
+                      </>
+                    )}
                   </Box>
                 </form>
                 {csvConvertedData && (
@@ -828,42 +847,51 @@ const CreateTemplate: NextPage = () => {
                   }}
                 >
                   {csvConvertedData.length > 0 &&
-                    csvConvertedData.map((line) => (
-                      <Box
-                        key={line.id}
-                        as="a"
-                        href={line.path}
-                        download
-                        target="_blank"
-                        sx={{ position: "relative" }}
-                      >
+                    csvConvertedData.map((line) => {
+                      return (
                         <Box
-                          sx={{
-                            position: "absolute",
-                            right: 3,
-                            top: 3,
-                            display: "grid",
-                            width: "auto",
-                            gap: 1,
-                          }}
-                        >
-                          <IconButton icon={DownloadIcon} size="large" />
-                        </Box>
-                        <Box
-                          as="img"
                           key={line.id}
-                          src={line.uri}
-                          alt="social image"
-                          sx={{
-                            width: "100%",
-                            height: "auto",
-                            border: "1px solid",
-                            borderColor: "border.subtle",
-                            borderRadius: 6,
-                          }}
-                        />
-                      </Box>
-                    ))}
+                          as="a"
+                          href={endpoint + line.path}
+                          download
+                          target="_blank"
+                          sx={{ position: "relative" }}
+                        >
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              right: 3,
+                              top: 3,
+                              display: "grid",
+                              width: "auto",
+                              gap: 1,
+                            }}
+                          >
+                            <IconButton
+                              as="a"
+                              icon={DownloadIcon}
+                              size="large"
+                              href={endpoint + line.path}
+                              download
+                              target="_blank"
+                            />
+                          </Box>
+                          <Box
+                            as="img"
+                            key={line.id}
+                            src={line.uri}
+                            alt="social image"
+                            sx={{
+                              width: "100%",
+                              height: "auto",
+                              border: "1px solid",
+                              borderColor: "border.subtle",
+                              borderRadius: 6,
+                            }}
+                          />
+                        </Box>
+                      );
+                    })}
                 </Box>
               )}
             </Box>

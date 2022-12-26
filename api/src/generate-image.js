@@ -11,6 +11,7 @@ import {
 import { wrapText } from "../../shared/utils.js";
 import { drawBackgroundVisual } from "./fn/draw-background-visual.js";
 import { drawCallToActionButton } from "./fn/draw-cta-button.js";
+import { saveFileToFs } from "./fn/saveFileToFs.js";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -199,65 +200,16 @@ export const generateMainImage = async function ({
     }
   }
 
-  const outDir = "./views/images/banner/";
+  /**
+   * Save the file to the filesystem
+   */
+  const result = await saveFileToFs({
+    canonicalName,
+    canvas,
+    height,
+    width,
+    overwrite,
+  });
 
-  if (!fs.existsSync(outDir)) {
-    fs.mkdirSync(outDir, { recursive: true });
-    console.log(`${outDir} created`);
-  }
-
-  const mime = "image/png";
-  const encoding = "base64";
-  const canvasData = await canvas.encode("png");
-  const uri =
-    "data:" + mime + ";" + encoding + "," + canvasData.toString(encoding);
-
-  if (
-    fs.existsSync(
-      `./views/images/banner/${canonicalName}-${width}x${height}.png`
-    ) &&
-    !overwrite
-  ) {
-    console.info("Images Exist! We did not create any");
-    return;
-  } else {
-    // Set canvas as to png
-    try {
-      // Save file
-      fs.writeFileSync(
-        `./views/images/banner/${canonicalName}-${width}x${height}.png`,
-        canvasData
-      );
-
-      console.info("Images created successfully");
-    } catch (e) {
-      console.error("Could not create png image this time.", e);
-      return;
-    }
-    // try {
-    //   const encoder = new cwebp.CWebp(
-    //     path.join(
-    //       __dirname,
-    //       "../",
-    //       `./views/images/banner/${canonicalName}-${width}x${height}.png`
-    //     )
-    //   );
-    //   encoder.quality(30);
-    //   await encoder.write(
-    //     `./views/images/banner/${canonicalName}.webp`,
-    //     function (err) {
-    //       if (err) console.log(err);
-    //     }
-    //   );
-    // } catch (e) {
-    //   console.error("Could not create webp image this time.", e);
-    //   return;
-    // }
-
-    return {
-      msg: "Images have been successfully created!",
-      path: `/banner/${canonicalName}-${width}x${height}.png`,
-      uri,
-    };
-  }
+  return result;
 };
