@@ -218,6 +218,7 @@ const CreateTemplate: NextPage = () => {
     }
 
     setEditModeLoading(false);
+    setShowWizard(false);
   };
 
   const [data] = Object.keys(templateData)
@@ -229,9 +230,7 @@ const CreateTemplate: NextPage = () => {
 
   const handleTabChange = (activeTab: number) => {
     setActiveTab(activeTab);
-
     dispatch({ type: "clear_all", payload: 0 }); // Reset the character count
-    setShowWizard(false);
   };
 
   useEffect(() => {
