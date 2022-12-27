@@ -116,6 +116,8 @@ const CreateTemplate: NextPage = () => {
   const [csvUploadingInProgress, setCsvUploadingInProgress] =
     React.useState<boolean>(false);
 
+  const [editModeLoading, setEditModeLoading] = React.useState<boolean>(false);
+
   const [selectedRadioValue, setSelectedRadioValue] = React.useState<
     "start" | "center"
   >("start");
@@ -178,6 +180,8 @@ const CreateTemplate: NextPage = () => {
   const handleSubmit = async (event: any) => {
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
+    setEditModeLoading(true);
+
     // Get data from the form.
     const data = {
       heading: event.target.heading.value,
@@ -189,20 +193,24 @@ const CreateTemplate: NextPage = () => {
       size: JSON.parse(event.target["size"].value),
     };
 
-    console.log(data);
-
     // Send the data to the server in JSON format.
     const JSONdata = JSON.stringify(data);
 
-    const response = await generateImage(JSONdata);
+    try {
+      const response = await generateImage(JSONdata);
 
-    // Get the response data from server as JSON.
-    // If server returns the name submitted, that means the form works.
-    const result = await response.json();
+      // Get the response data from server as JSON.
+      // If server returns the name submitted, that means the form works.
+      const result = await response.json();
 
-    //alert(`Is this your full name: ${result.data}`);
-    setUri(result.uri);
-    setLocalPath(`${endpoint}${result.path}`);
+      //alert(`Is this your full name: ${result.data}`);
+      setUri(result.uri);
+      setLocalPath(`${endpoint}${result.path}`);
+    } catch (err) {
+      setEditModeLoading(false);
+    }
+
+    setEditModeLoading(false);
   };
 
   const [data] = Object.keys(templateData)
@@ -626,6 +634,11 @@ const CreateTemplate: NextPage = () => {
                       borderTop: "1px solid var(--brand-color-border-default)",
                     }}
                   >
+                    {editModeLoading && (
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Spinner size="small" sx={{ mr: 2 }} />
+                      </Box>
+                    )}
                     <ProductButton
                       type="submit"
                       variant="default"
@@ -634,7 +647,11 @@ const CreateTemplate: NextPage = () => {
                     >
                       Clear
                     </ProductButton>
-                    <ProductButton type="submit" variant="primary">
+                    <ProductButton
+                      disabled={editModeLoading}
+                      type="submit"
+                      variant="primary"
+                    >
                       {uri ? "Update" : "Create"}
                     </ProductButton>
                   </Box>

@@ -6,7 +6,7 @@
     "predev": "npm run copy:fonts",
     "dev": "next dev",
     "build": "NODE_ENV=production next build && next export",
-    "copy:fonts": "mkdir -p public/fonts && cp -rf ../shared/fonts ./public",
+    "copy:fonts": "mkdir -p public/fonts && cp -rf ../api/shared/fonts ./public",
     "prestart": "npm run copy:fonts",
     "start": "next start",
     "lint": "next lint"

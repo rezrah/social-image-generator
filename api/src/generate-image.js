@@ -7,8 +7,8 @@ import {
   typography,
   fgDefault,
   fgMuted,
-} from "../../shared/constants.js";
-import { wrapText } from "../../shared/utils.js";
+} from "../shared/constants.js";
+import { wrapText } from "../shared/utils.js";
 import { drawBackgroundVisual } from "./fn/draw-background-visual.js";
 import { drawCallToActionButton } from "./fn/draw-cta-button.js";
 import { saveFileToFs } from "./fn/saveFileToFs.js";
@@ -23,23 +23,23 @@ const { createCanvas, GlobalFonts, Image } = Canvas;
 
 // Load in the fonts we need
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-Regular.woff2"),
+  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-Regular.woff2"),
   "AllianceNo1Regular"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-Medium.woff2"),
+  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-Medium.woff2"),
   "AllianceNo1Medium"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-SemiBold.woff2"),
+  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-SemiBold.woff2"),
   "AllianceNo1SemiBold"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-Bold.woff2"),
+  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-Bold.woff2"),
   "AllianceNo1Bold"
 );
 GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../../shared/fonts/Alliance-No-1-ExtraBold.woff2"),
+  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-ExtraBold.woff2"),
   "AllianceNo1ExtraBold"
 );
 // GlobalFonts.registerFromPath('./fonts/Apple-Emoji.ttf', 'AppleEmoji');

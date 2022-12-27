@@ -45,8 +45,12 @@ import {
 } from "@primer/octicons-react";
 import { templateData } from "../../fixtures/template-data";
 
-import { typePairings, fgDefault, fgMuted } from "../../../shared/constants.js";
-import { wrapText } from "../../../shared/utils.js";
+import {
+  typePairings,
+  fgDefault,
+  fgMuted,
+} from "../../../api/shared/constants.js";
+import { wrapText } from "../../../api/shared/utils.js";
 
 const sizes = [
   { w: 1200, h: 630, typePairing: "medium" },
