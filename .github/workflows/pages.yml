@@ -46,7 +46,7 @@ jobs:
           static_site_generator: next
 
       - run: cd app && npm ci --legacy-peer-deps
-      - run: cd app && npm run build
+      - run: cd app && NODE_ENV=production npm run build
         env:
           NEXT_PUBLIC_API_ENDPOINT: ${{secrets.API_ENDPOINT}}
           NODE_ENV: production

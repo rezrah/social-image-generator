@@ -8,13 +8,21 @@ export default function Document() {
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/favicon-16x16.png"
+          href={`${
+            process.env.NODE_ENV === "production"
+              ? `/social-image-generator`
+              : ""
+          }/favicon-16x16.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicon-32x32.png"
+          href={`${
+            process.env.NODE_ENV === "production"
+              ? `/social-image-generator`
+              : ""
+          }/favicon-32x32.png`}
         />
       </Head>
       <body data-color-mode="dark">
