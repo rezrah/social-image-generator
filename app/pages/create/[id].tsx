@@ -704,7 +704,9 @@ const CreateTemplate: NextPage = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       height: 300,
-
+                      backgroundImage:
+                        "linear-gradient(120deg, var(--brand-color-canvas-default) 10%, var(--brand-color-canvas-subtle) 10%, var(--brand-color-canvas-subtle) 50%, var(--brand-color-canvas-default) 50%, var(--brand-color-canvas-default) 60%, var(--brand-color-canvas-subtle) 60%, var(--brand-color-canvas-subtle) 100%)",
+                      backgroundSize: "6px 10.00px",
                       borderColor: "border.default",
                       borderWidth: 1,
                       borderStyle: "dotted",

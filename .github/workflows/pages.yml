@@ -49,6 +49,7 @@ jobs:
       - run: cd app && npm run build
         env:
           NEXT_PUBLIC_API_ENDPOINT: ${{secrets.API_ENDPOINT}}
+          NODE_ENV: production
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
