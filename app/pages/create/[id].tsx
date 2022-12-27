@@ -8,6 +8,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useLocalStorage } from "usehooks-ts";
+
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import csvtojson from "csvtojson";
 import { CharCount } from "../../components/CharCount";
@@ -28,6 +30,7 @@ import {
   SegmentedControl,
   Flash,
   Spinner,
+  Popover,
 } from "@primer/react";
 
 import styles from "../../styles/Home.module.css";
@@ -85,12 +88,15 @@ const charCountReducer = (state, action) => {
       return { ...state, description: action.payload };
     case "button":
       return { ...state, button: action.payload };
+    case "clear_all":
+      return { ...charCountInitialStates };
     default:
       return state;
   }
 };
 
 const CreateTemplate: NextPage = () => {
+  const [showWizard, setShowWizard] = useLocalStorage("showWizard", true);
   const router = useRouter();
   const id = router.query.id;
 
@@ -115,7 +121,6 @@ const CreateTemplate: NextPage = () => {
 
   const [csvUploadingInProgress, setCsvUploadingInProgress] =
     React.useState<boolean>(false);
-
   const [editModeLoading, setEditModeLoading] = React.useState<boolean>(false);
 
   const [selectedRadioValue, setSelectedRadioValue] = React.useState<
@@ -154,6 +159,8 @@ const CreateTemplate: NextPage = () => {
     event.preventDefault();
     setFileRawData(undefined);
     setUri("");
+    dispatch({ type: "clear_all", payload: 0 });
+
     if (formRef && formRef.current) {
       formRef.current.reset();
     }
@@ -222,6 +229,9 @@ const CreateTemplate: NextPage = () => {
 
   const handleTabChange = (activeTab: number) => {
     setActiveTab(activeTab);
+
+    dispatch({ type: "clear_all", payload: 0 }); // Reset the character count
+    setShowWizard(false);
   };
 
   useEffect(() => {
@@ -332,7 +342,54 @@ const CreateTemplate: NextPage = () => {
         </TabNav> */}
       </Box>
       {/**Start sidebar */}
-      <Box sx={{ overflow: "hidden", borderRadius: "6px" }}>
+      <Box
+        sx={{
+          overflow: "hidden",
+          borderRadius: "6px",
+        }}
+      >
+        {activeTab === 0 && (
+          <Box
+            position="fixed"
+            pt={4}
+            sx={{
+              left: 375,
+              top: 190,
+              width: 300,
+              zIndex: 2,
+            }}
+          >
+            <Popover
+              open={showWizard}
+              caret="left-top"
+              sx={{
+                borderRadius: 6,
+                boxShadow:
+                  "0 0 0 1px var(--brand-SubdomainNavBar-canvas-default), 0 4px 16px rgba(0, 0, 0, 0.24)",
+              }}
+            >
+              <Popover.Content>
+                <Stack direction="vertical" padding="none" gap="condensed">
+                  <Heading as="h6">Create your first social image</Heading>
+                  <Text as="p" size="300">
+                    Complete and submit the form to generate a new image.
+                  </Text>
+                  <ProductButton
+                    onClick={() => setShowWizard(false)}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    Got it!
+                  </ProductButton>
+                </Stack>
+              </Popover.Content>
+            </Popover>
+          </Box>
+        )}
+
         <Box
           sx={{
             position: "fixed",
@@ -345,6 +402,10 @@ const CreateTemplate: NextPage = () => {
             backdropFilter: "blur(16px)",
             width: 350,
             overflow: "hidden",
+            border: "1px solid var(--brand-color-border-default)",
+            boxShadow:
+              "0 0 0 1px var(--brand-SubdomainNavBar-canvas-default), 0 4px 16px rgba(0, 0, 0, 0.24)",
+
             // boxShadow: "0 12px 28px rgba(140,149,159,0.3)",
           }}
         >

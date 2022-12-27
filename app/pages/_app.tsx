@@ -9,6 +9,7 @@ import {
   Avatar,
   Header,
   StyledOcticon,
+  SSRProvider,
 } from "@primer/react";
 
 import "@primer/react-brand/lib/css/main.css";
@@ -21,21 +22,23 @@ import Link from "next/link";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider data-color-mode="dark">
-      <PRCThemeProvider colorMode="night" preventSSRMismatch>
-        <BaseStyles>
-          <SubdomainNavBar title="Assets" fullWidth>
-            <SubdomainNavBar.Link href="/create">
-              Templates
-            </SubdomainNavBar.Link>
-          </SubdomainNavBar>
+    <SSRProvider>
+      <ThemeProvider data-color-mode="dark">
+        <PRCThemeProvider colorMode="night" preventSSRMismatch>
+          <BaseStyles>
+            <SubdomainNavBar title="Assets" fullWidth>
+              <SubdomainNavBar.Link href="/create">
+                Templates
+              </SubdomainNavBar.Link>
+            </SubdomainNavBar>
 
-          <TransitionEffect1>
-            <Component {...pageProps} />
-          </TransitionEffect1>
-        </BaseStyles>
-      </PRCThemeProvider>
-    </ThemeProvider>
+            <TransitionEffect1>
+              <Component {...pageProps} />
+            </TransitionEffect1>
+          </BaseStyles>
+        </PRCThemeProvider>
+      </ThemeProvider>
+    </SSRProvider>
   );
 }
 
