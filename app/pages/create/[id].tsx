@@ -69,10 +69,11 @@ import { HeadingField } from "../../components/form-fields/HeadingField";
 import { SizeField } from "../../components/form-fields/SizeField";
 import { AlignmentField } from "../../components/form-fields/AlignmentField";
 import { ThemeField } from "../../components/form-fields/ThemeField";
-import { DescriptionField } from "../../components/form-fields/DescriptionFIeld";
+import { DescriptionField } from "../../components/form-fields/DescriptionField";
 import { ButtonField } from "../../components/form-fields/ButtonField";
 import { FormFooterControls } from "../../components/form-fields/FormFooterControls";
 import { Sidebar } from "../../components/Sidebar";
+import { generateImage } from "../../utils/api";
 
 type CsvData = {
   id: string;
@@ -146,23 +147,6 @@ const CreateTemplate: NextPage = () => {
     }
   };
 
-  const generateImage = async (data: string) => {
-    // Form the request for sending data to the server.
-    const options = {
-      // The method is POST because we are sending data.
-      method: "POST",
-      // Tell the server we're sending JSON.
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // Body of the request is the JSON data we created above.
-      body: data,
-    };
-
-    const response = await fetch(`${endpoint}/api/blog-header`, options);
-    return response;
-  };
-
   const handleSubmit = async (event: any) => {
     // Stop the form from submitting and refreshing the page.
     event.preventDefault();
@@ -183,7 +167,10 @@ const CreateTemplate: NextPage = () => {
     const JSONdata = JSON.stringify(data);
 
     try {
-      const response = await generateImage(JSONdata);
+      const response = await generateImage(
+        JSONdata,
+        `${endpoint}/api/blog-header`
+      );
 
       // Get the response data from server as JSON.
       // If server returns the name submitted, that means the form works.
@@ -404,7 +391,10 @@ const CreateTemplate: NextPage = () => {
                 // Send the data to the server in JSON format.
                 const JSONdata = JSON.stringify(formData);
 
-                const response = await generateImage(JSONdata);
+                const response = await generateImage(
+                  JSONdata,
+                  `${endpoint}/api/blog-header`
+                );
 
                 // Get the response data from server as JSON.
                 // If server returns the name submitted, that means the form works.
