@@ -37,14 +37,14 @@ const TransitionEffect2 = ({ children }: PropsWithChildren) => {
   const { asPath } = useRouter();
 
   return (
-    <div className="effect-2">
+    <div className="effect-1">
       <AnimatePresence initial={false} exitBeforeEnter>
         <motion.div
-          key={asPath}
-          variants={variants}
-          initial="fadeIn"
-          animate="inactive"
-          exit="fadeOut"
+        // key={asPath}
+        // variants={variants}
+        // initial="fadeIn"
+        // animate="inactive"
+        // exit="fadeOut"
         >
           {children}
         </motion.div>

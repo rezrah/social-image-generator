@@ -38,7 +38,7 @@ app.use(morgan("combined"));
 //   res.send(ads);
 // });
 
-app.post("/api", async (req, res) => {
+app.post("/api/blog-header", async (req, res) => {
   const {
     heading,
     subheading,

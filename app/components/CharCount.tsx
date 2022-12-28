@@ -11,7 +11,10 @@ export function CharCount({ cur, max }: { cur: number; max: number }) {
     if (cur > max * 0.5) {
       return "attention";
     }
-    return "success";
+    if (cur > 1) {
+      return "success";
+    }
+    return "secondary";
   };
 
   return (
