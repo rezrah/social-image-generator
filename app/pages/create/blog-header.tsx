@@ -74,6 +74,7 @@ import { ButtonField } from "../../components/form-fields/ButtonField";
 import { FormFooterControls } from "../../components/form-fields/FormFooterControls";
 import { Sidebar } from "../../components/Sidebar";
 import { generateImage } from "../../utils/api";
+import { PopoverWizard } from "../../components/PopoverWizard";
 
 type CsvData = {
   id: string;
@@ -187,13 +188,6 @@ const CreateTemplate: NextPage = () => {
     setShowWizard(false);
   };
 
-  const [data] = Object.keys(templateData)
-    .map((key) =>
-      // @ts-ignore
-      templateData[key].find((template: any) => template.id === id)
-    )
-    .filter(Boolean);
-
   const handleTabChange = (activeTab: number) => {
     setActiveTab(activeTab);
     dispatch({ type: "clear_all", payload: 0 }); // Reset the character count
@@ -217,51 +211,19 @@ const CreateTemplate: NextPage = () => {
       </Head>
       {/**Start sidebar */}
       {activeTab === 0 && (
-        <Box
-          position="fixed"
-          pt={4}
-          sx={{
-            left: 375,
-            top: 190,
-            width: 300,
-            zIndex: 2,
-          }}
-        >
-          <Popover
-            open={showWizard}
-            caret="left-top"
-            sx={{
-              borderRadius: 6,
-              boxShadow:
-                "0 0 0 1px var(--brand-SubdomainNavBar-canvas-default), 0 4px 16px rgba(0, 0, 0, 0.24)",
-            }}
-          >
-            <Popover.Content>
-              <Stack direction="vertical" padding="none" gap="condensed">
-                <Heading as="h6">Create your first social image</Heading>
-                <Text as="p" size="300">
-                  Complete and submit the form to generate a new image.
-                </Text>
-                <ProductButton
-                  onClick={() => setShowWizard(false)}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignSelf: "flex-start",
-                  }}
-                >
-                  Got it!
-                </ProductButton>
-              </Stack>
-            </Popover.Content>
-          </Popover>
-        </Box>
+        <PopoverWizard
+          title="Create your first social image"
+          action=" Got it!"
+          description="Complete and submit the form to generate a new image."
+          visible={showWizard}
+          handlePress={() => setShowWizard(false)}
+        />
       )}
       <Sidebar>
         <SegmentedControls
           activeTab={activeTab}
           handler={handleTabChange}
-          labelOne={`Edit ${data && data.name}`}
+          labelOne={`Edit blog header`}
           labelTwo="Upload CSV"
         />
         <Sidebar.Inner>
@@ -271,6 +233,8 @@ const CreateTemplate: NextPage = () => {
                 <Box sx={{ padding: 4, paddingTop: 3 }}>
                   <Stack direction="vertical" gap="condensed" padding="none">
                     <EyebrowField
+                      required
+                      placeholder="E.g. Enterprise Security"
                       charCount={charCount.eyebrow}
                       handleCharCount={(event) =>
                         handleCharCount(
@@ -280,6 +244,7 @@ const CreateTemplate: NextPage = () => {
                       }
                     />
                     <HeadingField
+                      placeholder="E.g. Everything developers love"
                       charCount={charCount.heading}
                       handleCharCount={(event) =>
                         handleCharCount(
@@ -335,6 +300,7 @@ const CreateTemplate: NextPage = () => {
                       }
                     />
                     <DescriptionField
+                      placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
                       charCount={charCount.description}
                       handleCharCount={(event) =>
                         handleCharCount(

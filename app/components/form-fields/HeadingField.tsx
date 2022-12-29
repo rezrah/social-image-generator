@@ -8,16 +8,23 @@ import styles from "./form-fields.module.css";
 type Props = {
   charCount: number;
   handleCharCount: ChangeEventHandler<HTMLInputElement>;
+  required?: boolean;
+  placeholder?: string;
 };
 
-export function HeadingField({ charCount, handleCharCount }: Props) {
+export function HeadingField({
+  charCount,
+  handleCharCount,
+  required = true,
+  placeholder,
+}: Props) {
   return (
     <Box
       sx={{
         position: "relative",
       }}
     >
-      <FormControl fullWidth required id="heading">
+      <FormControl fullWidth required={required} id="heading">
         <FormControl.Label>
           Heading
           <CharCount max={75} cur={charCount} />
@@ -25,7 +32,7 @@ export function HeadingField({ charCount, handleCharCount }: Props) {
         <TextInput
           className={styles["custom-input-background"]}
           type="text"
-          placeholder="E.g. Everything developers love"
+          placeholder={placeholder}
           fullWidth
           maxLength={75}
           onChange={handleCharCount}

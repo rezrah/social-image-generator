@@ -7,51 +7,33 @@ import {
   typography,
   fgDefault,
   fgMuted,
-} from "../shared/constants.js";
-import { wrapText } from "../shared/utils.js";
-import { drawBackgroundVisual } from "./fn/draw-background-visual.js";
-import { drawCallToActionButton } from "./fn/draw-cta-button.js";
-import { saveFileToFs } from "./fn/saveFileToFs.js";
+} from "../../shared/constants.js";
+import { wrapText } from "../../shared/utils.js";
+import { drawBackgroundVisual } from "./draw-background-visual.js";
+import { drawCallToActionButton } from "./draw-cta-button.js";
+import { saveFileToFs } from "../shared/saveFileToFs.js";
 
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { loadCustomFonts } from "../shared/load-custom-fonts.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const { createCanvas, GlobalFonts, Image } = Canvas;
 
-// Load in the fonts we need
-GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-Regular.woff2"),
-  "AllianceNo1Regular"
-);
-GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-Medium.woff2"),
-  "AllianceNo1Medium"
-);
-GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-SemiBold.woff2"),
-  "AllianceNo1SemiBold"
-);
-GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-Bold.woff2"),
-  "AllianceNo1Bold"
-);
-GlobalFonts.registerFromPath(
-  path.resolve(__dirname, "../shared/fonts/Alliance-No-1-ExtraBold.woff2"),
-  "AllianceNo1ExtraBold"
-);
+loadCustomFonts(GlobalFonts);
+
 // GlobalFonts.registerFromPath('./fonts/Apple-Emoji.ttf', 'AppleEmoji');
 
-// This functiona accepts 5 arguments:
+// This function accepts 5 arguments:
 // canonicalName: this is the name we'll use to save our image
 // gradientColors: an array of two colors, i.e. [ '#ffffff', '#000000' ], used for our gradient
 // title: the title of the article or site you want to appear in the image
 // category: the category which that article sits in - or the subtext of the article
 // emoji: the emoji you want to appear in the image.
 // overwrite: overwrite existing image
-export const generateMainImage = async function ({
+export const drawBlogHeader = async function ({
   canonicalName,
   theme,
   heading,
@@ -151,8 +133,8 @@ export const generateMainImage = async function ({
     path.resolve(
       __dirname,
       theme === "light"
-        ? "./assets/mark-github-24-dark.png"
-        : "./assets/mark-github-24.png"
+        ? "../assets/mark-github-24-dark.png"
+        : "../assets/mark-github-24.png"
     )
   );
 

@@ -16,11 +16,13 @@ export function SegmentedControls({
   activeTab,
   labelOne,
   labelTwo,
+  disable,
 }: {
   handler: (activeTab: number) => void;
   activeTab: number;
   labelOne: string;
   labelTwo: string;
+  disable?: boolean[];
 }) {
   return (
     <Box
@@ -44,7 +46,10 @@ export function SegmentedControls({
         <SegmentedControl.Button defaultSelected selected={activeTab === 0}>
           {labelOne}
         </SegmentedControl.Button>
-        <SegmentedControl.Button selected={activeTab === 1}>
+        <SegmentedControl.Button
+          selected={activeTab === 1}
+          disabled={disable && disable[1]}
+        >
           {labelTwo}
         </SegmentedControl.Button>
       </SegmentedControl>

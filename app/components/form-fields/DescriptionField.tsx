@@ -8,11 +8,18 @@ import styles from "./form-fields.module.css";
 type Props = {
   charCount: number;
   handleCharCount: ChangeEventHandler<HTMLTextAreaElement>;
+  required?: boolean;
+  placeholder?: string;
 };
 
-export function DescriptionField({ charCount, handleCharCount }: Props) {
+export function DescriptionField({
+  charCount,
+  required = false,
+  placeholder,
+  handleCharCount,
+}: Props) {
   return (
-    <FormControl id="description" fullWidth>
+    <FormControl id="description" fullWidth required={required}>
       <Box sx={{ position: "relative" }}>
         <FormControl.Label>
           Description
@@ -24,7 +31,7 @@ export function DescriptionField({ charCount, handleCharCount }: Props) {
         maxLength={150}
         rows={4}
         fullWidth
-        placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
+        placeholder={placeholder}
         onChange={handleCharCount}
       />
     </FormControl>

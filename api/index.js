@@ -4,7 +4,8 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
-import { generateMainImage } from "./src/generate-image.js";
+import { drawBlogHeader } from "./src/blog-header/index.js";
+import { drawSpeakerCard } from "./src/speaker-card/index.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
@@ -38,6 +39,7 @@ app.use(morgan("combined"));
 //   res.send(ads);
 // });
 
+// blog header route
 app.post("/api/blog-header", async (req, res) => {
   const {
     heading,
@@ -51,7 +53,7 @@ app.post("/api/blog-header", async (req, res) => {
   } = req.body;
 
   try {
-    const response = await generateMainImage({
+    const response = await drawBlogHeader({
       canonicalName: filename,
       theme,
       heading,
@@ -69,6 +71,39 @@ app.post("/api/blog-header", async (req, res) => {
   }
 });
 
+// speaker card route
+app.post("/api/speaker-card", async (req, res) => {
+  const {
+    heading,
+    subheading,
+    event_date,
+    theme,
+    align,
+    button,
+    size,
+    filename = "test",
+    speakerData,
+  } = req.body;
+
+  try {
+    const response = await drawSpeakerCard({
+      canonicalName: filename,
+      theme,
+      heading,
+      subheading,
+      event_date,
+      overwrite: true,
+      align,
+      button,
+      size,
+      speakerData,
+    });
+
+    res.send(response);
+  } catch (err) {
+    console.log(err);
+  }
+});
 // root route - serve static file
 app.get("/", (req, res) => {
   return res.sendFile(path.join(__dirname, "./public/client.html"));

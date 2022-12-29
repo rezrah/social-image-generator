@@ -12,7 +12,7 @@ type Props = {
   placeholder?: string;
 };
 
-export function EyebrowField({
+export function EventDateField({
   charCount,
   handleCharCount,
   required = true,
@@ -24,19 +24,18 @@ export function EyebrowField({
         position: "relative",
       }}
     >
-      <FormControl fullWidth required={required} id="subheading">
+      <FormControl fullWidth id="event_date" required>
         <FormControl.Label>
-          Eyebrow
+          Event date
           <CharCount max={50} cur={charCount} />
         </FormControl.Label>
         <TextInput
-          className={styles["custom-input-background"]}
           type="text"
-          name="subheading"
-          required={required}
+          className={styles["custom-input-background"]}
           placeholder={placeholder}
-          maxLength={50}
           fullWidth
+          required={required}
+          maxLength={75}
           onChange={handleCharCount}
         />
       </FormControl>
