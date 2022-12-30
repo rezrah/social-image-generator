@@ -186,7 +186,7 @@ export const drawSpeakerCard = async function ({
     const speakerNameStartPos =
       align === "center" ? centeredStartPos : startPosition;
     const posCompanyStartPos =
-      align === "center" ? centeredStartPos + 9 : startPosition;
+      align === "center" ? centeredStartPos + 6 : startPosition;
     const avatarStartPos =
       align === "center" ? centeredStartPos - 70 : startPosition;
     // loop speakerData array with for loop, draw each speaker horizontally next to each other
@@ -212,16 +212,37 @@ export const drawSpeakerCard = async function ({
         subheadingStartingPos + 75
       );
 
+      // ctx.beginPath();
+      // ctx.arc(
+      //   avatarStartPos + i * maxWidth + avatarRadius,
+      //   subheadingStartingPos + 55,
+      //   avatarRadius,
+      //   0,
+      //   2 * Math.PI
+      // );
+      // ctx.fillStyle = "#aaa";
+      // ctx.fill();
+
+      // draw avatar
+      const avatar = await Canvas.loadImage(speakerData[i].avatar);
+      const posX = avatarStartPos + i * maxWidth + avatarRadius;
+      const posY = subheadingStartingPos + 55;
+      const width = 55;
+      ctx.save();
       ctx.beginPath();
-      ctx.arc(
-        avatarStartPos + i * maxWidth + avatarRadius,
-        subheadingStartingPos + 55,
-        avatarRadius,
-        0,
-        2 * Math.PI
+      ctx.arc(posX, posY, width / 2, 0, Math.PI * 2, false);
+      ctx.strokeStyle = "fgDefault(theme)";
+      ctx.stroke();
+      ctx.clip();
+      ctx.drawImage(
+        avatar,
+        avatarStartPos + i * maxWidth + avatarRadius - width / 2,
+        posY - width / 2,
+        width,
+        width
       );
-      ctx.fillStyle = "#aaa";
-      ctx.fill();
+
+      ctx.restore();
     }
 
     ctx.restore();

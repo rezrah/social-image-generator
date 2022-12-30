@@ -26,15 +26,15 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider data-color-mode="dark">
         <PRCThemeProvider colorMode="night" preventSSRMismatch>
           <BaseStyles>
-            <SubdomainNavBar title="Assets" fullWidth>
+            <SubdomainNavBar title="Social assets" fullWidth>
               <SubdomainNavBar.Link href="/create">
                 Templates
               </SubdomainNavBar.Link>
             </SubdomainNavBar>
 
-            <TransitionEffect1>
-              <Component {...pageProps} />
-            </TransitionEffect1>
+            {/* <TransitionEffect1> */}
+            <Component {...pageProps} />
+            {/* </TransitionEffect1> */}
           </BaseStyles>
         </PRCThemeProvider>
       </ThemeProvider>

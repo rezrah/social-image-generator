@@ -8,7 +8,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useLocalStorage } from "usehooks-ts";
+import useLocalStorageState from "use-local-storage-state";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { CharCount } from "../../components/CharCount";
@@ -115,7 +115,9 @@ const charCountReducer = (state, action) => {
 };
 
 const CreateTemplate: NextPage = () => {
-  const [showWizard, setShowWizard] = useLocalStorage("showWizard", true);
+  const [showWizard, setShowWizard] = useLocalStorageState("showWizard", {
+    defaultValue: true,
+  });
   const router = useRouter();
   const id = router.query.id;
 

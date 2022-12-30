@@ -46,7 +46,7 @@ const Create: NextPage = () => {
             </Text>
           </Stack>
         </PageLayout.Header>
-        <PageLayout.Pane position="start" divider="line">
+        <PageLayout.Pane position="start" divider="line" hidden>
           <Stack>
             <FormControl>
               <FormControl.Label>Filter one</FormControl.Label>
@@ -67,53 +67,47 @@ const Create: NextPage = () => {
             .reverse()
             .map((category, index) => (
               <Box sx={{ marginBottom: 3 }} key={category}>
-                <Accordion open={index === 0}>
-                  <AccordionHeading>{category}</AccordionHeading>
-                  <AccordionContent>
-                    {/*@ts-ignore */}
-                    <Box
-                      sx={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fill, minmax(200px, 1fr))",
-                        gridGap: 5,
-                      }}
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(200px, 1fr))",
+                    gridGap: 5,
+                  }}
+                >
+                  {/*@ts-ignore */}
+                  {templateData[category].map((template) => (
+                    <Link
+                      legacyBehavior
+                      href={`/create/${template.id}`}
+                      key={template.name}
                     >
-                      {/*@ts-ignore */}
-                      {templateData[category].map((template) => (
-                        <Link
-                          legacyBehavior
-                          href={`/create/${template.id}`}
-                          key={template.name}
-                        >
-                          <Box
-                            className={styles.card}
-                            as="a"
-                            sx={{
-                              padding: "1.5rem",
-                              borderRadius: "1rem",
-                            }}
-                          >
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                              className={styles.thumbnail}
-                              src={template.image}
-                              width={200}
-                              height={100}
-                              alt="template"
-                            />
-                            <Heading as="h6" className={styles.cardHeading}>
-                              {template.name}
-                            </Heading>
-                            <Text size="300" variant="muted">
-                              {template.description}
-                            </Text>
-                          </Box>
-                        </Link>
-                      ))}
-                    </Box>
-                  </AccordionContent>
-                </Accordion>
+                      <Box
+                        className={styles.card}
+                        as="a"
+                        sx={{
+                          padding: "1.5rem",
+                          borderRadius: "1rem",
+                        }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          className={styles.thumbnail}
+                          src={template.image}
+                          width={200}
+                          height={100}
+                          alt="template"
+                        />
+                        <Heading as="h6" className={styles.cardHeading}>
+                          {template.name}
+                        </Heading>
+                        <Text size="300" variant="muted">
+                          {template.description}
+                        </Text>
+                      </Box>
+                    </Link>
+                  ))}
+                </Box>
               </Box>
             ))}
         </PageLayout.Content>

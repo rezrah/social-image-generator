@@ -34,9 +34,18 @@ function Root({ children }: PropsWithChildren) {
   );
 }
 
-function Inner({ children }: PropsWithChildren) {
+function Inner({
+  children,
+  showScrollBar,
+}: PropsWithChildren<{ showScrollBar?: boolean }>) {
   return (
-    <Box sx={{ height: "100%", overflowY: "auto", paddingBottom: "130px" }}>
+    <Box
+      sx={{
+        height: "100%",
+        overflowY: showScrollBar ? "scroll" : "auto",
+        paddingBottom: "130px",
+      }}
+    >
       {children}
     </Box>
   );

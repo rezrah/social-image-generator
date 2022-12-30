@@ -8,7 +8,7 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useLocalStorage } from "usehooks-ts";
+import useLocalStorageState from "use-local-storage-state";
 
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { CharCount } from "../../components/CharCount";
@@ -44,6 +44,7 @@ import {
   TextInput,
   Select,
   Button,
+  Accordion,
   Avatar,
 } from "@primer/react-brand";
 import {
@@ -121,7 +122,9 @@ const charCountReducer = (state, action) => {
 const maxSpeakers = 4;
 
 const CreateTemplate: NextPage = () => {
-  const [showWizard, setShowWizard] = useLocalStorage("showWizard", true);
+  const [showWizard, setShowWizard] = useLocalStorageState("showWizard", {
+    defaultValue: true,
+  });
   const router = useRouter();
   const id = router.query.id;
   const [charCount, dispatch] = React.useReducer(
@@ -190,7 +193,7 @@ const CreateTemplate: NextPage = () => {
       event_date: formEl.event_date.value,
       theme: formEl["color-mode"].value,
       align: formEl["text-alignment"].value,
-      size: JSON.parse(formEl["size"].value),
+      size: sizes[0],
       speakerData,
     };
 
@@ -256,7 +259,7 @@ const CreateTemplate: NextPage = () => {
     }
   };
 
-  const handleAddSpeaker = (event) => {
+  const handleAddSpeaker = (event: any) => {
     event.preventDefault();
     if (numSpeakers < maxSpeakers) {
       setNumSpeakers(numSpeakers + 1);
@@ -266,6 +269,8 @@ const CreateTemplate: NextPage = () => {
       alert(`You can only add ${maxSpeakers} speakers`);
     }
   };
+
+  const numSpeakersArray = Array.from(Array(numSpeakers).keys());
 
   return (
     <div className={[styles["container-editor"], "page"].join(" ")}>
@@ -291,7 +296,7 @@ const CreateTemplate: NextPage = () => {
           labelTwo="Upload CSV"
           disable={[false, true]}
         />
-        <Sidebar.Inner>
+        <Sidebar.Inner showScrollBar>
           {activeTab === 0 && (
             <form onSubmit={handleSubmit} ref={formRef}>
               <Stack padding="none">
@@ -330,6 +335,18 @@ const CreateTemplate: NextPage = () => {
                         )
                       }
                     />
+                    <Stack
+                      direction="horizontal"
+                      padding="none"
+                      justifyContent="space-between"
+                    >
+                      <ThemeField
+                        handleChange={(event) =>
+                          setActiveTheme(event.target.value)
+                        }
+                      />
+                      <AlignmentField />
+                    </Stack>
 
                     <Box
                       as="hr"
@@ -358,133 +375,142 @@ const CreateTemplate: NextPage = () => {
                       />
                     </Stack>
 
-                    {numSpeakers >= 1 &&
-                      Array.from(Array(numSpeakers)).map((e, index) => {
-                        const speakerIndex = index + 1;
+                    <>
+                      {numSpeakers >= 1 &&
+                        numSpeakersArray.map((e, index) => {
+                          const speakerIndex = index + 1;
 
-                        return (
-                          <Box
-                            id={`speaker-card-${speakerIndex}`}
-                            sx={{
-                              padding: 3,
-                              backgroundColor:
-                                "var(--brand-color-canvas-default)",
-                              border:
-                                "1px solid var(--brand-color-border-default)",
-                              borderRadius: 6,
-                              position: "relative",
+                          return (
+                            <Box
+                              key={e}
+                              id={`speaker-card-${speakerIndex}`}
+                              sx={{
+                                padding: 3,
+                                backgroundColor:
+                                  "var(--brand-color-canvas-default)",
+                                border:
+                                  "1px solid var(--brand-color-border-default)",
+                                borderRadius: 6,
+                                position: "relative",
+                              }}
+                            >
+                              <Stack
+                                direction="vertical"
+                                key={e}
+                                padding="none"
+                              >
+                                <Text as="p" size="300">
+                                  Speaker {index + 1}
+                                </Text>
+                                <Stack
+                                  direction="horizontal"
+                                  gap="condensed"
+                                  padding="none"
+                                >
+                                  <Box
+                                    sx={{
+                                      bg: "var(--base-color-scale-gray-2)",
+                                      border:
+                                        "1px solid var(--brand-color-border-default)",
+                                      color:
+                                        "var(--brand-color-border-default)",
+                                      height: 48,
+                                      width: 48,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      borderRadius: "50%",
+                                    }}
+                                  >
+                                    <PersonIcon size={24} />
+                                  </Box>
+                                  <ProductButton sx={{ alignSelf: "center" }}>
+                                    Upload image
+                                  </ProductButton>
+                                </Stack>
+                                <Stack
+                                  direction="horizontal"
+                                  gap="condensed"
+                                  padding="none"
+                                >
+                                  <FormControl
+                                    fullWidth
+                                    id={`speaker-card-${speakerIndex}-first-name`}
+                                  >
+                                    <FormControl.Label>
+                                      First name
+                                    </FormControl.Label>
+                                    <TextInput />
+                                  </FormControl>
+                                  <FormControl
+                                    fullWidth
+                                    id={`speaker-card-${speakerIndex}-last-name`}
+                                  >
+                                    <FormControl.Label>
+                                      Last name
+                                    </FormControl.Label>
+                                    <TextInput />
+                                  </FormControl>
+                                </Stack>
+                                <FormControl
+                                  fullWidth
+                                  id={`speaker-card-${speakerIndex}-position`}
+                                >
+                                  <FormControl.Label>
+                                    Position
+                                  </FormControl.Label>
+                                  <TextInput />
+                                </FormControl>
+                                <FormControl
+                                  fullWidth
+                                  id={`speaker-card-${speakerIndex}-company`}
+                                >
+                                  <FormControl.Label>Company</FormControl.Label>
+                                  <Select>
+                                    <Select.Option value="github">
+                                      GitHub
+                                    </Select.Option>
+                                    <Select.Option value="google">
+                                      Google
+                                    </Select.Option>
+                                    <Select.Option value="microsoft">
+                                      Microsoft
+                                    </Select.Option>
+                                  </Select>
+                                </FormControl>
+                              </Stack>
+                            </Box>
+                          );
+                        })}
+
+                      {numSpeakers >= 1 && (
+                        <Box
+                          sx={{ display: "flex", justifyContent: "flex-end" }}
+                        >
+                          <ProductButton
+                            variant="danger"
+                            leadingIcon={TrashIcon}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              if (window.confirm("Are you sure?")) {
+                                setNumSpeakers(numSpeakers - 1);
+                              }
                             }}
+                            sx={{ mr: 2 }}
                           >
-                            <Stack direction="vertical" key={e} padding="none">
-                              <Text as="p" size="300">
-                                Speaker {index + 1}
-                              </Text>
-                              <Stack
-                                direction="horizontal"
-                                gap="condensed"
-                                padding="none"
-                              >
-                                <Box
-                                  sx={{
-                                    bg: "var(--base-color-scale-gray-2)",
-                                    border:
-                                      "1px solid var(--brand-color-border-default)",
-                                    color: "var(--brand-color-border-default)",
-                                    height: 48,
-                                    width: 48,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    borderRadius: "50%",
-                                  }}
-                                >
-                                  <PersonIcon size={24} />
-                                </Box>
-                                <ProductButton sx={{ alignSelf: "center" }}>
-                                  Upload image
-                                </ProductButton>
-                              </Stack>
-                              <Stack
-                                direction="horizontal"
-                                gap="condensed"
-                                padding="none"
-                              >
-                                <FormControl
-                                  fullWidth
-                                  id={`speaker-card-${speakerIndex}-first-name`}
-                                >
-                                  <FormControl.Label>
-                                    First name
-                                  </FormControl.Label>
-                                  <TextInput />
-                                </FormControl>
-                                <FormControl
-                                  fullWidth
-                                  id={`speaker-card-${speakerIndex}-last-name`}
-                                >
-                                  <FormControl.Label>
-                                    Last name
-                                  </FormControl.Label>
-                                  <TextInput />
-                                </FormControl>
-                              </Stack>
-                              <FormControl
-                                fullWidth
-                                id={`speaker-card-${speakerIndex}-position`}
-                              >
-                                <FormControl.Label>Position</FormControl.Label>
-                                <TextInput />
-                              </FormControl>
-                              <FormControl
-                                fullWidth
-                                id={`speaker-card-${speakerIndex}-company`}
-                              >
-                                <FormControl.Label>Company</FormControl.Label>
-                                <Select>
-                                  <Select.Option>GitHub</Select.Option>
-                                  <Select.Option>Google</Select.Option>
-                                  <Select.Option>Microsoft</Select.Option>
-                                </Select>
-                              </FormControl>
-                            </Stack>
-                          </Box>
-                        );
-                      })}
-                    {numSpeakers >= 1 && (
-                      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <ProductButton
-                          variant="danger"
-                          leadingIcon={TrashIcon}
-                          onClick={(event) => {
-                            event.preventDefault();
-                            if (window.confirm("Are you sure?")) {
-                              setNumSpeakers(numSpeakers - 1);
-                            }
-                          }}
-                          sx={{ mr: 2 }}
-                        >
-                          Remove
-                        </ProductButton>
-                        <ProductButton
-                          disabled={numSpeakers === maxSpeakers}
-                          variant="outline"
-                          leadingIcon={PersonAddIcon}
-                          onClick={handleAddSpeaker}
-                        >
-                          Add
-                        </ProductButton>
-                      </Box>
-                    )}
-
-                    <Box
-                      as="hr"
-                      sx={{
-                        width: "100%",
-                        border: 0,
-                        borderTop:
-                          "1px solid var(--brand-color-border-default)",
-                      }}
-                    />
+                            Remove
+                          </ProductButton>
+                          <ProductButton
+                            disabled={numSpeakers === maxSpeakers}
+                            variant="outline"
+                            leadingIcon={PersonAddIcon}
+                            onClick={handleAddSpeaker}
+                          >
+                            Add
+                          </ProductButton>
+                        </Box>
+                      )}
+                    </>
 
                     {/* {activeTheme === "custom" && (
                         <FormControl>
@@ -503,24 +529,6 @@ const CreateTemplate: NextPage = () => {
                           </Stack>
                         </FormControl>
                       )} */}
-                    <Stack
-                      direction="horizontal"
-                      padding="none"
-                      justifyContent="space-between"
-                    >
-                      <SizeField
-                        supportedSizes={sizes}
-                        handleChange={(event) =>
-                          setActiveTheme(event.target.value)
-                        }
-                      />
-                      <AlignmentField />
-                    </Stack>
-                    <ThemeField
-                      handleChange={(event) =>
-                        setActiveTheme(event.target.value)
-                      }
-                    />
                   </Stack>
                 </Box>
                 <FormFooterControls
