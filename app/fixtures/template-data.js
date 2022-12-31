@@ -39,7 +39,7 @@ export const templateData = {
       id: "speaker-card",
       name: "Speaker card",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      image: "/fixtures/sample2.png",
+      image: `${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/sample2.png`,
     },
     // {
     //   id: "social-coupon",
