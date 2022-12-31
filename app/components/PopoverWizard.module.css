@@ -1,0 +1,14 @@
+.popover-wizard {
+  animation: fadeInRight 500ms ease forwards;
+  opacity: 0;
+  animation-delay: 2s;
+}
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+  }
+}

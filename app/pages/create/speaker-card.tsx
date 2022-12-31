@@ -183,6 +183,7 @@ const CreateTemplate: NextPage = () => {
         company: formEl[`speaker-card-${id}-company`].value,
         avatar: "https://avatars.githubusercontent.com/u/13340707?v=4",
       };
+      console.log(i, speaker);
       speakerData.push(speaker);
     }
 
@@ -433,6 +434,7 @@ const CreateTemplate: NextPage = () => {
                                   padding="none"
                                 >
                                   <FormControl
+                                    required
                                     fullWidth
                                     id={`speaker-card-${speakerIndex}-first-name`}
                                   >
@@ -442,6 +444,7 @@ const CreateTemplate: NextPage = () => {
                                     <TextInput />
                                   </FormControl>
                                   <FormControl
+                                    required
                                     fullWidth
                                     id={`speaker-card-${speakerIndex}-last-name`}
                                   >
@@ -452,6 +455,7 @@ const CreateTemplate: NextPage = () => {
                                   </FormControl>
                                 </Stack>
                                 <FormControl
+                                  required
                                   fullWidth
                                   id={`speaker-card-${speakerIndex}-position`}
                                 >
@@ -462,6 +466,7 @@ const CreateTemplate: NextPage = () => {
                                 </FormControl>
                                 <FormControl
                                   fullWidth
+                                  required
                                   id={`speaker-card-${speakerIndex}-company`}
                                 >
                                   <FormControl.Label>Company</FormControl.Label>

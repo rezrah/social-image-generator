@@ -2,6 +2,8 @@ import { Box, Popover, Button as ProductButton } from "@primer/react";
 import { Heading, Text, Stack } from "@primer/react-brand";
 import React, { PropsWithChildren } from "react";
 
+import styles from "./PopoverWizard.module.css";
+
 type Props = {
   title: string;
   visible: boolean;
@@ -19,6 +21,7 @@ export function PopoverWizard({
 }: PropsWithChildren<Props>) {
   return (
     <Box
+      className={styles["popover-wizard"]}
       position="fixed"
       pt={4}
       sx={{
