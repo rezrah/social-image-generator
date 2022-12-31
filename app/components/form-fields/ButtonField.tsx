@@ -8,9 +8,14 @@ import styles from "./form-fields.module.css";
 type Props = {
   charCount: number;
   handleCharCount: ChangeEventHandler<HTMLInputElement>;
+  placeholder?: string;
 };
 
-export function ButtonField({ charCount, handleCharCount }: Props) {
+export function ButtonField({
+  charCount,
+  handleCharCount,
+  placeholder,
+}: Props) {
   return (
     <FormControl id="button" fullWidth>
       <Box sx={{ position: "relative" }}>
@@ -22,10 +27,10 @@ export function ButtonField({ charCount, handleCharCount }: Props) {
       <TextInput
         className={styles["custom-input-background"]}
         type="text"
-        placeholder="E.g. Contact sales"
         maxLength={25}
         onChange={handleCharCount}
       />
+      <FormControl.Hint>{placeholder}</FormControl.Hint>
     </FormControl>
   );
 }

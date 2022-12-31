@@ -34,11 +34,11 @@ export function EyebrowField({
           type="text"
           name="subheading"
           required={required}
-          placeholder={placeholder}
           maxLength={50}
           fullWidth
           onChange={handleCharCount}
         />
+        <FormControl.Hint>{placeholder}</FormControl.Hint>
       </FormControl>
     </Box>
   );

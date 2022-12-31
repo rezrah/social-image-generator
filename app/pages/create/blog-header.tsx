@@ -312,6 +312,7 @@ const CreateTemplate: NextPage = () => {
                     />
                     <ButtonField
                       charCount={charCount.button}
+                      placeholder="E.g. Contact sales"
                       handleCharCount={(event) =>
                         handleCharCount(
                           event as unknown as ChangeEventHandler<HTMLInputElement>,

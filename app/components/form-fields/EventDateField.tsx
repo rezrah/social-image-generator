@@ -32,12 +32,12 @@ export function EventDateField({
         <TextInput
           type="text"
           className={styles["custom-input-background"]}
-          placeholder={placeholder}
           fullWidth
           required={required}
           maxLength={75}
           onChange={handleCharCount}
         />
+        <FormControl.Hint>{placeholder}</FormControl.Hint>
       </FormControl>
     </Box>
   );

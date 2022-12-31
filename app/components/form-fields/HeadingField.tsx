@@ -32,11 +32,11 @@ export function HeadingField({
         <TextInput
           className={styles["custom-input-background"]}
           type="text"
-          placeholder={placeholder}
           fullWidth
           maxLength={75}
           onChange={handleCharCount}
         />
+        <FormControl.Hint>{placeholder}</FormControl.Hint>
       </FormControl>
     </Box>
   );

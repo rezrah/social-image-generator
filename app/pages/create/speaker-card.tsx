@@ -303,7 +303,7 @@ const CreateTemplate: NextPage = () => {
                   <Stack direction="vertical" gap="condensed" padding="none">
                     <EyebrowField
                       required
-                      placeholder="On-Demand Session"
+                      placeholder="E.g. On-Demand Session"
                       charCount={charCount.eyebrow}
                       handleCharCount={(event) =>
                         handleCharCount(
@@ -313,7 +313,7 @@ const CreateTemplate: NextPage = () => {
                       }
                     />
                     <HeadingField
-                      placeholder="The developer platform for the most ambitious enterprises"
+                      placeholder="E.g. The developer platform for the most ambitious enterprises"
                       required
                       charCount={charCount.heading}
                       handleCharCount={(event) =>
@@ -325,7 +325,7 @@ const CreateTemplate: NextPage = () => {
                     />
                     <EventDateField
                       required
-                      placeholder="October 27, 11:30 AM PST"
+                      placeholder="E.g. October 27, 11:30 AM PST"
                       charCount={charCount.event_date}
                       handleCharCount={(event) =>
                         handleCharCount(
@@ -466,13 +466,13 @@ const CreateTemplate: NextPage = () => {
                                 >
                                   <FormControl.Label>Company</FormControl.Label>
                                   <Select>
-                                    <Select.Option value="github">
+                                    <Select.Option value="GitHub">
                                       GitHub
                                     </Select.Option>
-                                    <Select.Option value="google">
+                                    <Select.Option value="Google">
                                       Google
                                     </Select.Option>
-                                    <Select.Option value="microsoft">
+                                    <Select.Option value="Microsoft">
                                       Microsoft
                                     </Select.Option>
                                   </Select>

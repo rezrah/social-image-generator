@@ -31,9 +31,9 @@ export function DescriptionField({
         maxLength={150}
         rows={4}
         fullWidth
-        placeholder={placeholder}
         onChange={handleCharCount}
       />
+      <FormControl.Hint>{placeholder}</FormControl.Hint>
     </FormControl>
   );
 }
