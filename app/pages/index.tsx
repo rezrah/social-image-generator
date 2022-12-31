@@ -18,6 +18,7 @@ import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
 import NextLink from "next/link";
 
 const Home: NextPage = () => {
+  console.log(process.env.NEXT_PUBLIC_BASE_PATH);
   return (
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
