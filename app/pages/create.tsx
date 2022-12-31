@@ -34,7 +34,10 @@ const Create: NextPage = () => {
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
         <title>Create social images</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="icon"
+          href={`${process.env.NEXT_PUBLIC_BASE_PATH}/favicon.ico`}
+        />
       </Head>
 
       <PageLayout containerWidth="full">
@@ -79,7 +82,7 @@ const Create: NextPage = () => {
                   {templateData[category].map((template) => (
                     <Link
                       legacyBehavior
-                      href={`/create/${template.id}`}
+                      href={`${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`}
                       key={template.name}
                     >
                       <Box

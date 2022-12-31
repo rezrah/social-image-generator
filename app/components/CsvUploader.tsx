@@ -107,7 +107,7 @@ function Root({
           <div>
             <Button
               as="a"
-              href="/fixtures/sample.csv"
+              href={`${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/sample.csv`}
               download
               target="_blank"
               size="medium"

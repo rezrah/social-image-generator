@@ -178,7 +178,6 @@ const CreateTemplate: NextPage = () => {
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
         <title>Create social images</title>
-        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <PageLayout containerWidth="full">

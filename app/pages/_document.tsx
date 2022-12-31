@@ -6,23 +6,19 @@ export default function Document() {
       <Head>
         <link
           rel="icon"
+          href={`${process.env.NEXT_PUBLIC_BASE_PATH}/favicon.ico`}
+        />
+        <link
+          rel="icon"
           type="image/png"
           sizes="16x16"
-          href={`${
-            process.env.NODE_ENV === "production"
-              ? `/social-image-generator`
-              : ""
-          }/favicon-16x16.png`}
+          href={`${process.env.NEXT_PUBLIC_BASE_PATH}/favicon-16x16.png`}
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href={`${
-            process.env.NODE_ENV === "production"
-              ? `/social-image-generator`
-              : ""
-          }/favicon-32x32.png`}
+          href={`${process.env.NEXT_PUBLIC_BASE_PATH}/favicon-32x32.png`}
         />
       </Head>
       <body data-color-mode="dark">

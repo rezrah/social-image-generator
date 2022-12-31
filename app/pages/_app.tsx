@@ -27,14 +27,16 @@ function MyApp({ Component, pageProps }: AppProps) {
         <PRCThemeProvider colorMode="night" preventSSRMismatch>
           <BaseStyles>
             <SubdomainNavBar title="Social assets" fullWidth>
-              <SubdomainNavBar.Link href="/create">
+              <SubdomainNavBar.Link
+                href={`${process.env.NEXT_PUBLIC_BASE_PATH}/create`}
+              >
                 Templates
               </SubdomainNavBar.Link>
             </SubdomainNavBar>
 
-            {/* <TransitionEffect1> */}
-            <Component {...pageProps} />
-            {/* </TransitionEffect1> */}
+            <TransitionEffect1>
+              <Component {...pageProps} />
+            </TransitionEffect1>
           </BaseStyles>
         </PRCThemeProvider>
       </ThemeProvider>
