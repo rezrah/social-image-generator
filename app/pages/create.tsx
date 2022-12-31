@@ -82,7 +82,7 @@ const Create: NextPage = () => {
                   {templateData[category].map((template) => (
                     <Link
                       legacyBehavior
-                      href={`${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`}
+                      href={`/create/${template.id}`}
                       key={template.name}
                     >
                       <Box
