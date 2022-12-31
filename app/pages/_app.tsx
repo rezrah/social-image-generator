@@ -26,7 +26,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider data-color-mode="dark">
         <PRCThemeProvider colorMode="night" preventSSRMismatch>
           <BaseStyles>
-            <SubdomainNavBar title="Social assets" fullWidth>
+            <SubdomainNavBar
+              title="Social assets"
+              fullWidth
+              titleHref={`${process.env.NEXT_PUBLIC_BASE_PATH}/`}
+            >
               <SubdomainNavBar.Link
                 href={`${process.env.NEXT_PUBLIC_BASE_PATH}/create`}
               >
