@@ -22,7 +22,9 @@ export function ThemeField({ handleChange }: Props) {
         <Select.Option value="analog">Analog</Select.Option>
         <Select.Option value="policy">Policy</Select.Option>
         <Select.Option value="universe">Universe</Select.Option>
-        <Select.Option value="custom">Custom</Select.Option>
+        <Select.Option value="copilot">Copilot</Select.Option>
+        <Select.Option value="education">Education</Select.Option>
+        {/* <Select.Option value="custom">Custom</Select.Option> */}
       </Select>
     </FormControl>
   );

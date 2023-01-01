@@ -15,7 +15,7 @@ export const drawCallToActionButton = async function ({
   offsetY,
 }) {
   const ctx = canvas.getContext("2d");
-  const hasLightButton = ["light", "policy"].includes(theme);
+  const hasDarkButton = ["light", "policy"].includes(theme);
 
   ctx.font = "20px AllianceNo1SemiBold";
   const txt = label;
@@ -26,7 +26,7 @@ export const drawCallToActionButton = async function ({
 
   let buttonGradient = ctx.createLinearGradient(300, 0, 300, 200);
 
-  if (hasLightButton) {
+  if (hasDarkButton) {
     ctx.lineWidth = 1;
     ctx.fillStyle = "#1B1F23";
     ctx.strokeStyle = "#000000";

@@ -364,7 +364,7 @@ const CreateTemplate: NextPage = () => {
                       justifyContent="space-between"
                     >
                       <Heading as="h6" id="switchLabel">
-                        Speaker{numSpeakers > 1 && "s"}
+                        Add speaker{numSpeakers > 1 && "s"}
                       </Heading>
                       <ToggleSwitch
                         aria-labelledby="switchLabel"

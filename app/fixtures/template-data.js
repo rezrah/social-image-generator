@@ -31,14 +31,14 @@ export const templateData = {
     {
       id: "blog-header",
       name: "Blog header",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+      description: "Create a custom blog header graphic",
       image:
         "https://user-images.githubusercontent.com/13340707/183682234-70e11453-62db-4cbd-b70f-bbe34f3b9d45.png",
     },
     {
       id: "speaker-card",
       name: "Speaker card",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+      description: "Create a custom speaker card graphic",
       image: `${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/sample2.png`,
     },
     // {

@@ -7,6 +7,11 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
+body {
+  /* background: url("/home-bg.jpg") no-repeat center center fixed; */
+  background-color: #0d0e17;
+}
+
 :root {
   color-scheme: dark; /* scroll bars dark */
 }
@@ -38,5 +43,6 @@ body[data-color-mode] {
 .react-transform-wrapper {
   width: calc(100% - 80px) !important;
   min-height: 800px;
-  max-height: 800px;
+  max-height: 100vh;
+  height: 100vh !important;
 }

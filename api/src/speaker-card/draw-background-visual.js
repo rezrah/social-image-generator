@@ -37,7 +37,9 @@ export const drawBackgroundVisual = async function ({
   // Fill our gradient
   ctx.fillRect(0, 0, 1200, canvasHeight);
 
-  if (["analog", "policy", "universe"].includes(theme)) {
+  if (
+    ["analog", "policy", "universe", "copilot", "education"].includes(theme)
+  ) {
     const bgTheme = await Canvas.loadImage(
       path.resolve(__dirname, `../assets/${theme}.png`)
     );

@@ -16,6 +16,7 @@ import styles from "../styles/Home.module.css";
 import { Button, Hero, River, Heading, Text, Link } from "@primer/react-brand";
 import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
 import NextLink from "next/link";
+import { relative } from "path";
 
 const Home: NextPage = () => {
   return (
@@ -23,8 +24,31 @@ const Home: NextPage = () => {
       <Head>
         <title>Create social images</title>
       </Head>
-
-      <Box sx={{ maxWidth: 1280, margin: "0 auto" }}>
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1,
+        }}
+      >
+        <Image
+          className={styles.customBackground}
+          src="/home-bg.jpg"
+          width={1280}
+          height={720}
+          alt="background image"
+        />
+      </Box>
+      <Box
+        sx={{
+          maxWidth: 1280,
+          margin: "0 auto",
+          zIndex: 2,
+          position: "relative",
+        }}
+      >
         {/* <Hero
           className={`${styles.hero}`}
           heading=" GitHub social assets"

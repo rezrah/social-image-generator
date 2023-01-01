@@ -16,6 +16,11 @@
   align-items: center;
 }
 
+.customBackground {
+  width: 100%;
+  height: auto;
+}
+
 .hero {
   height: 80vh;
   justify-content: center;

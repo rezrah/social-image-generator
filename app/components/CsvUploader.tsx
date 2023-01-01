@@ -54,6 +54,7 @@ function Root({
 
           if (images.length) {
             csvDataCallback(images);
+
             setIsLoading(false);
           }
         } catch (error) {
