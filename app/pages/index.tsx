@@ -33,7 +33,7 @@ const Home: NextPage = () => {
           zIndex: 1,
         }}
       >
-        <Image
+        <img
           className={styles.customBackground}
           src="/home-bg.jpg"
           width={1280}
