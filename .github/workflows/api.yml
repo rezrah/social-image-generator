@@ -29,6 +29,6 @@ jobs:
 
       - uses: azure/webapps-deploy@v2
         with:
-          app-name: "socialassetapi"
+          app-name: "assetgenerator"
           publish-profile: ${{ secrets.AZURE_APP_SERVICE_PUBLISH_PROFILE }}
           images: "primerbrand.azurecr.io/socialassetapi:${{ github.sha }}"
