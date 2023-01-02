@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   # Build job
-  fe:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
