@@ -3,6 +3,9 @@ name: Deploy API
 on:
   push:
     branches: ["main"]
+    paths:
+      - api/**
+
   workflow_dispatch:
 
 permissions:
