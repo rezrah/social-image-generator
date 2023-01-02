@@ -24,7 +24,7 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - run: |
-          docker build . -t primerbrand.azurecr.io/socialassetapi:${{ github.sha }}
+          docker build ./api -t primerbrand.azurecr.io/socialassetapi:${{ github.sha }}
           docker push primerbrand.azurecr.io/socialassetapi:${{ github.sha }}
 
       - uses: azure/webapps-deploy@v2
