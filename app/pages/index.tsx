@@ -35,7 +35,7 @@ const Home: NextPage = () => {
       >
         <img
           className={styles.customBackground}
-          src="/home-bg.jpg"
+          src={`${process.env.NEXT_PUBLIC_BASE_PATH}/home-bg.jpg`}
           width={1280}
           height={720}
           alt="background image"
