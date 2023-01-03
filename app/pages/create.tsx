@@ -10,6 +10,7 @@ import {
   Button as ProductButton,
   RadioGroup,
   CheckboxGroup,
+  Label,
 } from "@primer/react";
 import { templateData } from "../fixtures/template-data";
 
@@ -74,7 +75,7 @@ const Create: NextPage = () => {
                   sx={{
                     display: "grid",
                     gridTemplateColumns:
-                      "repeat(auto-fill, minmax(200px, 1fr))",
+                      "repeat(auto-fill, minmax(300px, 1fr))",
                     gridGap: 5,
                   }}
                 >
@@ -101,9 +102,21 @@ const Create: NextPage = () => {
                           height={100}
                           alt="template"
                         />
-                        <Heading as="h6" className={styles.cardHeading}>
-                          {template.name}
-                        </Heading>
+                        <Stack
+                          direction="horizontal"
+                          alignItems="center"
+                          padding="none"
+                          gap="none"
+                          justifyContent="space-between"
+                        >
+                          <Heading as="h6" className={styles.cardHeading}>
+                            {template.name}
+                          </Heading>
+                          {template.isNew && (
+                            <Label variant="accent">New</Label>
+                          )}
+                        </Stack>
+
                         <Text size="300" variant="muted">
                           {template.description}
                         </Text>

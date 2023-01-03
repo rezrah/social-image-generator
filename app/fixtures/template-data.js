@@ -40,6 +40,7 @@ export const templateData = {
       name: "Speaker card",
       description: "Create a custom speaker card graphic",
       image: `${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/sample2.png`,
+      isNew: true,
     },
     // {
     //   id: "social-coupon",
