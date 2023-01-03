@@ -114,7 +114,9 @@ const CreateTemplate: NextPage = () => {
   const [align, setAlign] = React.useState("left");
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const [theme, setTheme] = React.useState("/animated-2.mov");
+  const [theme, setTheme] = React.useState(
+    `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-2.mov`
+  );
   const [showWizard, setShowWizard] = useLocalStorageState("showWizard", {
     defaultValue: true,
   });
@@ -362,14 +364,20 @@ const CreateTemplate: NextPage = () => {
                       onChange={(event) => handleChange(event, "theme")}
                     >
                       <Select.Option
-                        value="/animated-1.mov"
-                        selected={theme === "/animated-1.mov"}
+                        value={`${process.env.NEXT_PUBLIC_BASE_PATH}/animated-1.mov`}
+                        selected={
+                          theme ===
+                          `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-1.mov`
+                        }
                       >
                         Universe one
                       </Select.Option>
                       <Select.Option
-                        value="/animated-2.mov"
-                        selected={theme === "/animated-2.mov"}
+                        value={`${process.env.NEXT_PUBLIC_BASE_PATH}/animated-2.mov`}
+                        selected={
+                          theme ===
+                          `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-2.mov`
+                        }
                       >
                         Universe two
                       </Select.Option>
