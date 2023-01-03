@@ -42,6 +42,13 @@ export const templateData = {
       image: `${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/sample2.png`,
       isNew: true,
     },
+    {
+      id: "animated",
+      name: "Animated banner",
+      description: "Create a vide-based animated banner graphic",
+      image: `${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/animated-template.png`,
+      isNew: true,
+    },
     // {
     //   id: "social-coupon",
     //   name: "Social coupon",

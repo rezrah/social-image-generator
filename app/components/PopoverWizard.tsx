@@ -10,6 +10,7 @@ type Props = {
   description: string;
   action: string;
   handlePress: () => void;
+  offsetY?: number;
 };
 
 export function PopoverWizard({
@@ -18,6 +19,7 @@ export function PopoverWizard({
   description,
   action,
   handlePress,
+  offsetY = 190,
 }: PropsWithChildren<Props>) {
   return (
     <Box
@@ -26,7 +28,7 @@ export function PopoverWizard({
       pt={4}
       sx={{
         left: 375,
-        top: 190,
+        top: offsetY,
         width: 300,
         zIndex: 2,
       }}

@@ -44,5 +44,5 @@ body[data-color-mode] {
   width: calc(100% - 80px) !important;
   min-height: 800px;
   max-height: 100vh;
-  height: 100vh !important;
+  height: calc(100vh - 78px) !important;
 }

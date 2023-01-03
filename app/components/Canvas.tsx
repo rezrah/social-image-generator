@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, ReactElement } from "react";
 import { Box, IconButton } from "@primer/react";
 import {
   PlusIcon,
@@ -38,12 +38,15 @@ function Root({ children }: PropsWithChildren) {
 
 type PannableCanvasProps = {
   uri?: string;
+  hasVideo?: () => JSX.Element;
   localPath?: string;
 };
 
 function PannableCanvas({
   uri,
   localPath,
+  hasVideo,
+  children,
 }: PropsWithChildren<PannableCanvasProps>) {
   return (
     <TransformWrapper initialScale={0.8} minScale={0.2} centerOnInit>
@@ -93,11 +96,15 @@ function PannableCanvas({
             />
           </Box>
           <TransformComponent>
-            <img
-              src={uri}
-              alt="social image"
-              style={{ width: "100%", height: "auto" }}
-            />
+            {!hasVideo && !children && (
+              <img
+                src={uri}
+                alt="social image"
+                style={{ width: "100%", height: "auto" }}
+              />
+            )}
+
+            {children && children}
           </TransformComponent>
         </React.Fragment>
       )}
