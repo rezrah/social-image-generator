@@ -45,7 +45,7 @@ export const templateData = {
     {
       id: "animated",
       name: "Animated banner",
-      description: "Create a vide-based animated banner graphic",
+      description: "Create a video-based animated banner graphic",
       image: `${process.env.NEXT_PUBLIC_BASE_PATH}/fixtures/animated-template.png`,
       isNew: true,
     },
