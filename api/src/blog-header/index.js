@@ -80,8 +80,27 @@ export const drawBlogHeader = async function ({
     return "m";
   };
 
+  // start big heading
+  if (theme === "copilot") {
+    // add diagonal gradient fillStyle to text
+
+    const angle = (45 * Math.PI) / 180;
+    const x2 = width * Math.cos(angle);
+    const y2 = height * Math.sin(angle);
+    console.log(x2, y2);
+    let textGradient = ctx.createLinearGradient(50, 300, 400, 600);
+
+    textGradient.addColorStop(0, "#8ADFD7");
+    textGradient.addColorStop(0.5, "#8ADFD7");
+    textGradient.addColorStop(1, "#A371F7");
+
+    ctx.fillStyle = textGradient;
+  } else {
+    ctx.fillStyle = fgDefault(theme);
+  }
+
   ctx.font = typePairings[getSize(heading.length)].heading;
-  ctx.fillStyle = fgDefault(theme);
+
   ctx.textAlign = align;
 
   const headingStartingPos = size.typePairing === "xl" ? 923 : 623;
