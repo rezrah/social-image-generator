@@ -98,6 +98,11 @@ your fans."
                 ></path>
               </svg>
             </NextLink>
+            <a
+              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_OAUTH_APP_CLIENT_ID}`}
+            >
+              Login with github
+            </a>
           </div>
         </div>
       </Box>

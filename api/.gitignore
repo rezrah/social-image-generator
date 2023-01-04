@@ -1,2 +1,4 @@
 views/images/banner/*
 dist/
+
+.env

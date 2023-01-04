@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
@@ -8,6 +9,9 @@ import { drawBlogHeader } from "./src/blog-header/index.js";
 import { drawSpeakerCard } from "./src/speaker-card/index.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import fetch from "node-fetch";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -107,6 +111,31 @@ app.post("/api/speaker-card", async (req, res) => {
 // root route - serve static file
 app.get("/", (req, res) => {
   return res.sendFile(path.join(__dirname, "./public/client.html"));
+});
+
+// root route - serve static file
+app.get("/login", async (req, res) => {
+  // The req.query object has the query params that were sent to this route.
+  const requestToken = req.query.code;
+
+  const response = await fetch(
+    `https://github.com/login/oauth/access_token?client_id=${process.env.OAUTH_CLIENT_ID}&client_secret=${process.env.OAUTH_CLIENT_SECRET}&code=${requestToken}`,
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+      },
+    }
+  );
+
+  if (response) {
+    const data = await response.json();
+
+    const accessToken = data.access_token;
+
+    // redirect the user to the home page, along with the access token
+    res.redirect(`http://localhost:3000/login?access_token=${accessToken}`);
+  }
 });
 
 // starting the server
