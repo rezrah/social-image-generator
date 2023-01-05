@@ -41,7 +41,7 @@ const Login: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
+    if (authEnabled && user) {
       const timer = setTimeout(() => {
         router.push(`${process.env.NEXT_PUBLIC_BASE_PATH}/create`);
       }, 3000);
@@ -50,7 +50,7 @@ const Login: NextPage = () => {
         clearInterval(timer);
       };
     }
-  }, [router, user]);
+  }, [router, user, authEnabled]);
 
   useEffect(() => {
     const query = window.location.search.substring(1);
