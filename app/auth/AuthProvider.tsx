@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     <AuthContext.Provider
       value={{ user, setUser, signOut, signIn, authEnabled }}
     >
-      ) {children}
+      {children}
     </AuthContext.Provider>
   );
 };
