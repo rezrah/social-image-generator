@@ -118,6 +118,10 @@ app.get("/login", async (req, res) => {
   // The req.query object has the query params that were sent to this route.
   const requestToken = req.query.code;
 
+  if (!requestToken) {
+    return;
+  }
+
   const response = await fetch(
     `https://github.com/login/oauth/access_token?client_id=${process.env.OAUTH_CLIENT_ID}&client_secret=${process.env.OAUTH_CLIENT_SECRET}&code=${requestToken}`,
     {
@@ -132,10 +136,11 @@ app.get("/login", async (req, res) => {
     const data = await response.json();
     const accessToken = data.access_token;
 
-    // redirect the user to the home page, along with the access token
-    res.redirect(
-      `${process.env.WEB_APP_URL}/login?access_token=${accessToken}`
-    );
+    if (accessToken) {
+      res.redirect(
+        `${process.env.WEB_APP_URL}/login?access_token=${accessToken}`
+      );
+    }
   }
 });
 
