@@ -22,7 +22,7 @@ import { MarkGithubIcon } from "@primer/octicons-react";
 import Link from "next/link";
 import { AuthProvider, useAuth } from "../auth/AuthProvider";
 import { AuthHeader } from "../components/AuthHeader";
-import { AppRoot } from "./AppRoot";
+import { AppRoot } from "../components/AppRoot";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

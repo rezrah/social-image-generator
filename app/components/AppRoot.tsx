@@ -1,7 +1,7 @@
 import { SubdomainNavBar } from "@primer/react-brand";
 import { Component } from "react";
-import { AuthHeader } from "../components/AuthHeader";
-import TransitionEffect1 from "../components/TransitionEffect1";
+import { AuthHeader } from "./AuthHeader";
+import TransitionEffect1 from "./TransitionEffect1";
 import type { AppProps } from "next/app";
 import { NextComponentType, NextPageContext } from "next/types";
 import { useAuth } from "../auth/AuthProvider";
