@@ -20,13 +20,14 @@ type AuthContextValue = {
   setUser: (user: User | null) => void;
   signOut: () => void;
   signIn: (token: string) => void;
+  authEnabled?: boolean;
 };
 
 export const AuthContext = createContext<null | AuthContextValue>(null);
 
-// create Provider for auth via oauth
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
+  const authEnabled = process.env.NEXT_PUBLIC_FEATURE_FLAG_AUTH_ENABLED;
 
   // retrieve from local storage
   useEffect(() => {
@@ -35,33 +36,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       signIn(token);
     }
   }, []);
-
-  //   useEffect(() => {
-  //     if (user?.token) {
-  //       checkToken(user.token);
-  //     }
-  //   }, [user]);
-
-  //   // check github access token function
-  //   const checkToken = (token: string) => {
-  //     fetch(
-  //       `https://api.github.com/applications/${process.env.NEXT_PUBLIC_OAUTH_APP_CLIENT_ID}/token`,
-  //       {
-  //         headers: {
-  //           accept: "application/vnd.github+json",
-  //           method: "POST",
-  //           Authorization: "Bearer " + token,
-  //         },
-  //       }
-  //     )
-  //       .then((res) => res.json())
-  //       .then((res) => {
-  //         console.log("checking token", res);
-  //         if (res.message === "Bad credentials") {
-  //           signOut();
-  //         }
-  //       });
-  //   };
 
   const signIn = async (token: string) => {
     if (!user && token) {
@@ -100,13 +74,13 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, signOut, signIn }}>
+    <AuthContext.Provider
+      value={{ user, setUser, signOut, signIn, authEnabled }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
-
-// create hook for useAuth
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

@@ -11,7 +11,7 @@ type AppRootProps = {
 };
 
 export function AppRoot({ component: Component, ...pageProps }: AppRootProps) {
-  const { user } = useAuth();
+  const { user, authEnabled } = useAuth();
   return (
     <>
       <SubdomainNavBar
@@ -24,7 +24,8 @@ export function AppRoot({ component: Component, ...pageProps }: AppRootProps) {
         >
           Templates
         </SubdomainNavBar.Link>
-        {!user && (
+
+        {authEnabled && !user && (
           <SubdomainNavBar.SecondaryAction
             href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_OAUTH_APP_CLIENT_ID}`}
           >

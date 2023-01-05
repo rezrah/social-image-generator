@@ -36,7 +36,7 @@ import { useAuth } from "../auth/AuthProvider";
 
 const Login: NextPage = () => {
   const [userName, setUserName] = useState("");
-  const { user, signOut, signIn } = useAuth();
+  const { user, authEnabled, signIn } = useAuth();
   const [token, setToken] = useState("");
   const router = useRouter();
 
@@ -67,7 +67,7 @@ const Login: NextPage = () => {
       justifyContent="center"
       alignItems="center"
     >
-      {user && (
+      {authEnabled && user && (
         <>
           <Spinner size="large" sx={{}} />
           <Text as="p">Welcome {user.name}.</Text>

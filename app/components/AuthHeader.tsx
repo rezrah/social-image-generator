@@ -4,7 +4,7 @@ import { Avatar } from "@primer/react";
 import { useAuth } from "../auth/AuthProvider";
 
 export function AuthHeader() {
-  const { user, signOut } = useAuth();
+  const { user, authEnabled, signOut } = useAuth();
   return (
     <Box
       sx={{
@@ -14,7 +14,7 @@ export function AuthHeader() {
         zIndex: 999,
       }}
     >
-      {user && (
+      {authEnabled && user && (
         <ActionMenu>
           <ActionMenu.Anchor>
             <Avatar src={user?.picture} size={42}></Avatar>

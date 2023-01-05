@@ -33,7 +33,7 @@ import { useAuth } from "../auth/AuthProvider";
 import clsx from "clsx";
 
 const Create: NextPage = () => {
-  const { user } = useAuth();
+  const { user, authEnabled } = useAuth();
   return (
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
@@ -133,7 +133,7 @@ const Create: NextPage = () => {
                         </Box>
                       </Link>
                     ))}
-                    {!user && (
+                    {authEnabled && !user && (
                       <Box
                         className={styles.card}
                         as="a"
