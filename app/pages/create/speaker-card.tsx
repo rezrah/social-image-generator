@@ -83,6 +83,7 @@ import { Sidebar } from "../../components/Sidebar";
 import { generateImage } from "../../utils/api";
 import { PopoverWizard } from "../../components/PopoverWizard";
 import { EventDateField } from "../../components/form-fields/EventDateField";
+import { useAuth, useAuthenticatedPage } from "../../auth/AuthProvider";
 
 type CsvData = {
   id: string;
@@ -146,6 +147,8 @@ const CreateTemplate: NextPage = () => {
 
   const [editModeLoading, setEditModeLoading] = React.useState<boolean>(false);
 
+  useAuthenticatedPage();
+
   const handleClear = (event) => {
     event.preventDefault();
 
@@ -183,7 +186,6 @@ const CreateTemplate: NextPage = () => {
         company: formEl[`speaker-card-${id}-company`].value,
         avatar: "https://avatars.githubusercontent.com/u/13340707?v=4",
       };
-      console.log(i, speaker);
       speakerData.push(speaker);
     }
 

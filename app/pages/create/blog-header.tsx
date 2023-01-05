@@ -75,6 +75,7 @@ import { FormFooterControls } from "../../components/form-fields/FormFooterContr
 import { Sidebar } from "../../components/Sidebar";
 import { generateImage } from "../../utils/api";
 import { PopoverWizard } from "../../components/PopoverWizard";
+import { useAuthenticatedPage } from "../../auth/AuthProvider";
 
 type CsvData = {
   id: string;
@@ -138,6 +139,8 @@ const CreateTemplate: NextPage = () => {
   const fileReUploadRef = React.useRef<HTMLInputElement | null>(null);
 
   const [editModeLoading, setEditModeLoading] = React.useState<boolean>(false);
+
+  useAuthenticatedPage();
 
   const handleClear = (event) => {
     event.preventDefault();

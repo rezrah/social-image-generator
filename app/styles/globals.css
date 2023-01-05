@@ -46,3 +46,7 @@ body[data-color-mode] {
   max-height: 100vh;
   height: calc(100vh - 78px) !important;
 }
+
+#__primerPortalRoot__ {
+  z-index: 9999;
+}

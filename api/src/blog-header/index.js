@@ -87,7 +87,6 @@ export const drawBlogHeader = async function ({
     const angle = (45 * Math.PI) / 180;
     const x2 = width * Math.cos(angle);
     const y2 = height * Math.sin(angle);
-    console.log(x2, y2);
     let textGradient = ctx.createLinearGradient(50, 300, 400, 600);
 
     textGradient.addColorStop(0, "#8ADFD7");

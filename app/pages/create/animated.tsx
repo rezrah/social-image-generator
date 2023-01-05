@@ -71,6 +71,7 @@ import { PopoverWizard } from "../../components/PopoverWizard";
 import { Sidebar } from "../../components/Sidebar";
 import useLocalStorageState from "use-local-storage-state";
 import { CharCount } from "../../components/CharCount";
+import { useAuthenticatedPage } from "../../auth/AuthProvider";
 
 const sizes = [
   { w: 1200, h: 630, typePairing: "l" },
@@ -125,6 +126,8 @@ const CreateTemplate: NextPage = () => {
     charCountReducer,
     charCountInitialStates
   );
+
+  useAuthenticatedPage();
 
   useEffect(() => {
     const isMounted = true;

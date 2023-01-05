@@ -3,6 +3,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
 import {
   PageLayout,
   Box,
@@ -11,6 +13,7 @@ import {
   RadioGroup,
   CheckboxGroup,
   Label,
+  Spinner,
 } from "@primer/react";
 import { templateData } from "../fixtures/template-data";
 
@@ -29,35 +32,51 @@ import {
   Stack,
 } from "@primer/react-brand";
 import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
+import { useAuth } from "../auth/AuthProvider";
 
 const Login: NextPage = () => {
   const [userName, setUserName] = useState("");
+  const { user, signOut, signIn } = useAuth();
+  const [token, setToken] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      const timer = setTimeout(() => {
+        router.push(`${process.env.NEXT_PUBLIC_BASE_PATH}/create`);
+      }, 3000);
+
+      return () => {
+        clearInterval(timer);
+      };
+    }
+  }, [router, user]);
 
   useEffect(() => {
     const query = window.location.search.substring(1);
     const token = query.split("access_token=")[1];
 
-    fetch("https://api.github.com/user", {
-      headers: {
-        // Include the token in the Authorization header
-        Authorization: "token " + token,
-      },
-    })
-      // Parse the response as JSON
-      .then((res) => res.json())
-      .then((res) => {
-        // Once we get the response (which has many fields)
-        // Documented here: https://developer.github.com/v3/users/#get-the-authenticated-user
-        // Write "Welcome <user name>" to the documents body
-        console.log("res", res);
-        setUserName(res.login);
-      });
-  }, []);
+    if (token) {
+      signIn(token);
+    }
+  }, [token, signIn]);
 
   return (
-    <div className={[styles.container, "page"].join(" ")}>
-      Welcome {userName}!
-    </div>
+    <Stack
+      className={[styles.container, "page"].join(" ")}
+      justifyContent="center"
+      alignItems="center"
+    >
+      {user && (
+        <>
+          <Spinner size="large" sx={{}} />
+          <Text as="p">Welcome {user.name}.</Text>
+          <Text as="p" variant="muted" size="200">
+            Please wait while we redirect you.
+          </Text>
+        </>
+      )}
+    </Stack>
   );
 };
 

@@ -113,7 +113,7 @@ app.get("/", (req, res) => {
   return res.sendFile(path.join(__dirname, "./public/client.html"));
 });
 
-// root route - serve static file
+// Login route
 app.get("/login", async (req, res) => {
   // The req.query object has the query params that were sent to this route.
   const requestToken = req.query.code;
@@ -130,11 +130,12 @@ app.get("/login", async (req, res) => {
 
   if (response) {
     const data = await response.json();
-
     const accessToken = data.access_token;
 
     // redirect the user to the home page, along with the access token
-    res.redirect(`http://localhost:3000/login?access_token=${accessToken}`);
+    res.redirect(
+      `${process.env.WEB_APP_URL}/login?access_token=${accessToken}`
+    );
   }
 });
 

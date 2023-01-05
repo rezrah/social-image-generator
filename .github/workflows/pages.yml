@@ -39,8 +39,9 @@ jobs:
       - run: cd app && npm ci --legacy-peer-deps
       - run: cd app && NODE_ENV=production npm run build
         env:
-          NEXT_PUBLIC_API_ENDPOINT: ${{secrets.API_ENDPOINT}}
           NODE_ENV: production
+          NEXT_PUBLIC_API_ENDPOINT: ${{secrets.API_ENDPOINT}}
+          NEXT_PUBLIC_OAUTH_APP_CLIENT_ID: ${{secrets.NEXT_PUBLIC_OAUTH_APP_CLIENT_ID}}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1

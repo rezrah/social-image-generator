@@ -62,7 +62,6 @@ your fans."
         /> */}
         <div className="Primer_Brand__Hero-module__Hero___EM3jf Primer_Brand__Hero-module__Hero--align-center___HUXm3 Home_hero__cwxAA">
           <h1 className="Primer_Brand__Heading-module__Heading___IVpmp Primer_Brand__Heading-module__Heading--1___Ufc7G Primer_Brand__Hero-module__Hero-heading___QuVBH">
-            {" "}
             GitHub social assets
           </h1>
           <p className="Primer_Brand__Text-module__Text___pecHN Primer_Brand__Text-module__Text--muted___lTaVa Primer_Brand__Text-module__Text--400___y7m4l Primer_Brand__Hero-module__Hero-description___vG4iA">
@@ -98,11 +97,6 @@ your fans."
                 ></path>
               </svg>
             </NextLink>
-            <a
-              href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_OAUTH_APP_CLIENT_ID}`}
-            >
-              Login with github
-            </a>
           </div>
         </div>
       </Box>

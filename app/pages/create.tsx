@@ -29,8 +29,11 @@ import {
   Stack,
 } from "@primer/react-brand";
 import { CopyIcon, DownloadIcon, ImageIcon } from "@primer/octicons-react";
+import { useAuth } from "../auth/AuthProvider";
+import clsx from "clsx";
 
 const Create: NextPage = () => {
+  const { user } = useAuth();
   return (
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
@@ -79,13 +82,58 @@ const Create: NextPage = () => {
                     gridGap: 5,
                   }}
                 >
-                  {/*@ts-ignore */}
-                  {templateData[category].map((template) => (
-                    <Link
-                      legacyBehavior
-                      href={`/create/${template.id}`}
-                      key={template.name}
-                    >
+                  <>
+                    {/*@ts-ignore */}
+                    {templateData[category].map((template) => (
+                      <Link
+                        legacyBehavior
+                        href={
+                          user
+                            ? `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
+                            : "#"
+                        }
+                        key={template.name}
+                      >
+                        <Box
+                          className={styles.card}
+                          as="a"
+                          sx={{
+                            padding: "1.5rem",
+                            borderRadius: "1rem",
+                            pointerEvents: user ? "auto" : "none",
+                            opacity: user ? 1 : 0.3,
+                          }}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            className={styles.thumbnail}
+                            src={template.image}
+                            width={200}
+                            height={100}
+                            alt="template"
+                          />
+                          <Stack
+                            direction="horizontal"
+                            alignItems="center"
+                            padding="none"
+                            gap="none"
+                            justifyContent="space-between"
+                          >
+                            <Heading as="h6" className={styles.cardHeading}>
+                              {template.name}
+                            </Heading>
+                            {template.isNew && (
+                              <Label variant="accent">New</Label>
+                            )}
+                          </Stack>
+
+                          <Text size="300" variant="muted">
+                            {template.description}
+                          </Text>
+                        </Box>
+                      </Link>
+                    ))}
+                    {!user && (
                       <Box
                         className={styles.card}
                         as="a"
@@ -93,36 +141,27 @@ const Create: NextPage = () => {
                           padding: "1.5rem",
                           borderRadius: "1rem",
                         }}
+                        href={`https://github.com/login/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_OAUTH_APP_CLIENT_ID}`}
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          className={styles.thumbnail}
-                          src={template.image}
-                          width={200}
-                          height={100}
-                          alt="template"
-                        />
-                        <Stack
-                          direction="horizontal"
-                          alignItems="center"
-                          padding="none"
-                          gap="none"
-                          justifyContent="space-between"
-                        >
-                          <Heading as="h6" className={styles.cardHeading}>
-                            {template.name}
-                          </Heading>
-                          {template.isNew && (
-                            <Label variant="accent">New</Label>
-                          )}
-                        </Stack>
 
-                        <Text size="300" variant="muted">
-                          {template.description}
-                        </Text>
+                        <Stack direction="vertical">
+                          <Heading
+                            as="h6"
+                            size="4"
+                            className={styles.cardHeading}
+                          >
+                            Ready to begin?
+                          </Heading>
+                          <Text size="400" variant="muted">
+                            Sign in to continue.
+                          </Text>
+
+                          <Button variant="primary">Sign in with GitHub</Button>
+                        </Stack>
                       </Box>
-                    </Link>
-                  ))}
+                    )}
+                  </>
                 </Box>
               </Box>
             ))}

@@ -8,6 +8,7 @@ import {
   BaseStyles,
   Avatar,
   Header,
+  Box,
   StyledOcticon,
   SSRProvider,
 } from "@primer/react";
@@ -19,29 +20,20 @@ import "public/fonts/custom-fonts.css";
 import "../styles/page-transitions.css";
 import { MarkGithubIcon } from "@primer/octicons-react";
 import Link from "next/link";
+import { AuthProvider, useAuth } from "../auth/AuthProvider";
+import { AuthHeader } from "../components/AuthHeader";
+import { AppRoot } from "./AppRoot";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SSRProvider>
       <ThemeProvider data-color-mode="dark">
         <PRCThemeProvider colorMode="night" preventSSRMismatch>
-          <BaseStyles>
-            <SubdomainNavBar
-              title="Social assets"
-              fullWidth
-              titleHref={`${process.env.NEXT_PUBLIC_BASE_PATH}/`}
-            >
-              <SubdomainNavBar.Link
-                href={`${process.env.NEXT_PUBLIC_BASE_PATH}/create`}
-              >
-                Templates
-              </SubdomainNavBar.Link>
-            </SubdomainNavBar>
-
-            <TransitionEffect1>
-              <Component {...pageProps} />
-            </TransitionEffect1>
-          </BaseStyles>
+          <AuthProvider>
+            <BaseStyles>
+              <AppRoot component={Component} />
+            </BaseStyles>
+          </AuthProvider>
         </PRCThemeProvider>
       </ThemeProvider>
     </SSRProvider>
