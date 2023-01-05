@@ -20,14 +20,15 @@ type AuthContextValue = {
   setUser: (user: User | null) => void;
   signOut: () => void;
   signIn: (token: string) => void;
-  authEnabled?: boolean;
+  authEnabled: boolean;
 };
 
 export const AuthContext = createContext<null | AuthContextValue>(null);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null);
-  const authEnabled = process.env.NEXT_PUBLIC_FEATURE_FLAG_AUTH_ENABLED;
+  const authEnabled =
+    process.env.NEXT_PUBLIC_FEATURE_FLAG_AUTH_ENABLED === "true";
 
   // retrieve from local storage
   useEffect(() => {
@@ -77,7 +78,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     <AuthContext.Provider
       value={{ user, setUser, signOut, signIn, authEnabled }}
     >
-      {children}
+      ) {children}
     </AuthContext.Provider>
   );
 };
@@ -93,11 +94,11 @@ export const useAuth = () => {
 };
 
 export const useAuthenticatedPage = () => {
-  const { user } = useAuth();
+  const { user, authEnabled } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) {
+    if (authEnabled && !user) {
       router.push(`${process.env.NEXT_PUBLIC_BASE_PATH}/create`);
     }
   }, [router, user]);

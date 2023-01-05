@@ -34,6 +34,14 @@ import clsx from "clsx";
 
 const Create: NextPage = () => {
   const { user, authEnabled } = useAuth();
+
+  const authOnlyStyles = authEnabled
+    ? {
+        pointerEvents: user ? "auto" : "none",
+        opacity: user ? 1 : 0.3,
+      }
+    : {};
+
   return (
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
@@ -88,9 +96,11 @@ const Create: NextPage = () => {
                       <Link
                         legacyBehavior
                         href={
-                          user
-                            ? `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
-                            : "#"
+                          authEnabled
+                            ? user
+                              ? `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
+                              : "#"
+                            : `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
                         }
                         key={template.name}
                       >
@@ -100,8 +110,7 @@ const Create: NextPage = () => {
                           sx={{
                             padding: "1.5rem",
                             borderRadius: "1rem",
-                            pointerEvents: user ? "auto" : "none",
-                            opacity: user ? 1 : 0.3,
+                            ...authOnlyStyles,
                           }}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}
