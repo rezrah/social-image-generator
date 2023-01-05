@@ -98,15 +98,22 @@ const Create: NextPage = () => {
                         href={
                           authEnabled
                             ? user
-                              ? `/${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
+                              ? `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
                               : "#"
-                            : `/${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
+                            : `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
                         }
                         key={template.name}
                       >
                         <Box
                           className={styles.card}
                           as="a"
+                          href={
+                            authEnabled
+                              ? user
+                                ? `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
+                                : "#"
+                              : `${process.env.NEXT_PUBLIC_BASE_PATH}/create/${template.id}`
+                          }
                           sx={{
                             padding: "1.5rem",
                             borderRadius: "1rem",
