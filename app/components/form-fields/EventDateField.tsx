@@ -15,7 +15,7 @@ type Props = {
 export function EventDateField({
   charCount,
   handleCharCount,
-  required = true,
+  required = false,
   placeholder,
 }: Props) {
   return (
@@ -24,7 +24,7 @@ export function EventDateField({
         position: "relative",
       }}
     >
-      <FormControl fullWidth id="event_date" required>
+      <FormControl fullWidth id="event_date">
         <FormControl.Label>
           Event date
           <CharCount max={50} cur={charCount} />
@@ -33,7 +33,6 @@ export function EventDateField({
           type="text"
           className={styles["custom-input-background"]}
           fullWidth
-          required={required}
           maxLength={75}
           onChange={handleCharCount}
         />

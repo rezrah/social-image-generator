@@ -15,7 +15,7 @@ type Props = {
 export function EyebrowField({
   charCount,
   handleCharCount,
-  required = true,
+  required = false,
   placeholder,
 }: Props) {
   return (

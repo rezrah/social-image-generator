@@ -98,54 +98,63 @@ export const drawBlogHeader = async function ({
     ctx.fillStyle = fgDefault(theme);
   }
 
-  ctx.font = typePairings[getSize(heading.length)].heading;
+  let wrappedText = [""];
 
-  ctx.textAlign = align;
+  if (heading.length) {
+    ctx.font = typePairings[getSize(heading.length)].heading;
 
-  const headingStartingPos = size.typePairing === "xl" ? 923 : 623;
+    ctx.textAlign = align;
 
-  let wrappedText = wrapText(
-    ctx,
-    heading,
-    32,
-    headingStartingPos,
-    canvas.width - 160,
-    Number(
-      typePairings[getSize(heading.length)].headingLineheight.replace(/px$/, "")
-    )
-  );
-  wrappedText[0].forEach(function (item) {
-    // We will fill our text which is item[0] of our array, at coordinates [x, y]
-    // x will be item[1] of our array
-    // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-    ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
-  });
+    const headingStartingPos = size.typePairing === "xl" ? 923 : 623;
 
-  // Add our subheading text to the canvas
-  ctx.font = typePairings[size.typePairing].subheading;
-  ctx.lineHeight = typePairings[size.typePairing].subheadingLineheight;
-  ctx.fillStyle = fgDefault(theme);
-
-  if (theme === "analog") {
-    const angle = (45 * Math.PI) / 180;
-    const x2 = width * Math.cos(angle);
-    const y2 = height * Math.sin(angle);
-    let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
-
-    textGradient.addColorStop(0, "#D2A8FF");
-    textGradient.addColorStop(0.5, "#F778BA");
-    textGradient.addColorStop(1, "#FF7B72");
-
-    ctx.fillStyle = textGradient;
+    wrappedText = wrapText(
+      ctx,
+      heading,
+      32,
+      headingStartingPos,
+      canvas.width - 160,
+      Number(
+        typePairings[getSize(heading.length)].headingLineheight.replace(
+          /px$/,
+          ""
+        )
+      )
+    );
+    wrappedText[0].forEach(function (item) {
+      // We will fill our text which is item[0] of our array, at coordinates [x, y]
+      // x will be item[1] of our array
+      // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
+      ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
+    });
   }
 
-  const subheadingStartingPos = size.typePairing === "xl" ? 800 : 520;
+  if (subheading.length) {
+    // Add our subheading text to the canvas
+    ctx.font = typePairings[size.typePairing].subheading;
+    ctx.lineHeight = typePairings[size.typePairing].subheadingLineheight;
+    ctx.fillStyle = fgDefault(theme);
 
-  ctx.fillText(
-    subheading,
-    startPosition,
-    subheadingStartingPos - wrappedText[1] - 200
-  );
+    if (theme === "analog") {
+      const angle = (45 * Math.PI) / 180;
+      const x2 = width * Math.cos(angle);
+      const y2 = height * Math.sin(angle);
+      let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
+
+      textGradient.addColorStop(0, "#D2A8FF");
+      textGradient.addColorStop(0.5, "#F778BA");
+      textGradient.addColorStop(1, "#FF7B72");
+
+      ctx.fillStyle = textGradient;
+    }
+
+    const subheadingStartingPos = size.typePairing === "xl" ? 800 : 520;
+
+    ctx.fillText(
+      subheading,
+      startPosition,
+      subheadingStartingPos - wrappedText[1] - 200
+    );
+  }
 
   const image = await Canvas.loadImage(
     path.resolve(

@@ -166,16 +166,17 @@ const CreateTemplate: NextPage = () => {
       theme: event.target["color-mode"].value,
       align: event.target["text-alignment"].value,
       button: event.target["button"].value,
-      size: JSON.parse(event.target["size"].value),
+      //size: JSON.parse(event.target["size"].value),
+      size: sizes[0],
     };
 
     // Send the data to the server in JSON format.
     const JSONdata = JSON.stringify(data);
-
+    console.log(JSONdata);
     try {
       const response = await generateImage(
         JSONdata,
-        `${endpoint}/api/blog-header`
+        `${endpoint}/api/social-banner`
       );
 
       // Get the response data from server as JSON.
@@ -227,7 +228,7 @@ const CreateTemplate: NextPage = () => {
         <SegmentedControls
           activeTab={activeTab}
           handler={handleTabChange}
-          labelOne={`Edit blog header`}
+          labelOne={`Edit social banner`}
           labelTwo="Upload CSV"
         />
         <Sidebar.Inner>
@@ -236,27 +237,24 @@ const CreateTemplate: NextPage = () => {
               <Stack padding="none">
                 <Box sx={{ padding: 4, paddingTop: 3 }}>
                   <Stack direction="vertical" gap="condensed" padding="none">
-                    <EyebrowField
-                      required
-                      placeholder="E.g. Enterprise Security"
-                      charCount={charCount.eyebrow}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "eyebrow"
-                        )
-                      }
-                    />
-                    <HeadingField
-                      placeholder="E.g. Everything developers love"
-                      charCount={charCount.heading}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "heading"
-                        )
-                      }
-                    />
+                    <Stack
+                      direction="horizontal"
+                      padding="none"
+                      justifyContent="space-between"
+                    >
+                      <ThemeField
+                        handleChange={(event) =>
+                          setActiveTheme(event.target.value)
+                        }
+                      />
+                      {/* <SizeField
+                        supportedSizes={sizes}
+                        handleChange={(event) =>
+                          setActiveTheme(event.target.value)
+                        }
+                      /> */}
+                      <AlignmentField />
+                    </Stack>
 
                     <Box
                       as="hr"
@@ -266,6 +264,28 @@ const CreateTemplate: NextPage = () => {
                         borderTop:
                           "1px solid var(--brand-color-border-default)",
                       }}
+                    />
+                    {/**Add  logomark disable */}
+                    <EyebrowField
+                      placeholder="E.g. Enterprise Security"
+                      charCount={charCount.eyebrow}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "eyebrow"
+                        )
+                      }
+                    />
+
+                    <HeadingField
+                      placeholder="E.g. Everything developers love"
+                      charCount={charCount.heading}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "heading"
+                        )
+                      }
                     />
 
                     {/* {activeTheme === "custom" && (
@@ -285,24 +305,7 @@ const CreateTemplate: NextPage = () => {
                           </Stack>
                         </FormControl>
                       )} */}
-                    <Stack
-                      direction="horizontal"
-                      padding="none"
-                      justifyContent="space-between"
-                    >
-                      <SizeField
-                        supportedSizes={sizes}
-                        handleChange={(event) =>
-                          setActiveTheme(event.target.value)
-                        }
-                      />
-                      <AlignmentField />
-                    </Stack>
-                    <ThemeField
-                      handleChange={(event) =>
-                        setActiveTheme(event.target.value)
-                      }
-                    />
+
                     <DescriptionField
                       placeholder="E.g. Over 56M developers worldwide depend on GitHub as the most complete, secure, compliant, and loved developer platform."
                       charCount={charCount.description}
@@ -364,7 +367,7 @@ const CreateTemplate: NextPage = () => {
 
                 const response = await generateImage(
                   JSONdata,
-                  `${endpoint}/api/blog-header`
+                  `${endpoint}/api/social-banner`
                 );
 
                 // Get the response data from server as JSON.

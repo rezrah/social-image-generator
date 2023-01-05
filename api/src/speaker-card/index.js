@@ -83,58 +83,63 @@ export const drawSpeakerCard = async function ({
     return "l";
   };
 
-  ctx.font = `${
-    typography.scale.headline[getSize(heading.length)].fontSize
-  }px ${typography.headline.primary.fontFamily}`;
-  ctx.lineHeight = `${
-    typography.scale.headline[getSize(heading.length)].lineHeight
-  }px`;
-
-  ctx.fillStyle = fgDefault(theme);
-  ctx.textAlign = align;
+  let wrappedText = [""];
 
   const headingStartingPos = size.typePairing === "xl" ? 923 : 580;
-
-  let wrappedText = wrapText(
-    ctx,
-    heading,
-    32,
-    headingStartingPos,
-    canvas.width - 160,
-    Number(typography.scale.headline[getSize(heading.length)].lineHeight)
-  );
-  wrappedText[0].forEach(function (item) {
-    // We will fill our text which is item[0] of our array, at coordinates [x, y]
-    // x will be item[1] of our array
-    // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-    ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
-  });
-
-  // Add our subheading text to the canvas
-  ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.secondary.fontFamily}`;
-  ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
-
-  ctx.save();
-  const angle = (45 * Math.PI) / 180;
-  const x2 = width * Math.cos(angle);
-  const y2 = height * Math.sin(angle);
-  let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
-
-  textGradient.addColorStop(0, "#D2A8FF");
-  textGradient.addColorStop(0.5, "#F778BA");
-  textGradient.addColorStop(1, "#FF7B72");
-
-  ctx.fillStyle = textGradient;
-
   const subheadingStartingPos =
     size.typePairing === "xl" ? 800 : headingStartingPos - 80;
 
-  ctx.fillText(
-    subheading,
-    startPosition,
-    subheadingStartingPos - wrappedText[1] - 200
-  );
-  ctx.restore();
+  if (heading.length) {
+    ctx.font = `${
+      typography.scale.headline[getSize(heading.length)].fontSize
+    }px ${typography.headline.primary.fontFamily}`;
+    ctx.lineHeight = `${
+      typography.scale.headline[getSize(heading.length)].lineHeight
+    }px`;
+
+    ctx.fillStyle = fgDefault(theme);
+    ctx.textAlign = align;
+
+    wrappedText = wrapText(
+      ctx,
+      heading,
+      32,
+      headingStartingPos,
+      canvas.width - 160,
+      Number(typography.scale.headline[getSize(heading.length)].lineHeight)
+    );
+    wrappedText[0].forEach(function (item) {
+      // We will fill our text which is item[0] of our array, at coordinates [x, y]
+      // x will be item[1] of our array
+      // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
+      ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
+    });
+  }
+
+  // Add our subheading text to the canvas
+  if (subheading.length) {
+    ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.secondary.fontFamily}`;
+    ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
+
+    ctx.save();
+    const angle = (45 * Math.PI) / 180;
+    const x2 = width * Math.cos(angle);
+    const y2 = height * Math.sin(angle);
+    let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
+
+    textGradient.addColorStop(0, "#D2A8FF");
+    textGradient.addColorStop(0.5, "#F778BA");
+    textGradient.addColorStop(1, "#FF7B72");
+
+    ctx.fillStyle = textGradient;
+
+    ctx.fillText(
+      subheading,
+      startPosition,
+      subheadingStartingPos - wrappedText[1] - 200
+    );
+    ctx.restore();
+  }
 
   const image = await Canvas.loadImage(
     path.resolve(
@@ -249,7 +254,7 @@ export const drawSpeakerCard = async function ({
   }
 
   // Add our event_date text to the canvas if it exists
-  if (size.typePairing !== "m") {
+  if (size.typePairing !== "m" && event_date.length) {
     ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
     ctx.fillStyle = fgMuted(theme);
     ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;

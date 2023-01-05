@@ -5,7 +5,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
-import { drawBlogHeader } from "./src/blog-header/index.js";
+import { drawBlogHeader } from "./src/social-banner/index.js";
 import { drawSpeakerCard } from "./src/speaker-card/index.js";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -18,33 +18,20 @@ const __dirname = dirname(__filename);
 
 const port = process.env.PORT || 3001;
 
-// defining the Express app
 const app = express();
-
-// // defining an array to work as the database (temporary solution)
-// const ads = [{ title: "Hello, world (again)!" }];
 
 app.use(express.static(path.resolve(__dirname, "./views/images")));
 
-// adding Helmet to enhance your API's security
 app.use(helmet());
 
-// using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
-// enabling CORS for all requests
 app.use(cors());
 
-// adding morgan to log HTTP requests
 app.use(morgan("combined"));
 
-// defining an endpoint to return all ads
-// app.get("/", (req, res) => {
-//   res.send(ads);
-// });
-
-// blog header route
-app.post("/api/blog-header", async (req, res) => {
+// social banner route
+app.post("/api/social-banner", async (req, res) => {
   const {
     heading,
     subheading,

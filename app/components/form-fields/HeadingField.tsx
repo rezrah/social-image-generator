@@ -1,4 +1,4 @@
-import { FormControl, TextInput } from "@primer/react-brand";
+import { FormControl, Textarea } from "@primer/react-brand";
 import { Box } from "@primer/react";
 import { ChangeEventHandler } from "react";
 import { CharCount } from "../CharCount";
@@ -7,7 +7,7 @@ import styles from "./form-fields.module.css";
 
 type Props = {
   charCount: number;
-  handleCharCount: ChangeEventHandler<HTMLInputElement>;
+  handleCharCount: ChangeEventHandler<HTMLTextAreaElement>;
   required?: boolean;
   placeholder?: string;
 };
@@ -15,7 +15,7 @@ type Props = {
 export function HeadingField({
   charCount,
   handleCharCount,
-  required = true,
+  required = false,
   placeholder,
 }: Props) {
   return (
@@ -27,14 +27,14 @@ export function HeadingField({
       <FormControl fullWidth required={required} id="heading">
         <FormControl.Label>
           Heading
-          <CharCount max={75} cur={charCount} />
+          <CharCount max={100} cur={charCount} />
         </FormControl.Label>
-        <TextInput
+        <Textarea
           className={styles["custom-input-background"]}
-          type="text"
           fullWidth
-          maxLength={75}
+          maxLength={100}
           onChange={handleCharCount}
+          rows={3}
         />
         <FormControl.Hint>{placeholder}</FormControl.Hint>
       </FormControl>

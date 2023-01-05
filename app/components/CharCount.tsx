@@ -5,7 +5,7 @@ export function CharCount({ cur, max }: { cur: number; max: number }) {
     if (cur > max) {
       return "danger";
     }
-    if (cur > max * 0.8) {
+    if (cur > max * 0.7) {
       return "severe";
     }
     if (cur > max * 0.5) {

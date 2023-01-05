@@ -84,6 +84,7 @@ import { generateImage } from "../../utils/api";
 import { PopoverWizard } from "../../components/PopoverWizard";
 import { EventDateField } from "../../components/form-fields/EventDateField";
 import { useAuth, useAuthenticatedPage } from "../../auth/AuthProvider";
+import { AvatarImageUrl } from "../../components/form-fields/AvatarImageUrl";
 
 type CsvData = {
   id: string;
@@ -101,6 +102,7 @@ const sizes = [
 const charCountInitialStates = {
   eyebrow: 0,
   heading: 0,
+  imageurl: 0,
   event_date: 0,
 };
 
@@ -111,6 +113,8 @@ const charCountReducer = (state, action) => {
       return { ...state, eyebrow: action.payload };
     case "heading":
       return { ...state, heading: action.payload };
+    case "imageurl":
+      return { ...state, imageurl: action.payload };
     case "event_date":
       return { ...state, event_date: action.payload };
     case "clear_all":
@@ -304,39 +308,6 @@ const CreateTemplate: NextPage = () => {
               <Stack padding="none">
                 <Box sx={{ padding: 4, paddingTop: 3 }}>
                   <Stack direction="vertical" gap="condensed" padding="none">
-                    <EyebrowField
-                      required
-                      placeholder="E.g. On-Demand Session"
-                      charCount={charCount.eyebrow}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "eyebrow"
-                        )
-                      }
-                    />
-                    <HeadingField
-                      placeholder="E.g. The developer platform for the most ambitious enterprises"
-                      required
-                      charCount={charCount.heading}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "heading"
-                        )
-                      }
-                    />
-                    <EventDateField
-                      required
-                      placeholder="E.g. October 27, 11:30 AM PST"
-                      charCount={charCount.event_date}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "event_date"
-                        )
-                      }
-                    />
                     <Stack
                       direction="horizontal"
                       padding="none"
@@ -349,7 +320,6 @@ const CreateTemplate: NextPage = () => {
                       />
                       <AlignmentField />
                     </Stack>
-
                     <Box
                       as="hr"
                       sx={{
@@ -359,7 +329,36 @@ const CreateTemplate: NextPage = () => {
                           "1px solid var(--brand-color-border-default)",
                       }}
                     />
-
+                    <EyebrowField
+                      placeholder="E.g. On-Demand Session"
+                      charCount={charCount.eyebrow}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "eyebrow"
+                        )
+                      }
+                    />
+                    <HeadingField
+                      placeholder="E.g. The developer platform for the most ambitious enterprises"
+                      charCount={charCount.heading}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "heading"
+                        )
+                      }
+                    />
+                    <EventDateField
+                      placeholder="E.g. October 27, 11:30 AM PST"
+                      charCount={charCount.event_date}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "event_date"
+                        )
+                      }
+                    />
                     <Stack
                       padding="none"
                       direction="horizontal"
@@ -376,7 +375,6 @@ const CreateTemplate: NextPage = () => {
                         checked={speakerSwitch}
                       />
                     </Stack>
-
                     <>
                       {numSpeakers >= 1 &&
                         numSpeakersArray.map((e, index) => {
@@ -404,32 +402,18 @@ const CreateTemplate: NextPage = () => {
                                 <Text as="p" size="300">
                                   Speaker {index + 1}
                                 </Text>
-                                <Stack
-                                  direction="horizontal"
-                                  gap="condensed"
-                                  padding="none"
-                                >
-                                  <Box
-                                    sx={{
-                                      bg: "var(--base-color-scale-gray-2)",
-                                      border:
-                                        "1px solid var(--brand-color-border-default)",
-                                      color:
-                                        "var(--brand-color-border-default)",
-                                      height: 48,
-                                      width: 48,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                      borderRadius: "50%",
-                                    }}
-                                  >
-                                    <PersonIcon size={24} />
-                                  </Box>
-                                  <ProductButton sx={{ alignSelf: "center" }}>
-                                    Upload image
-                                  </ProductButton>
-                                </Stack>
+
+                                <AvatarImageUrl
+                                  placeholder="E.g. https://github.com/rezrah.png"
+                                  charCount={charCount.imageurl}
+                                  handleCharCount={(event) =>
+                                    handleCharCount(
+                                      event as unknown as ChangeEventHandler<HTMLInputElement>,
+                                      "imageurl"
+                                    )
+                                  }
+                                />
+
                                 <Stack
                                   direction="horizontal"
                                   gap="condensed"
@@ -446,7 +430,6 @@ const CreateTemplate: NextPage = () => {
                                     <TextInput />
                                   </FormControl>
                                   <FormControl
-                                    required
                                     fullWidth
                                     id={`speaker-card-${speakerIndex}-last-name`}
                                   >
@@ -468,7 +451,6 @@ const CreateTemplate: NextPage = () => {
                                 </FormControl>
                                 <FormControl
                                   fullWidth
-                                  required
                                   id={`speaker-card-${speakerIndex}-company`}
                                 >
                                   <FormControl.Label>Company</FormControl.Label>
@@ -517,7 +499,6 @@ const CreateTemplate: NextPage = () => {
                         </Box>
                       )}
                     </>
-
                     {/* {activeTheme === "custom" && (
                         <FormControl>
                           <FormControl.Label>Colors</FormControl.Label>
@@ -576,7 +557,7 @@ const CreateTemplate: NextPage = () => {
 
                 const response = await generateImage(
                   JSONdata,
-                  `${endpoint}/api/blog-header`
+                  `${endpoint}/api/social-banner`
                 );
 
                 // Get the response data from server as JSON.

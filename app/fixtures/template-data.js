@@ -29,9 +29,9 @@ export const templateData = {
   // ],
   Banners: [
     {
-      id: "blog-header",
-      name: "Blog header",
-      description: "Create a custom blog header graphic",
+      id: "social-banner",
+      name: "Social banner",
+      description: "Create a custom social banner graphic",
       image:
         "https://user-images.githubusercontent.com/13340707/183682234-70e11453-62db-4cbd-b70f-bbe34f3b9d45.png",
     },
