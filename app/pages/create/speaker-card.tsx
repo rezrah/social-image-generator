@@ -329,16 +329,6 @@ const CreateTemplate: NextPage = () => {
                           "1px solid var(--brand-color-border-default)",
                       }}
                     />
-                    <EyebrowField
-                      placeholder="E.g. On-Demand Session"
-                      charCount={charCount.eyebrow}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "eyebrow"
-                        )
-                      }
-                    />
                     <HeadingField
                       placeholder="E.g. The developer platform for the most ambitious enterprises"
                       charCount={charCount.heading}
@@ -349,6 +339,17 @@ const CreateTemplate: NextPage = () => {
                         )
                       }
                     />
+                    <EyebrowField
+                      placeholder="E.g. On-Demand Session"
+                      charCount={charCount.eyebrow}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "eyebrow"
+                        )
+                      }
+                    />
+
                     <EventDateField
                       placeholder="E.g. October 27, 11:30 AM PST"
                       charCount={charCount.event_date}

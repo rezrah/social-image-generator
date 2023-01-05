@@ -179,9 +179,9 @@ export const drawBlogHeader = async function ({
 
   // Add our description text to the canvas if it exists
   if (size.typePairing !== "m") {
-    ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
+    ctx.font = `${typography.scale.headline["3xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
     ctx.fillStyle = fgMuted(theme);
-    ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
+    ctx.lineHeight = `${typography.scale.headline["3xs"].lineHeight}px`;
     const descPosY = size.typePairing === "xl" ? 780 : 440; // needs finetuning
 
     let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);

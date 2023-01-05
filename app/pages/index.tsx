@@ -33,12 +33,48 @@ const Home: NextPage = () => {
           zIndex: 1,
         }}
       >
-        <img
+        {/* <img
           className={styles.customBackground}
           src={`${process.env.NEXT_PUBLIC_BASE_PATH}/home-bg.jpg`}
           width={1280}
           height={720}
           alt="background image"
+        /> */}
+        <div className="forrester-hero-bg position-absolute top-0 left-0">
+          <Box
+            as="video"
+            autoPlay
+            preload="none"
+            loop
+            muted
+            data-threshold="0"
+            className="bg-video position-absolute top-0 left-0 width-full height-full"
+            sx={{
+              height: "100vh",
+              width: "100vw",
+              objectFit: "fill",
+            }}
+          >
+            <source
+              type="video/webm"
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH}/bg_video.webm`}
+            />
+          </Box>
+        </div>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            zIndex: 1,
+            width: "100%",
+            height: "100%",
+            minHeight: "700px",
+            backgroundImage: `url(${process.env.NEXT_PUBLIC_BASE_PATH}/home-bg-noise.svg)`,
+            backgroundRepeat: "repeat",
+            backgroundSize: "300px 300px",
+            opacity: 0.15,
+          }}
         />
       </Box>
       <Box
@@ -62,7 +98,7 @@ your fans."
         /> */}
         <div className="Primer_Brand__Hero-module__Hero___EM3jf Primer_Brand__Hero-module__Hero--align-center___HUXm3 Home_hero__cwxAA">
           <h1 className="Primer_Brand__Heading-module__Heading___IVpmp Primer_Brand__Heading-module__Heading--1___Ufc7G Primer_Brand__Hero-module__Hero-heading___QuVBH">
-            GitHub social assets
+            GitHub social graphics
           </h1>
           <p className="Primer_Brand__Text-module__Text___pecHN Primer_Brand__Text-module__Text--muted___lTaVa Primer_Brand__Text-module__Text--400___y7m4l Primer_Brand__Hero-module__Hero-description___vG4iA">
             Create personalised assets to use in your content and share with

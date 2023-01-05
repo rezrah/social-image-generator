@@ -255,9 +255,9 @@ export const drawSpeakerCard = async function ({
 
   // Add our event_date text to the canvas if it exists
   if (size.typePairing !== "m" && event_date.length) {
-    ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
+    ctx.font = `${typography.scale.headline["3xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
     ctx.fillStyle = fgMuted(theme);
-    ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
+    ctx.lineHeight = `${typography.scale.headline["3xs"].lineHeight}px`;
     const eventDatePosY =
       subheadingStartingPos - 10 + (numSpeakers === 1 ? 50 : -30);
 
