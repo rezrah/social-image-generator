@@ -15,7 +15,7 @@ export function AppRoot({ component: Component, ...pageProps }: AppRootProps) {
   return (
     <>
       <SubdomainNavBar
-        title="Social assets"
+        title="Social graphics"
         fullWidth
         titleHref={`${process.env.NEXT_PUBLIC_BASE_PATH}/`}
       >
