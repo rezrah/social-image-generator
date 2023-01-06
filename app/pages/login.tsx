@@ -43,8 +43,8 @@ const Login: NextPage = () => {
   useEffect(() => {
     if (authEnabled && user) {
       const timer = setTimeout(() => {
-        router.push(`${process.env.NEXT_PUBLIC_BASE_PATH}/create`);
-      }, 3000);
+        router.push(`/create`);
+      }, 2500);
 
       return () => {
         clearInterval(timer);
