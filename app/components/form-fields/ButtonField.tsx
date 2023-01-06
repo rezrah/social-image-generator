@@ -20,14 +20,14 @@ export function ButtonField({
     <FormControl id="button" fullWidth>
       <Box sx={{ position: "relative" }}>
         <FormControl.Label>
-          Button label
-          <CharCount max={25} cur={charCount} />
+          Button call to action
+          <CharCount max={100} cur={charCount} />
         </FormControl.Label>
       </Box>
       <TextInput
         className={styles["custom-input-background"]}
         type="text"
-        maxLength={25}
+        maxLength={100}
         onChange={handleCharCount}
       />
       <FormControl.Hint>{placeholder}</FormControl.Hint>
