@@ -33,7 +33,7 @@ jobs:
           OAUTH_REDIRECT_URI: "${{ secrets.OAUTH_REDIRECT_URI }}"
           WEB_APP_URL: "${{ secrets.WEB_APP_URL }}"
         run: |
-          docker build ./api -t primerbrand.azurecr.io/socialassetapi:${{ github.sha }} --build-arg OAUTH_CLIENT_ID_ARG=${{ secrets.OAUTH_CLIENT_ID }} OAUTH_CLIENT_SECRET_ARG=${{ secrets.OAUTH_CLIENT_SECRET }}
+          docker build --build-arg OAUTH_CLIENT_ID_ARG=${{ secrets.OAUTH_CLIENT_ID }} --build-arg OAUTH_CLIENT_SECRET_ARG=${{ secrets.OAUTH_CLIENT_SECRET }} ./api -t primerbrand.azurecr.io/socialassetapi:${{ github.sha }}
           docker push primerbrand.azurecr.io/socialassetapi:${{ github.sha }}
 
       - uses: azure/webapps-deploy@v2
