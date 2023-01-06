@@ -42,6 +42,8 @@ const Create: NextPage = () => {
       }
     : {};
 
+  console.log("api endpoint is", process.env.NEXT_PUBLIC_API_ENDPOINT);
+
   return (
     <div className={[styles.container, "page"].join(" ")}>
       <Head>
