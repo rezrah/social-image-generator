@@ -180,8 +180,8 @@ export const drawBlogHeader = async function ({
     align === "center" ? startPosition - dimension / 2 : 48,
     //markStartingPosY - wrappedText[1] - 250, // hug to text
     48,
-    theme === "copilot" ? 351 : dimension,
-    theme === "copilot" ? 48 : dimension
+    theme === "copilot" ? 352 : dimension,
+    theme === "copilot" ? 43 : dimension
   );
 
   // Add our description text to the canvas if it exists
