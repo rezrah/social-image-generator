@@ -101,9 +101,11 @@ app.get("/", (req, res) => {
 });
 
 // Login route
-app.get("/login", async (req, res) => {
+app.get("/api/login", async (req, res) => {
   // The req.query object has the query params that were sent to this route.
   const requestToken = req.query.code;
+
+  console.log("requestToken", requestToken);
 
   if (!requestToken) {
     return;

@@ -172,7 +172,7 @@ const CreateTemplate: NextPage = () => {
 
     // Send the data to the server in JSON format.
     const JSONdata = JSON.stringify(data);
-    console.log(JSONdata);
+
     try {
       const response = await generateImage(
         JSONdata,
