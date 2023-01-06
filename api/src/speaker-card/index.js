@@ -135,25 +135,27 @@ export const drawSpeakerCard = async function ({
   if (subheading.length) {
     ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.secondary.fontFamily}`;
     ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
+    if (theme === "analog") {
+      ctx.save();
+      const angle = (45 * Math.PI) / 180;
+      const x2 = width * Math.cos(angle);
+      const y2 = height * Math.sin(angle);
 
-    ctx.save();
-    const angle = (45 * Math.PI) / 180;
-    const x2 = width * Math.cos(angle);
-    const y2 = height * Math.sin(angle);
-    let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
+      let textGradient = ctx.createLinearGradient(0, canvasHeight, x2, y2);
 
-    textGradient.addColorStop(0, "#D2A8FF");
-    textGradient.addColorStop(0.5, "#F778BA");
-    textGradient.addColorStop(1, "#FF7B72");
+      textGradient.addColorStop(0, "#D2A8FF");
+      textGradient.addColorStop(0.5, "#F778BA");
+      textGradient.addColorStop(1, "#FF7B72");
 
-    ctx.fillStyle = textGradient;
+      ctx.fillStyle = textGradient;
 
-    ctx.fillText(
-      subheading,
-      startPosition,
-      subheadingStartingPos - wrappedText[1] - 200
-    );
-    ctx.restore();
+      ctx.fillText(
+        subheading,
+        startPosition,
+        subheadingStartingPos - wrappedText[1] - 200
+      );
+      ctx.restore();
+    }
   }
 
   const getMarkFilePath = () => {
