@@ -1,4 +1,4 @@
-## Build image
+## Build images
 
 ```bash
 docker build -f Dockerfile -t socialassetapi .
