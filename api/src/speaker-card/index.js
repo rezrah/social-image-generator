@@ -97,7 +97,22 @@ export const drawSpeakerCard = async function ({
       typography.scale.headline[getSize(heading.length)].lineHeight
     }px`;
 
-    ctx.fillStyle = fgDefault(theme);
+    if (theme === "copilot") {
+      // add diagonal gradient fillStyle to text
+
+      const angle = (45 * Math.PI) / 180;
+      const x2 = width * Math.cos(angle);
+      const y2 = height * Math.sin(angle);
+      let textGradient = ctx.createLinearGradient(50, 300, 400, 600);
+
+      textGradient.addColorStop(0, "#8ADFD7");
+      textGradient.addColorStop(0.5, "#8ADFD7");
+      textGradient.addColorStop(1, "#A371F7");
+
+      ctx.fillStyle = textGradient;
+    } else {
+      ctx.fillStyle = fgDefault(theme);
+    }
     ctx.textAlign = align;
 
     wrappedText = wrapText(
@@ -141,14 +156,20 @@ export const drawSpeakerCard = async function ({
     ctx.restore();
   }
 
-  const image = await Canvas.loadImage(
-    path.resolve(
-      __dirname,
-      theme === "light"
-        ? "../assets/mark-github-24-dark.png"
-        : "../assets/mark-github-24.png"
-    )
-  );
+  const getMarkFilePath = () => {
+    switch (theme) {
+      case "light":
+        return path.resolve(__dirname, "../assets/mark-github-24-dark.png");
+      case "dark":
+        return path.resolve(__dirname, "../assets/mark-github-24.png");
+      case "copilot":
+        return path.resolve(__dirname, "../assets/copilot-mark.png");
+      default:
+        return path.resolve(__dirname, "../assets/mark-github-24.png");
+    }
+  };
+
+  const image = await Canvas.loadImage(getMarkFilePath());
 
   const markStartingPosY = size.typePairing === "xl" ? 520 : 420;
   const dimension = size.typePairing === "xl" ? 150 : 72;
@@ -158,8 +179,8 @@ export const drawSpeakerCard = async function ({
     align === "center" ? startPosition - dimension / 2 : 48,
     //markStartingPosY - wrappedText[1] - 250, // hug to text
     48,
-    dimension,
-    dimension
+    theme === "copilot" ? 351 : dimension,
+    theme === "copilot" ? 48 : dimension
   );
 
   /**

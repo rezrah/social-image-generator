@@ -19,7 +19,7 @@ export function CharCount({ cur, max }: { cur: number; max: number }) {
 
   return (
     <Label variant={getColor()} sx={{ position: "absolute", right: 0, top: 1 }}>
-      {cur ? cur : 0}/{max}
+      {cur ? cur : 0}
     </Label>
   );
 }

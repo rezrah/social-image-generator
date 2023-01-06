@@ -34,7 +34,7 @@ export function EyebrowField({
           type="text"
           name="subheading"
           required={required}
-          maxLength={50}
+          maxLength={75}
           fullWidth
           onChange={handleCharCount}
         />

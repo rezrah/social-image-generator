@@ -47,7 +47,7 @@ export const drawBlogHeader = async function ({
   const { w: width, h: height } = size;
   const hasButton =
     Boolean(button) && Boolean(description) && size.typePairing === "l";
-  const canvasHeight = hasButton ? height + 120 : height;
+  const canvasHeight = height;
   const canvas = createCanvas(width, canvasHeight);
   const positionCanvasCenter = canvas.width / 2;
   const startPosition = align === "center" ? positionCanvasCenter : 48;
@@ -100,12 +100,14 @@ export const drawBlogHeader = async function ({
 
   let wrappedText = [""];
 
+  const headingStartingPos = hasButton ? 570 : 623;
+
   if (heading.length) {
     ctx.font = typePairings[getSize(heading.length)].heading;
 
     ctx.textAlign = align;
 
-    const headingStartingPos = size.typePairing === "xl" ? 923 : 623;
+    // const headingStartingPos = size.typePairing === "xl" ? 923 : 623;
 
     wrappedText = wrapText(
       ctx,
@@ -121,10 +123,7 @@ export const drawBlogHeader = async function ({
       )
     );
     wrappedText[0].forEach(function (item) {
-      // We will fill our text which is item[0] of our array, at coordinates [x, y]
-      // x will be item[1] of our array
-      // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-      ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
+      ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200);
     });
   }
 
@@ -147,7 +146,9 @@ export const drawBlogHeader = async function ({
       ctx.fillStyle = textGradient;
     }
 
-    const subheadingStartingPos = size.typePairing === "xl" ? 800 : 520;
+    //const subheadingStartingPos = size.typePairing === "xl" ? 800 : 520;
+
+    const subheadingStartingPos = headingStartingPos - 90;
 
     ctx.fillText(
       subheading,
@@ -156,14 +157,20 @@ export const drawBlogHeader = async function ({
     );
   }
 
-  const image = await Canvas.loadImage(
-    path.resolve(
-      __dirname,
-      theme === "light"
-        ? "../assets/mark-github-24-dark.png"
-        : "../assets/mark-github-24.png"
-    )
-  );
+  const getMarkFilePath = () => {
+    switch (theme) {
+      case "light":
+        return path.resolve(__dirname, "../assets/mark-github-24-dark.png");
+      case "dark":
+        return path.resolve(__dirname, "../assets/mark-github-24.png");
+      case "copilot":
+        return path.resolve(__dirname, "../assets/copilot-mark.png");
+      default:
+        return path.resolve(__dirname, "../assets/mark-github-24.png");
+    }
+  };
+
+  const image = await Canvas.loadImage(getMarkFilePath());
 
   const markStartingPosY = size.typePairing === "xl" ? 520 : 420;
   const dimension = size.typePairing === "xl" ? 150 : 72;
@@ -173,8 +180,8 @@ export const drawBlogHeader = async function ({
     align === "center" ? startPosition - dimension / 2 : 48,
     //markStartingPosY - wrappedText[1] - 250, // hug to text
     48,
-    dimension,
-    dimension
+    theme === "copilot" ? 351 : dimension,
+    theme === "copilot" ? 48 : dimension
   );
 
   // Add our description text to the canvas if it exists
@@ -182,7 +189,8 @@ export const drawBlogHeader = async function ({
     ctx.font = `${typography.scale.headline["3xs"].fontSize}px ${typography.headline.tertiary.fontFamily}`;
     ctx.fillStyle = fgMuted(theme);
     ctx.lineHeight = `${typography.scale.headline["3xs"].lineHeight}px`;
-    const descPosY = size.typePairing === "xl" ? 780 : 440; // needs finetuning
+
+    const descPosY = headingStartingPos - 160; // needs finetuning
 
     let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);
     wrappedDescription[0].forEach(function (item) {
@@ -204,7 +212,7 @@ export const drawBlogHeader = async function ({
         canvas,
         label: button,
         align,
-        offsetY: wrappedDescription[1] + 540,
+        offsetY: wrappedDescription[1] + 500,
       });
     }
   }
