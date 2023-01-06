@@ -27,14 +27,14 @@ export function EyebrowField({
       <FormControl fullWidth required={required} id="subheading">
         <FormControl.Label>
           Eyebrow
-          <CharCount max={50} cur={charCount} />
+          <CharCount max={100} cur={charCount} />
         </FormControl.Label>
         <TextInput
           className={styles["custom-input-background"]}
           type="text"
           name="subheading"
           required={required}
-          maxLength={75}
+          maxLength={100}
           fullWidth
           onChange={handleCharCount}
         />
