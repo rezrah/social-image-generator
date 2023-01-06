@@ -135,8 +135,8 @@ export const drawSpeakerCard = async function ({
   if (subheading.length) {
     ctx.font = `${typography.scale.headline["2xs"].fontSize}px ${typography.headline.secondary.fontFamily}`;
     ctx.lineHeight = `${typography.scale.headline["2xs"].lineHeight}px`;
+    ctx.save();
     if (theme === "analog") {
-      ctx.save();
       const angle = (45 * Math.PI) / 180;
       const x2 = width * Math.cos(angle);
       const y2 = height * Math.sin(angle);
@@ -146,16 +146,17 @@ export const drawSpeakerCard = async function ({
       textGradient.addColorStop(0, "#D2A8FF");
       textGradient.addColorStop(0.5, "#F778BA");
       textGradient.addColorStop(1, "#FF7B72");
-
       ctx.fillStyle = textGradient;
-
-      ctx.fillText(
-        subheading,
-        startPosition,
-        subheadingStartingPos - wrappedText[1] - 200
-      );
-      ctx.restore();
+    } else {
+      ctx.fillStyle = fgDefault(theme);
     }
+
+    ctx.fillText(
+      subheading,
+      startPosition,
+      subheadingStartingPos - wrappedText[1] - 200
+    );
+    ctx.restore();
   }
 
   const getMarkFilePath = () => {
