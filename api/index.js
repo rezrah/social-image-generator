@@ -129,9 +129,9 @@ app.get("/api/login", async (req, res) => {
     const accessToken = data.access_token;
 
     if (accessToken) {
-      console.log("just before redirect");
+      console.log("just before redirect. access token is ", accessToken);
       res.redirect(
-        `${process.env.WEB_APP_URL}/login?access_token=${accessToken}`
+        `https://rezrah.github.io/social-image-generator/login?access_token=${accessToken}`
       );
     }
   }
