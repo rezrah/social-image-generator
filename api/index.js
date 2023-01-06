@@ -121,11 +121,15 @@ app.get("/api/login", async (req, res) => {
     }
   );
 
+  console.log("raw response", response);
+
   if (response) {
     const data = await response.json();
+    console.log("json response", data);
     const accessToken = data.access_token;
 
     if (accessToken) {
+      console.log("just before redirect");
       res.redirect(
         `${process.env.WEB_APP_URL}/login?access_token=${accessToken}`
       );
