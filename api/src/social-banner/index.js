@@ -111,7 +111,7 @@ export const drawBlogHeader = async function ({
 
     wrappedText = wrapText(
       ctx,
-      heading,
+      heading.trim(),
       32,
       headingStartingPos,
       canvas.width - 160,
@@ -151,7 +151,7 @@ export const drawBlogHeader = async function ({
     const subheadingStartingPos = headingStartingPos - 90;
 
     ctx.fillText(
-      subheading,
+      subheading.trim(),
       startPosition,
       subheadingStartingPos - wrappedText[1] - 200
     );
@@ -192,7 +192,14 @@ export const drawBlogHeader = async function ({
 
     const descPosY = headingStartingPos - 160; // needs finetuning
 
-    let wrappedDescription = wrapText(ctx, description, 32, descPosY, 934, 40);
+    let wrappedDescription = wrapText(
+      ctx,
+      description.trim(),
+      32,
+      descPosY,
+      934,
+      40
+    );
     wrappedDescription[0].forEach(function (item) {
       // We will fill our text which is item[0] of our array, at coordinates [x, y]
       // x will be item[1] of our array
@@ -210,7 +217,7 @@ export const drawBlogHeader = async function ({
       await drawCallToActionButton({
         theme,
         canvas,
-        label: button,
+        label: button.trim(),
         align,
         offsetY: wrappedDescription[1] + 500,
       });

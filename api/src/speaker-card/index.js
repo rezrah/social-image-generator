@@ -117,7 +117,7 @@ export const drawSpeakerCard = async function ({
 
     wrappedText = wrapText(
       ctx,
-      heading,
+      heading.trim(),
       32,
       headingStartingPos,
       canvas.width - 160,
@@ -152,7 +152,7 @@ export const drawSpeakerCard = async function ({
     }
 
     ctx.fillText(
-      subheading,
+      subheading.trim(),
       startPosition,
       subheadingStartingPos - wrappedText[1] - 200
     );
@@ -285,7 +285,7 @@ export const drawSpeakerCard = async function ({
     const eventDatePosY =
       subheadingStartingPos - 10 + (numSpeakers === 1 ? 50 : -30);
 
-    ctx.fillText(event_date, startPosition, eventDatePosY);
+    ctx.fillText(event_date.trim(), startPosition, eventDatePosY);
   }
 
   /**

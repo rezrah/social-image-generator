@@ -266,16 +266,6 @@ const CreateTemplate: NextPage = () => {
                       }}
                     />
                     {/**Add  logomark disable */}
-                    <HeadingField
-                      placeholder="E.g. Everything developers love"
-                      charCount={charCount.heading}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "heading"
-                        )
-                      }
-                    />
                     <EyebrowField
                       placeholder="E.g. Enterprise Security"
                       charCount={charCount.eyebrow}
@@ -283,6 +273,16 @@ const CreateTemplate: NextPage = () => {
                         handleCharCount(
                           event as unknown as ChangeEventHandler<HTMLInputElement>,
                           "eyebrow"
+                        )
+                      }
+                    />
+                    <HeadingField
+                      placeholder="E.g. Everything developers love"
+                      charCount={charCount.heading}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "heading"
                         )
                       }
                     />

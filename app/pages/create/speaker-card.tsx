@@ -329,16 +329,7 @@ const CreateTemplate: NextPage = () => {
                           "1px solid var(--brand-color-border-default)",
                       }}
                     />
-                    <HeadingField
-                      placeholder="E.g. The developer platform for the most ambitious enterprises"
-                      charCount={charCount.heading}
-                      handleCharCount={(event) =>
-                        handleCharCount(
-                          event as unknown as ChangeEventHandler<HTMLInputElement>,
-                          "heading"
-                        )
-                      }
-                    />
+
                     <EyebrowField
                       placeholder="E.g. On-Demand Session"
                       charCount={charCount.eyebrow}
@@ -346,6 +337,17 @@ const CreateTemplate: NextPage = () => {
                         handleCharCount(
                           event as unknown as ChangeEventHandler<HTMLInputElement>,
                           "eyebrow"
+                        )
+                      }
+                    />
+
+                    <HeadingField
+                      placeholder="E.g. The developer platform for the most ambitious enterprises"
+                      charCount={charCount.heading}
+                      handleCharCount={(event) =>
+                        handleCharCount(
+                          event as unknown as ChangeEventHandler<HTMLInputElement>,
+                          "heading"
                         )
                       }
                     />
