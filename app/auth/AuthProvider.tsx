@@ -99,7 +99,7 @@ export const useAuthenticatedPage = () => {
 
   useEffect(() => {
     if (authEnabled && !user) {
-      router.push(`${process.env.NEXT_PUBLIC_BASE_PATH}/create`);
+      router.push(`/create`);
     }
   }, [router, user]);
 };
