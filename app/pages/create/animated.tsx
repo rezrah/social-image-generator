@@ -10,7 +10,6 @@ import localFont from "@next/font/local";
 
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import csvtojson from "csvtojson";
@@ -88,6 +87,36 @@ const charCountInitialStates = {
   button: 0,
 };
 
+const themes = [
+  {
+    name: "Octoverse",
+    path: `${process.env.NEXT_PUBLIC_BASE_PATH}/octoverse.webm`,
+    bgMode: "light",
+  },
+  {
+    name: "Forrester",
+    path: `${process.env.NEXT_PUBLIC_BASE_PATH}/forrester.mp4`,
+    bgMode: "dark",
+  },
+  {
+    name: "Gradient animation",
+    path: `${process.env.NEXT_PUBLIC_BASE_PATH}/gradient-animation-1.webm`,
+    bgMode: "dark",
+  },
+  {
+    name: "Gradient animation 2",
+    path: `${process.env.NEXT_PUBLIC_BASE_PATH}/gradient-animation-2.webm`,
+    bgMode: "dark",
+  },
+  {
+    name: "Universe",
+    path: `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-1.mov`,
+    bgMode: "dark",
+  },
+];
+
+const defaultTheme = themes[3];
+
 // reducer function for char count
 const charCountReducer = (state, action) => {
   switch (action.type) {
@@ -106,6 +135,22 @@ const charCountReducer = (state, action) => {
   }
 };
 
+// eslint-disable-next-line react/display-name
+const Video = React.memo(({ videoRef, src, ...props }) => {
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      preload="auto"
+      autoPlay
+      playsInline
+      muted
+      hidden
+      {...props}
+    ></video>
+  );
+});
+
 const CreateTemplate: NextPage = () => {
   const canvasRef = React.useRef(null);
   const videoRef = React.useRef(null);
@@ -115,9 +160,7 @@ const CreateTemplate: NextPage = () => {
   const [align, setAlign] = React.useState("left");
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
-  const [theme, setTheme] = React.useState(
-    `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-2.mov`
-  );
+  const [theme, setTheme] = React.useState(defaultTheme.path);
   const [showWizard, setShowWizard] = useLocalStorageState("showWizard", {
     defaultValue: true,
   });
@@ -144,13 +187,47 @@ const CreateTemplate: NextPage = () => {
       const ctx = canvas.getContext("2d");
       const positionCanvasCenter = canvas.width / 2;
       const startPosition = align === "center" ? positionCanvasCenter : 64;
+      const activeTheme =
+        themes.find((t) => t.path === theme) || defaultTheme.bgMode;
+
+      // add mark
+
+      const getMarkFilePath = () => {
+        switch (activeTheme.bgMode) {
+          case "light":
+            return `${process.env.NEXT_PUBLIC_BASE_PATH}/mark-github-24-dark.png`;
+          case "dark":
+            return `${process.env.NEXT_PUBLIC_BASE_PATH}/mark-github-24.png`;
+          case "copilot":
+            return `${process.env.NEXT_PUBLIC_BASE_PATH}/copilot-mark.png`;
+          default:
+            return `${process.env.NEXT_PUBLIC_BASE_PATH}/mark-github-24.png`;
+        }
+      };
+
+      const img = new Image();
+      img.src = getMarkFilePath();
+      console.log(getMarkFilePath());
+
+      const markStartingPosY = size.typePairing === "xl" ? 520 : 420;
+      const dimension = size.typePairing === "xl" ? 150 : 72;
+
+      ctx.drawImage(
+        img,
+        align === "center" ? startPosition - dimension / 2 : startPosition,
+        //markStartingPosY - wrappedText[1] - 250, // hug to text
+        startPosition,
+        theme === "copilot" ? 352 : dimension,
+        theme === "copilot" ? 43 : dimension
+      );
 
       ctx.font = typePairings[size.typePairing].heading;
-      ctx.fillStyle = fgDefault(theme);
+      ctx.fillStyle = fgDefault(activeTheme.bgMode);
       ctx.lineHeight = typePairings[size.typePairing].headingLineheight;
       ctx.textAlign = align;
 
-      const headingStartingPos = size.typePairing === "large" ? 923 : 623;
+      // heading starting position is 200px from the bottom of the canvas
+      const headingStartingPos = canvas.height;
 
       let wrappedText = wrapText(
         ctx,
@@ -166,16 +243,16 @@ const CreateTemplate: NextPage = () => {
         // We will fill our text which is item[0] of our array, at coordinates [x, y]
         // x will be item[1] of our array
         // y will be item[2] of our array, minus the line height (wrappedText[1]), minus the height of the emoji (200px)
-        ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 200); // 200 is height of an emoji
+        ctx.fillText(item[0], startPosition, item[2] - wrappedText[1] - 100); // 200 is height of an emoji
       });
 
       // Add our subheading text to the canvas
       ctx.font = typePairings[size.typePairing].subheading;
 
       ctx.lineHeight = typePairings[size.typePairing].subheadingLineheight;
-      ctx.fillStyle = fgDefault(theme);
+      ctx.fillStyle = fgDefault(activeTheme.bgMode);
 
-      const subheadingStartingPos = size.typePairing === "large" ? 800 : 520;
+      const subheadingStartingPos = headingStartingPos;
       ctx.fillText(
         heading,
         startPosition,
@@ -205,7 +282,7 @@ const CreateTemplate: NextPage = () => {
     return () => {
       window.clearInterval(interval);
     };
-  }, [heading, subheading, align, size]);
+  }, [heading, subheading, theme]);
 
   const router = useRouter();
   const id = router.query.id;
@@ -366,24 +443,15 @@ const CreateTemplate: NextPage = () => {
                       defaultValue={theme}
                       onChange={(event) => handleChange(event, "theme")}
                     >
-                      <Select.Option
-                        value={`${process.env.NEXT_PUBLIC_BASE_PATH}/animated-1.mov`}
-                        selected={
-                          theme ===
-                          `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-1.mov`
-                        }
-                      >
-                        Universe one
-                      </Select.Option>
-                      <Select.Option
-                        value={`${process.env.NEXT_PUBLIC_BASE_PATH}/animated-2.mov`}
-                        selected={
-                          theme ===
-                          `${process.env.NEXT_PUBLIC_BASE_PATH}/animated-2.mov`
-                        }
-                      >
-                        Universe two
-                      </Select.Option>
+                      {themes.map((theme) => (
+                        <Select.Option
+                          key={theme.name}
+                          value={theme.path}
+                          selected={theme === theme.path}
+                        >
+                          {theme.name}
+                        </Select.Option>
+                      ))}
                     </Select>
                   </FormControl>
                   {/*
@@ -422,277 +490,10 @@ const CreateTemplate: NextPage = () => {
       <Canvas>
         <Canvas.Pannable>
           <canvas ref={canvasRef} width={size.w} height={size.h} />
-          <video
-            ref={videoRef}
-            src={theme}
-            preload="auto"
-            autoPlay
-            playsInline
-            muted
-            hidden
-          ></video>
+          <Video videoRef={videoRef} src={theme} />
         </Canvas.Pannable>
       </Canvas>
     </div>
-
-    // <div className={[styles.container, "page"].join(" ")}>
-    //   <Head>
-    //     <title>Create social images</title>
-    //   </Head>
-
-    //   <PageLayout containerWidth="full">
-    //     <PageLayout.Header>
-    //       <Heading as="h3">Animated banner</Heading>
-    //       <Box sx={{ position: "relative" }}>
-    //         <TabNav aria-label="Main" sx={{ mt: 6 }}>
-    //           <TabNav.Link
-    //             href="#"
-    //             selected
-    //             onClick={(event) => console.log("pressed")}
-    //             sx={{
-    //               fontWeight: 600,
-    //             }}
-    //           >
-    //             Customize
-    //           </TabNav.Link>
-    //           <TabNav.Link
-    //             href="#"
-    //             onClick={(event) => console.log("pressed")}
-    //             selected={false}
-    //             sx={{
-    //               fontWeight: "normal",
-    //             }}
-    //           >
-    //             Upload CSV
-    //           </TabNav.Link>
-    //         </TabNav>
-    //         <Box>
-    //           <Box
-    //             sx={{
-    //               position: "absolute",
-    //               top: -1,
-    //               right: 0,
-    //               display: "grid",
-    //               gap: 0,
-    //               gridTemplateColumns: "1fr 1fr",
-    //               width: 310,
-    //             }}
-    //           >
-    //             <ProductLinkButton
-    //               disabled
-    //               variant="default"
-    //               sx={{ mr: 2 }}
-    //               leadingIcon={ShareIcon}
-    //             >
-    //               Share video
-    //             </ProductLinkButton>
-    //             <ProductLinkButton
-    //               variant="primary"
-    //               disabled
-    //               leadingIcon={DownloadIcon}
-    //               href="#"
-    //               download
-    //               target="_blank"
-    //             >
-    //               Download video
-    //             </ProductLinkButton>
-    //           </Box>
-    //         </Box>
-    //       </Box>
-    //     </PageLayout.Header>
-
-    //     <PageLayout.Pane position="start" divider="line">
-    //       <form>
-    //         <FormControl sx={{ mb: 3 }}>
-    //           <FormControl.Label>Theme</FormControl.Label>
-    //           <Select
-    //             name="color-mode"
-    //             block
-    //             defaultValue={theme}
-    //             onChange={(event) => handleChange(event, "theme")}
-    //           >
-    //             <Select.Option
-    //               value="/animated-1.mov"
-    //               selected={theme === "/animated-1.mov"}
-    //             >
-    //               Universe one
-    //             </Select.Option>
-    //             <Select.Option
-    //               value="/animated-2.mov"
-    //               selected={theme === "/animated-2.mov"}
-    //             >
-    //               Universe two
-    //             </Select.Option>
-    //           </Select>
-    //         </FormControl>
-    //         <Box sx={{ mb: 3 }}>
-    //           <RadioGroup name="choiceGroup">
-    //             <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
-    //               Alignment
-    //             </RadioGroup.Label>
-    //             <Box sx={{ display: "inline-flex" }}>
-    //               <FormControl sx={{ mr: 3 }}>
-    //                 <Radio
-    //                   value="left"
-    //                   name="text-alignment"
-    //                   defaultChecked={"left" === align}
-    //                   onChange={(event) => handleChange(event, "align")}
-    //                 />
-    //                 <FormControl.Label>Start</FormControl.Label>
-    //               </FormControl>
-    //               <FormControl>
-    //                 <Radio
-    //                   value="center"
-    //                   name="text-alignment"
-    //                   defaultChecked={"center" === align}
-    //                   onChange={(event) => handleChange(event, "align")}
-    //                 />
-    //                 <FormControl.Label>Center</FormControl.Label>
-    //               </FormControl>
-    //             </Box>
-    //           </RadioGroup>
-    //         </Box>
-
-    //         <Box sx={{ mb: 3 }}>
-    //           <RadioGroup name="choiceGroup">
-    //             <RadioGroup.Label sx={{ fontWeight: 600, fontSize: 1 }}>
-    //               Size
-    //             </RadioGroup.Label>
-    //             <Box sx={{ display: "inline-flex" }}>
-    //               {formattedSizes.map((size, index) => (
-    //                 <FormControl sx={{ mr: 3 }} key={size}>
-    //                   <Radio
-    //                     value={JSON.stringify(sizes[index])}
-    //                     name="size"
-    //                     defaultChecked={index === 0}
-    //                     onChange={(event) => handleChange(event, "size")}
-    //                   />
-    //                   <FormControl.Label>{size}</FormControl.Label>
-    //                 </FormControl>
-    //               ))}
-    //             </Box>
-    //           </RadioGroup>
-    //         </Box>
-
-    //         <FormControl sx={{ mb: 3 }} required id="heading">
-    //           <FormControl.Label>Heading</FormControl.Label>
-    //           <TextInput
-    //             type="text"
-    //             name="heading"
-    //             block
-    //             value={heading}
-    //             onChange={(event) => handleChange(event, "heading")}
-    //           />
-    //         </FormControl>
-
-    //         <FormControl sx={{ mb: 3 }} required>
-    //           <FormControl.Label>Sub-heading</FormControl.Label>
-    //           <TextInput
-    //             type="text"
-    //             id="subheading"
-    //             name="subheading"
-    //             block
-    //             value={subheading}
-    //             onChange={(event) => handleChange(event, "subheading")}
-    //           />
-    //         </FormControl>
-    //         <FormControl sx={{ mb: 3 }} id="description">
-    //           <FormControl.Label>Description</FormControl.Label>
-    //           <Textarea name="description" block />
-    //         </FormControl>
-    //         <FormControl sx={{ mb: 3 }} id="button">
-    //           <FormControl.Label>Call to action</FormControl.Label>
-    //           <TextInput type="text" name="button" block />
-    //         </FormControl>
-    //       </form>
-    //     </PageLayout.Pane>
-
-    //     <PageLayout.Content>
-    //       <>
-    //         <Box
-    //           sx={{
-    //             position: "relative",
-    //             borderWidth: 1,
-    //             borderStyle: "solid",
-    //             borderRadius: "5px",
-    //             borderColor: "border.default",
-    //             backgroundColor: "canvas.subtle",
-    //             minHeight: 600,
-    //             backgroundImage:
-    //               "radial-gradient(#000000 13%,var(--base-color-scale-gray-7) 13%)",
-    //             backgroundPosition: "0 0",
-    //             backgroundSize: "20px 20px",
-    //             // backgroundImage:
-    //             //   "linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, transparent 75%, var(--base-color-scale-gray-2) 75%), linear-gradient(45deg, var(--base-color-scale-gray-2) 25%, transparent 25%)",
-    //             // backgroundSize: "20px 20px",
-    //             // backgroundPosition: "0 0, 0 0, -50px -50px, 50px 50px",
-    //             width: "100%",
-    //           }}
-    //         >
-    //           {/* {!uri && (
-    //           <Box
-    //             sx={{
-    //               display: "flex",
-    //               alignItems: "center",
-    //               justifyContent: "center",
-    //               height: "100%",
-    //               minHeight: 600,
-    //             }}
-    //           >
-    //             <ImageIcon size={128} fill="#21252c" />
-    //           </Box>
-    //         )} */}
-    //           <TransformWrapper initialScale={0.8} minScale={0.2} centerOnInit>
-    //             {({ zoomIn, zoomOut, resetTransform, ...rest }) => (
-    //               <React.Fragment>
-    //                 <Box
-    //                   sx={{
-    //                     position: "absolute",
-    //                     right: 3,
-    //                     top: 3,
-    //                     display: "grid",
-    //                     width: "auto",
-    //                     gap: 1,
-    //                   }}
-    //                 >
-    //                   <IconButton
-    //                     size="large"
-    //                     icon={PlusIcon}
-    //                     onClick={() => zoomIn()}
-    //                   />
-    //                   <IconButton
-    //                     size="large"
-    //                     icon={DashIcon}
-    //                     onClick={() => zoomOut()}
-    //                   />
-    //                   <IconButton
-    //                     size="large"
-    //                     icon={ScreenNormalIcon}
-    //                     onClick={() => resetTransform()}
-    //                   />
-    //                 </Box>
-    //                 <TransformComponent>
-    //                   <canvas ref={canvasRef} width={size.w} height={size.h} />
-    //                   <video
-    //                     ref={videoRef}
-    //                     src={theme}
-    //                     preload="auto"
-    //                     autoPlay
-    //                     playsInline
-    //                     muted
-    //                     hidden
-    //                   ></video>
-    //                 </TransformComponent>
-    //               </React.Fragment>
-    //             )}
-    //           </TransformWrapper>
-    //         </Box>
-    //       </>
-    //     </PageLayout.Content>
-
-    //     {/* <PageLayout.Footer>Footer</PageLayout.Footer> */}
-    //   </PageLayout>
-    // </div>
   );
 };
 

@@ -105,14 +105,12 @@ app.get("/api/login", async (req, res) => {
   // The req.query object has the query params that were sent to this route.
   const requestToken = req.query.code;
 
-  console.log("requestToken", requestToken);
-
   if (!requestToken) {
     return;
   }
 
   const response = await fetch(
-    `https://github.com/login/oauth/access_token?client_id=${process.env.OAUTH_CLIENT_ID}&client_secret=${process.env.OAUTH_CLIENT_SECRET}&code=${requestToken}`,
+    `https://github.com/login/oauth/access_token?client_id=${process.env.OAUTH_CLIENT_ID}&client_secret=${process.env.OAUTH_CLIENT_SECRET}&code=${requestToken}`, // put back to local
     {
       method: "POST",
       headers: {
@@ -121,17 +119,13 @@ app.get("/api/login", async (req, res) => {
     }
   );
 
-  console.log("raw response", response);
-
   if (response) {
     const data = await response.json();
-    console.log("json response", data);
     const accessToken = data.access_token;
 
     if (accessToken) {
-      console.log("just before redirect. access token is ", accessToken);
       res.redirect(
-        `https://rezrah.github.io/social-image-generator/login?access_token=${accessToken}`
+        `${process.env.WEB_APP_URL}/login?access_token=${accessToken}`
       );
     }
   }
